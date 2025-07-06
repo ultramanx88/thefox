@@ -41,7 +41,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between items-center p-4 pt-0">
-          <p className="text-xl font-bold text-primary">${product.price.toFixed(2)}</p>
+          <p className="text-xl font-bold text-primary">฿{product.price.toFixed(2)}</p>
           <Rating rating={product.rating} reviewCount={product.reviewCount} />
         </CardFooter>
       </Card>
