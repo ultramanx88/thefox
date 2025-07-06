@@ -263,8 +263,20 @@
         "investment": "Investment Amount",
         "earnings": "Total Earnings",
         "roi": "ROI",
-        "joinDate": "Join Date"
-      }
+        "joinDate": "Join Date",
+        "actions": "Actions"
+      },
+      "editAction": "Edit",
+      "editDialogTitle": "Edit Investor Information",
+      "editDialogDescription": "Update the details for {investorName}.",
+      "investorNameLabel": "Investor Name",
+      "bankNameLabel": "Bank Name",
+      "accountNameLabel": "Account Name",
+      "accountNumberLabel": "Account Number",
+      "saveChangesButton": "Save Changes",
+      "toastSuccessTitle": "Success!",
+      "toastSuccessDescription": "Investor information has been updated.",
+      "toastErrorTitle": "Error"
     },
     "reports": {
       "title": "Daily Profit Distribution",

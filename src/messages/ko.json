@@ -263,8 +263,20 @@
         "investment": "투자 금액",
         "earnings": "총 수입",
         "roi": "ROI",
-        "joinDate": "가입일"
-      }
+        "joinDate": "가입일",
+        "actions": "작업"
+      },
+      "editAction": "편집",
+      "editDialogTitle": "투자자 정보 편집",
+      "editDialogDescription": "{investorName}의 세부 정보를 업데이트합니다.",
+      "investorNameLabel": "투자자 이름",
+      "bankNameLabel": "은행명",
+      "accountNameLabel": "계좌 소유주 이름",
+      "accountNumberLabel": "계좌 번호",
+      "saveChangesButton": "변경 사항 저장",
+      "toastSuccessTitle": "성공!",
+      "toastSuccessDescription": "투자자 정보가 업데이트되었습니다.",
+      "toastErrorTitle": "오류"
     },
     "reports": {
       "title": "일일 이익 분배",

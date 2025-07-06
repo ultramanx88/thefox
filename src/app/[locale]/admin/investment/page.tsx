@@ -1,4 +1,8 @@
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Card,
   CardContent,
@@ -17,26 +21,33 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getInvestmentData } from '@/lib/investment';
-import { Users, BarChart, FileSpreadsheet, FileText, Banknote, Landmark } from 'lucide-react';
+import { Users, BarChart, FileSpreadsheet, FileText, Banknote, Landmark, Pencil } from 'lucide-react';
 import { InvestmentChart } from '@/components/InvestmentChart';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { InvestorEditDialog } from '@/components/InvestorEditDialog';
 
-export default async function AdminInvestmentPage({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) {
-  unstable_setRequestLocale(locale);
-  const t = await getTranslations('AdminInvestment');
-  const { overview, investors, dailyReports } = await getInvestmentData();
+type InvestmentData = Awaited<ReturnType<typeof getInvestmentData>>;
+type Investor = InvestmentData['investors'][0];
+
+export default function AdminInvestmentPage() {
+  const t = useTranslations('AdminInvestment');
+  const tBanks = useTranslations('AdminSettings.banks');
+  const [data, setData] = useState<InvestmentData | null>(null);
+  const [editingInvestor, setEditingInvestor] = useState<Investor | null>(null);
+
+  useEffect(() => {
+    getInvestmentData().then(setData);
+  }, []);
+  
   const formatCurrency = (amount: number) => `฿${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-  const overviewStats = [
-    { title: t('stats.totalInvestment'), value: formatCurrency(overview.totalInvestment), icon: Banknote },
-    { title: t('stats.totalRevenue'), value: formatCurrency(overview.totalRevenue), icon: BarChart },
-    { title: t('stats.totalInvestors'), value: overview.totalInvestors, icon: Users },
-    { title: t('stats.founderEarnings'), value: formatCurrency(overview.totalFounderEarnings), icon: Landmark },
-  ];
+  const overviewStats = data ? [
+    { title: t('stats.totalInvestment'), value: formatCurrency(data.overview.totalInvestment), icon: Banknote },
+    { title: t('stats.totalRevenue'), value: formatCurrency(data.overview.totalRevenue), icon: BarChart },
+    { title: t('stats.totalInvestors'), value: data.overview.totalInvestors, icon: Users },
+    { title: t('stats.founderEarnings'), value: formatCurrency(data.overview.totalFounderEarnings), icon: Landmark },
+  ] : Array(4).fill(null);
 
   return (
     <div className="space-y-8">
@@ -46,16 +57,18 @@ export default async function AdminInvestmentPage({
       </div>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {overviewStats.map((stat) => (
-          <Card key={stat.title}>
+        {overviewStats.map((stat, index) => (
+          <Card key={stat?.title || index}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                {stat.title}
+                {stat ? stat.title : <Skeleton className="h-5 w-32" />}
               </CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
+              {stat && <stat.icon className="h-4 w-4 text-muted-foreground" />}
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
+              <div className="text-2xl font-bold">
+                 {stat ? stat.value : <Skeleton className="h-8 w-40" />}
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -75,10 +88,11 @@ export default async function AdminInvestmentPage({
                         <TableHead>{t('investors.tableHeaders.earnings')}</TableHead>
                         <TableHead>{t('investors.tableHeaders.roi')}</TableHead>
                         <TableHead>{t('investors.tableHeaders.joinDate')}</TableHead>
+                        <TableHead className="text-right">{t('investors.tableHeaders.actions')}</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {investors.map((investor) => (
+                    {data ? data.investors.map((investor) => (
                         <TableRow key={investor.id}>
                             <TableCell className="font-medium">{investor.name}</TableCell>
                             <TableCell>{formatCurrency(investor.total_investment)}</TableCell>
@@ -89,12 +103,41 @@ export default async function AdminInvestmentPage({
                                 </Badge>
                             </TableCell>
                             <TableCell>{investor.join_date}</TableCell>
+                            <TableCell className="text-right">
+                                <Button variant="ghost" size="icon" onClick={() => setEditingInvestor(investor)}>
+                                    <Pencil className="h-4 w-4" />
+                                    <span className="sr-only">{t('investors.editAction')}</span>
+                                </Button>
+                            </TableCell>
+                        </TableRow>
+                    )) : Array(3).fill(null).map((_, i) => (
+                        <TableRow key={i}>
+                            <TableCell><Skeleton className="h-5 w-24"/></TableCell>
+                            <TableCell><Skeleton className="h-5 w-20"/></TableCell>
+                            <TableCell><Skeleton className="h-5 w-20"/></TableCell>
+                            <TableCell><Skeleton className="h-6 w-16"/></TableCell>
+                            <TableCell><Skeleton className="h-5 w-24"/></TableCell>
+                            <TableCell className="text-right"><Skeleton className="h-8 w-8 inline-block"/></TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
         </CardContent>
       </Card>
+
+      {editingInvestor && (
+        <InvestorEditDialog
+          investor={editingInvestor}
+          isOpen={!!editingInvestor}
+          onOpenChange={(open) => {
+            if (!open) {
+              setEditingInvestor(null);
+            }
+          }}
+          t={t.rich('investors', { investorName: editingInvestor.name })}
+          tBanks={tBanks}
+        />
+      )}
 
       <Card>
         <CardHeader>
@@ -111,9 +154,9 @@ export default async function AdminInvestmentPage({
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-            {dailyReports.map((report, index) => {
+            {data ? data.dailyReports.map((report, index) => {
               const chartData = Object.entries(report.investor_earnings).map(([investorId, earnings]) => {
-                const investor = investors.find(inv => inv.id === investorId);
+                const investor = data.investors.find(inv => inv.id === investorId);
                 return { investorName: investor ? investor.name : 'Unknown', earnings };
               });
 
@@ -140,7 +183,7 @@ export default async function AdminInvestmentPage({
                 </div>
                  <InvestmentChart data={chartData} />
               </div>
-            )})}
+            )}) : <Skeleton className="h-64 w-full"/>}
         </CardContent>
       </Card>
     </div>

@@ -263,8 +263,20 @@
         "investment": "投資額",
         "earnings": "総収益",
         "roi": "ROI",
-        "joinDate": "参加日"
-      }
+        "joinDate": "参加日",
+        "actions": "アクション"
+      },
+      "editAction": "編集",
+      "editDialogTitle": "投資家情報を編集",
+      "editDialogDescription": "{investorName} の詳細を更新します。",
+      "investorNameLabel": "投資家名",
+      "bankNameLabel": "銀行名",
+      "accountNameLabel": "口座名義",
+      "accountNumberLabel": "口座番号",
+      "saveChangesButton": "変更を保存",
+      "toastSuccessTitle": "成功！",
+      "toastSuccessDescription": "投資家情報が更新されました。",
+      "toastErrorTitle": "エラー"
     },
     "reports": {
       "title": "日次利益分配",

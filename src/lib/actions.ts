@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { suggestProductCategory } from '@/ai/flows/suggest-product-category';
 import { revalidatePath } from 'next/cache';
 import { addCategory as addCategoryToDb } from '@/lib/categories';
+import { updateInvestorInfo, type BankInfo } from '@/lib/investment';
 
 export interface ActionState {
   error?: string;
@@ -74,5 +75,53 @@ export async function addCategoryAction(
   } catch (e) {
     console.error(e);
     return { error: 'Failed to add category.' };
+  }
+}
+
+const updateInvestorSchema = z.object({
+  investorId: z.string(),
+  name: z.string().min(1, 'Name is required.'),
+  bank_name: z.string().min(1, 'Bank name is required.'),
+  account_name: z.string().min(1, 'Account name is required.'),
+  account_number: z.string().min(1, 'Account number is required.'),
+});
+
+export async function updateInvestorAction(
+  prevState: { error?: string; success?: boolean, message?: string },
+  formData: FormData
+): Promise<{ error?: string; success?: boolean, message?: string }> {
+  const validatedFields = updateInvestorSchema.safeParse({
+    investorId: formData.get('investorId'),
+    name: formData.get('name'),
+    bank_name: formData.get('bank_name'),
+    account_name: formData.get('account_name'),
+    account_number: formData.get('account_number'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      error: validatedFields.error.flatten().fieldErrors.toString(),
+    };
+  }
+  
+  const { investorId, name, bank_name, account_name, account_number } = validatedFields.data;
+  const bankInfo: BankInfo = { bank_name, account_name, account_number };
+
+  try {
+    const result = await updateInvestorInfo(investorId, {
+      name: name,
+      bank_info: bankInfo
+    });
+
+    if (!result.success) {
+      return { error: result.message };
+    }
+    
+    revalidatePath('/[locale]/admin/investment', 'page');
+    return { success: true, message: 'Investor updated successfully.' };
+
+  } catch (e) {
+    console.error(e);
+    return { error: 'Failed to update investor.' };
   }
 }

@@ -1,3 +1,4 @@
+
 // --- MOCK DATABASE ---
 // In a real application, this data would live in a database like Firestore or PostgreSQL.
 
@@ -50,19 +51,19 @@ let investors: Investor[] = [
     { 
         id: 'inv_001', name: 'Nattapong', total_investment: 100000, current_balance: 0, 
         total_earnings: 0, total_withdrawn: 0, join_date: '2024-01-01', 
-        bank_info: { bank_name: 'K-Bank', account_number: 'xxx-x-x1234-x', account_name: 'Nattapong' },
+        bank_info: { bank_name: 'kbank', account_number: 'xxx-x-x1234-x', account_name: 'Nattapong' },
         auto_withdraw: { enabled: true, threshold: 5000 }
     },
     { 
         id: 'inv_002', name: 'Siriporn', total_investment: 250000, current_balance: 0, 
         total_earnings: 0, total_withdrawn: 0, join_date: '2024-01-15', 
-        bank_info: { bank_name: 'SCB', account_number: 'xxx-x-x5678-x', account_name: 'Siriporn' },
+        bank_info: { bank_name: 'scb', account_number: 'xxx-x-x5678-x', account_name: 'Siriporn' },
         auto_withdraw: { enabled: true, threshold: 10000 }
     },
     { 
         id: 'inv_003', name: 'Somchai', total_investment: 50000, current_balance: 0, 
         total_earnings: 0, total_withdrawn: 0, join_date: '2024-02-01', 
-        bank_info: { bank_name: 'BBL', account_number: 'xxx-x-x9012-x', account_name: 'Somchai' },
+        bank_info: { bank_name: 'bbl', account_number: 'xxx-x-x9012-x', account_name: 'Somchai' },
         auto_withdraw: { enabled: false, threshold: 0 }
     },
 ];
@@ -230,6 +231,32 @@ export async function getInvestmentData() {
         dailyReports: JSON.parse(JSON.stringify(dailyReports.slice(-5).reverse())), // last 5 days
     });
 }
+
+/**
+ * Updates an existing investor's information.
+ * @param investorId The ID of the investor to update.
+ * @param data The data to update (name and bank_info).
+ * @returns A status object with the result of the operation.
+ */
+export async function updateInvestorInfo(
+  investorId: string,
+  data: { name: string; bank_info: BankInfo }
+): Promise<{ success: boolean; message?: string }> {
+  const investorIndex = investors.findIndex(inv => inv.id === investorId);
+
+  if (investorIndex === -1) {
+    return { success: false, message: 'Investor not found.' };
+  }
+
+  investors[investorIndex] = {
+    ...investors[investorIndex],
+    name: data.name,
+    bank_info: data.bank_info,
+  };
+
+  return { success: true, message: 'Investor information updated successfully.' };
+}
+
 
 /**
  * Mocks the processing of a single withdrawal request.

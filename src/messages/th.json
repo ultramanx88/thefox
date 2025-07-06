@@ -263,8 +263,20 @@
         "investment": "จำนวนเงินลงทุน",
         "earnings": "รายได้ทั้งหมด",
         "roi": "ผลตอบแทนจากการลงทุน (ROI)",
-        "joinDate": "วันที่เข้าร่วม"
-      }
+        "joinDate": "วันที่เข้าร่วม",
+        "actions": "การดำเนินการ"
+      },
+      "editAction": "แก้ไข",
+      "editDialogTitle": "แก้ไขข้อมูลนักลงทุน",
+      "editDialogDescription": "อัปเดตรายละเอียดสำหรับ {investorName}",
+      "investorNameLabel": "ชื่อนักลงทุน",
+      "bankNameLabel": "ชื่อธนาคาร",
+      "accountNameLabel": "ชื่อบัญชี",
+      "accountNumberLabel": "เลขที่บัญชี",
+      "saveChangesButton": "บันทึกการเปลี่ยนแปลง",
+      "toastSuccessTitle": "สำเร็จ!",
+      "toastSuccessDescription": "ข้อมูลนักลงทุนได้รับการอัปเดตแล้ว",
+      "toastErrorTitle": "เกิดข้อผิดพลาด"
     },
     "reports": {
       "title": "การแบ่งปันผลกำไรรายวัน",

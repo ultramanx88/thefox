@@ -263,8 +263,20 @@
         "investment": "投资金额",
         "earnings": "总收益",
         "roi": "投资回报率",
-        "joinDate": "加入日期"
-      }
+        "joinDate": "加入日期",
+        "actions": "操作"
+      },
+      "editAction": "编辑",
+      "editDialogTitle": "编辑投资者信息",
+      "editDialogDescription": "更新 {investorName} 的详细信息。",
+      "investorNameLabel": "投资者姓名",
+      "bankNameLabel": "银行名称",
+      "accountNameLabel": "账户名称",
+      "accountNumberLabel": "账号",
+      "saveChangesButton": "保存更改",
+      "toastSuccessTitle": "成功！",
+      "toastSuccessDescription": "投资者信息已更新。",
+      "toastErrorTitle": "错误"
     },
     "reports": {
       "title": "每日利润分配",
