@@ -14,10 +14,18 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight, ShoppingCart, DollarSign, Package, Bell } from 'lucide-react';
 import { Link } from '@/navigation';
+import { getStaffMembers } from '@/lib/staff';
 
 export default async function VendorDashboardPage({
   params: { locale },
@@ -26,6 +34,8 @@ export default async function VendorDashboardPage({
 }) {
   unstable_setRequestLocale(locale);
   const t = await getTranslations('VendorDashboard.main');
+  const staffMembers = await getStaffMembers();
+  const packers = staffMembers.filter(s => s.role === 'packer');
 
   const stats = [
     { title: t('stats.todaysRevenue'), value: '฿12,500', icon: DollarSign },
@@ -34,11 +44,11 @@ export default async function VendorDashboardPage({
   ];
 
   const recentOrders = [
-    { id: 'ORD-001', customer: 'ร้านอาหารเจริญสุข', amount: '฿2,500.00', status: 'new' },
-    { id: 'ORD-002', customer: 'ครัวคุณหน่อย', amount: '฿1,200.50', status: 'preparing' },
-    { id: 'ORD-003', customer: 'โรงแรมแกรนด์พาเลซ', amount: '฿8,750.00', status: 'new' },
-    { id: 'ORD-004', customer: 'ร้านก๋วยเตี๋ยวลุงชัย', amount: '฿850.00', status: 'ready' },
-    { id: 'ORD-005', customer: 'คาเฟ่ The Nest', amount: '฿1,500.00', status: 'preparing' },
+    { id: 'ORD-001', customer: 'ร้านอาหารเจริญสุข', amount: '฿2,500.00', status: 'new', assignedTo: null },
+    { id: 'ORD-002', customer: 'ครัวคุณหน่อย', amount: '฿1,200.50', status: 'preparing', assignedTo: 'มานะ ใจดี' },
+    { id: 'ORD-003', customer: 'โรงแรมแกรนด์พาเลซ', amount: '฿8,750.00', status: 'new', assignedTo: null },
+    { id: 'ORD-004', customer: 'ร้านก๋วยเตี๋ยวลุงชัย', amount: '฿850.00', status: 'ready', assignedTo: 'ปิติ ชูใจ' },
+    { id: 'ORD-005', customer: 'คาเฟ่ The Nest', amount: '฿1,500.00', status: 'preparing', assignedTo: 'มานะ ใจดี' },
   ];
 
   return (
@@ -93,6 +103,7 @@ export default async function VendorDashboardPage({
                 <TableHead>{t('tableHeaders.customer')}</TableHead>
                 <TableHead className="text-right">{t('tableHeaders.amount')}</TableHead>
                 <TableHead className="text-center">{t('tableHeaders.status')}</TableHead>
+                <TableHead>{t('tableHeaders.assignee')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -105,6 +116,21 @@ export default async function VendorDashboardPage({
                     <Badge variant={order.status === 'new' ? 'default' : 'secondary'} className={order.status === 'new' ? "bg-accent text-accent-foreground animate-pulse" : ""}>
                       {t(`orderStatus.${order.status}`)}
                     </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Select defaultValue={order.assignedTo || 'unassigned'}>
+                        <SelectTrigger className="w-full min-w-[150px]">
+                            <SelectValue placeholder={t('unassigned')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="unassigned">{t('unassigned')}</SelectItem>
+                            {packers.map(packer => (
+                                <SelectItem key={packer.id} value={packer.name}>
+                                    {packer.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                   </TableCell>
                 </TableRow>
               ))}

@@ -160,13 +160,15 @@
         "orderId": "Order ID",
         "customer": "Customer",
         "amount": "Amount",
-        "status": "Status"
+        "status": "Status",
+        "assignee": "Assigned To"
       },
       "orderStatus": {
         "new": "New",
         "preparing": "Preparing",
         "ready": "Ready for Pickup"
       },
+      "unassigned": "Unassigned",
       "ordersTitle": "Manage Orders",
       "allOrders": "All Orders",
       "allOrdersDescription": "A list of all orders from your customers.",

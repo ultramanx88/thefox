@@ -160,13 +160,15 @@
         "orderId": "รหัสออเดอร์",
         "customer": "ลูกค้า",
         "amount": "ยอดรวม",
-        "status": "สถานะ"
+        "status": "สถานะ",
+        "assignee": "มอบหมายให้"
       },
       "orderStatus": {
         "new": "ใหม่",
         "preparing": "กำลังเตรียม",
         "ready": "พร้อมรับ"
       },
+      "unassigned": "ยังไม่มอบหมาย",
       "ordersTitle": "จัดการออเดอร์",
       "allOrders": "ออเดอร์ทั้งหมด",
       "allOrdersDescription": "รายการออเดอร์ทั้งหมดจากลูกค้าของคุณ",

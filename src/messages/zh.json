@@ -160,13 +160,15 @@
         "orderId": "订单号",
         "customer": "顾客",
         "amount": "金额",
-        "status": "状态"
+        "status": "状态",
+        "assignee": "分配给"
       },
       "orderStatus": {
         "new": "新订单",
         "preparing": "准备中",
         "ready": "可取货"
       },
+      "unassigned": "未分配",
       "ordersTitle": "管理订单",
       "allOrders": "所有订单",
       "allOrdersDescription": "来自您客户的所有订单列表。",
