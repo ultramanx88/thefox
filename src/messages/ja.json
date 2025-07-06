@@ -341,7 +341,8 @@
       "products": "商品",
       "orders": "注文",
       "hours": "営業時間",
-      "staff": "スタッフ"
+      "staff": "スタッフ",
+      "settings": "設定"
     },
     "main": {
       "title": "販売者ダッシュボード",
@@ -427,6 +428,19 @@
     },
     "editAction": "編集",
     "removeAction": "削除"
+  },
+  "VendorSettings": {
+    "title": "店舗設定",
+    "description": "店舗詳細と支払い情報",
+    "payoutAccountCardTitle": "支払い受け取り用銀行口座",
+    "payoutAccountCardDescription": "収益を受け取る銀行口座です。",
+    "bankNameLabel": "銀行名",
+    "selectBankPlaceholder": "銀行を選択...",
+    "accountNameLabel": "口座名義",
+    "accountNamePlaceholder": "例：パニさんの八百屋",
+    "accountNumberLabel": "口座番号",
+    "accountNumberPlaceholder": "例：123-4-56789-0",
+    "saveButton": "設定を保存"
   },
   "Days": {
     "monday": "月曜日",

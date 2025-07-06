@@ -341,7 +341,8 @@
       "products": "상품",
       "orders": "주문",
       "hours": "영업 시간",
-      "staff": "직원"
+      "staff": "직원",
+      "settings": "설정"
     },
     "main": {
       "title": "판매자 대시보드",
@@ -427,6 +428,19 @@
     },
     "editAction": "수정",
     "removeAction": "삭제"
+  },
+  "VendorSettings": {
+    "title": "상점 설정",
+    "description": "상점 정보 및 지급 정보 관리",
+    "payoutAccountCardTitle": "수익금 수령 은행 계좌",
+    "payoutAccountCardDescription": "판매 수익을 수령할 은행 계좌입니다.",
+    "bankNameLabel": "은행명",
+    "selectBankPlaceholder": "은행 선택...",
+    "accountNameLabel": "계좌 소유주 이름",
+    "accountNamePlaceholder": "예: 파니의 야채 가게",
+    "accountNumberLabel": "계좌 번호",
+    "accountNumberPlaceholder": "예: 123-4-56789-0",
+    "saveButton": "설정 저장"
   },
   "Days": {
     "monday": "월요일",

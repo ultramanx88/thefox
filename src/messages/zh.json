@@ -341,7 +341,8 @@
       "products": "产品",
       "orders": "订单",
       "hours": "营业时间",
-      "staff": "员工"
+      "staff": "员工",
+      "settings": "店铺设置"
     },
     "main": {
       "title": "摊主仪表板",
@@ -427,6 +428,19 @@
     },
     "editAction": "编辑",
     "removeAction": "删除"
+  },
+  "VendorSettings": {
+    "title": "店铺设置",
+    "description": "管理您的店铺详情和收款信息。",
+    "payoutAccountCardTitle": "收款银行账户",
+    "payoutAccountCardDescription": "这是您将接收销售收入的银行账户。",
+    "bankNameLabel": "银行名称",
+    "selectBankPlaceholder": "选择银行...",
+    "accountNameLabel": "账户名称",
+    "accountNamePlaceholder": "例如，Pa Nee的蔬菜摊",
+    "accountNumberLabel": "账号",
+    "accountNumberPlaceholder": "例如，123-4-56789-0",
+    "saveButton": "保存设置"
   },
   "Days": {
     "monday": "星期一",

@@ -341,7 +341,8 @@
       "products": "Products",
       "orders": "Orders",
       "hours": "Store Hours",
-      "staff": "Staff"
+      "staff": "Staff",
+      "settings": "Settings"
     },
     "main": {
       "title": "Vendor Dashboard",
@@ -427,6 +428,19 @@
     },
     "editAction": "Edit",
     "removeAction": "Remove"
+  },
+  "VendorSettings": {
+    "title": "Store Settings",
+    "description": "Manage your store details and payout information.",
+    "payoutAccountCardTitle": "Payout Bank Account",
+    "payoutAccountCardDescription": "This is the bank account where you will receive your earnings.",
+    "bankNameLabel": "Bank Name",
+    "selectBankPlaceholder": "Select a bank...",
+    "accountNameLabel": "Account Name",
+    "accountNamePlaceholder": "e.g., Pa Nee's Vegetable Stall",
+    "accountNumberLabel": "Account Number",
+    "accountNumberPlaceholder": "e.g., 123-4-56789-0",
+    "saveButton": "Save Settings"
   },
   "Days": {
     "monday": "Monday",

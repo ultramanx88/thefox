@@ -341,7 +341,8 @@
       "products": "สินค้า",
       "orders": "ออเดอร์",
       "hours": "เวลาทำการ",
-      "staff": "พนักงาน"
+      "staff": "พนักงาน",
+      "settings": "การตั้งค่า"
     },
     "main": {
       "title": "แดชบอร์ดร้านค้า",
@@ -427,6 +428,19 @@
     },
     "editAction": "แก้ไข",
     "removeAction": "ลบ"
+  },
+  "VendorSettings": {
+    "title": "การตั้งค่าร้านค้า",
+    "description": "จัดการรายละเอียดร้านค้าและข้อมูลการรับเงินของคุณ",
+    "payoutAccountCardTitle": "บัญชีธนาคารสำหรับรับเงิน",
+    "payoutAccountCardDescription": "นี่คือบัญชีธนาคารที่คุณจะได้รับรายได้จากการขาย",
+    "bankNameLabel": "ชื่อธนาคาร",
+    "selectBankPlaceholder": "เลือกธนาคาร...",
+    "accountNameLabel": "ชื่อบัญชี",
+    "accountNamePlaceholder": "เช่น ร้านผักป้านี",
+    "accountNumberLabel": "เลขที่บัญชี",
+    "accountNumberPlaceholder": "เช่น 123-4-56789-0",
+    "saveButton": "บันทึกการตั้งค่า"
   },
   "Days": {
     "monday": "วันจันทร์",
