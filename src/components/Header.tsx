@@ -152,6 +152,10 @@ export function Header() {
                 <Store className="mr-2 h-4 w-4" />
                 <Link href="/register/vendor">{t('vendorDashboard')}</Link>
               </DropdownMenuItem>
+               <DropdownMenuItem>
+                <Settings className="mr-2 h-4 w-4" />
+                <Link href="/admin">{t('adminDashboard')}</Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <span>{t('logout')}</span>

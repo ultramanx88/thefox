@@ -8,6 +8,7 @@
     "guestUser": "ผู้ใช้ทั่วไป",
     "profile": "โปรไฟล์",
     "vendorDashboard": "แดชบอร์ดร้านค้า",
+    "adminDashboard": "แดชบอร์ดผู้ดูแล",
     "logout": "ออกจากระบบ"
   },
   "HomePage": {
@@ -20,5 +21,107 @@
     "searchButton": "ค้นหา",
     "searchLabel": "ค้นหาสินค้า",
     "searchPlaceholder": "เช่น เนื้อวัว, กะหล่ำปลี"
+  },
+  "CategoryAdmin": {
+    "pageTitle": "จัดการหมวดหมู่",
+    "existingCategoriesTitle": "หมวดหมู่ที่มีอยู่",
+    "nameHeader": "ชื่อ",
+    "slugHeader": "สลัก",
+    "addNewCategoryTitle": "เพิ่มหมวดหมู่ใหม่",
+    "addNewCategoryDescription": "สร้างหมวดหมู่สินค้าใหม่สำหรับตลาดของคุณ",
+    "categoryNameLabel": "ชื่อหมวดหมู่",
+    "categoryNamePlaceholder": "เช่น ผักสด",
+    "addCategoryButton": "เพิ่มหมวดหมู่",
+    "toastSuccessTitle": "สำเร็จ!",
+    "toastSuccessDescription": "เพิ่มหมวดหมู่ใหม่เรียบร้อยแล้ว",
+    "toastErrorTitle": "เกิดข้อผิดพลาด",
+    "toastErrorDescription": "ไม่สามารถเพิ่มหมวดหมู่ได้ กรุณาลองใหม่อีกครั้ง"
+  },
+  "ProductDetail": {
+    "addToCart": "เพิ่มลงตะกร้า",
+    "deliveryInfo": "จัดส่งมาตรฐานภายใน 24 ชั่วโมง",
+    "customerReviews": "รีวิวจากลูกค้า"
+  },
+  "NewProduct": {
+    "title": "เพิ่มสินค้าใหม่",
+    "description": "กรอกรายละเอียดด้านล่างเพื่อเพิ่มสินค้าใหม่เข้าร้านของคุณ",
+    "nameLabel": "ชื่อสินค้า",
+    "namePlaceholder": "เช่น กะหล่ำปลีออร์แกนิก",
+    "descriptionLabel": "รายละเอียดสินค้า",
+    "descriptionPlaceholder": "อธิบายสินค้าของคุณ...",
+    "priceLabel": "ราคา (บาท)",
+    "pricePlaceholder": "เช่น 35",
+    "quantityLabel": "จำนวนสต็อก",
+    "quantityPlaceholder": "เช่น 100",
+    "listProductButton": "ลงขายสินค้า"
+  },
+  "VendorRegistration": {
+    "title": "สมัครเป็นผู้ขาย",
+    "description": "เข้าร่วมตลาดของเราและเริ่มขายสินค้าของคุณ",
+    "storeNameLabel": "ชื่อร้านค้า",
+    "storeNamePlaceholder": "เช่น ร้านผักป้านี",
+    "emailLabel": "อีเมล",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "รหัสผ่าน",
+    "passwordPlaceholder": "••••••••",
+    "submitButton": "ลงทะเบียนร้านค้า",
+    "registrationSuccessTitle": "ลงทะเบียนสำเร็จ!",
+    "registrationSuccess": "ร้านค้าของคุณได้รับการลงทะเบียนเรียบร้อยแล้ว ยินดีต้อนรับ!",
+    "registrationFailedTitle": "การลงทะเบียนล้มเหลว",
+    "registrationFailedGeneric": "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง",
+    "validation": {
+      "storeNameRequired": "กรุณากรอกชื่อร้านค้า",
+      "invalidEmail": "กรุณากรอกอีเมลที่ถูกต้อง",
+      "passwordLength": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร"
+    }
+  },
+  "DriverRegistration": {
+    "title": "สมัครเป็นคนขับ",
+    "description": "เข้าร่วมทีมจัดส่งของเราและเริ่มสร้างรายได้",
+    "fullNameLabel": "ชื่อ-นามสกุล",
+    "fullNamePlaceholder": "เช่น สมชาย ใจดี",
+    "emailLabel": "อีเมล",
+    "emailPlaceholder": "you@example.com",
+    "phoneLabel": "เบอร์โทรศัพท์",
+    "phonePlaceholder": "081-234-5678",
+    "vehicleTypeLabel": "ประเภทรถ",
+    "motorcycle": "มอเตอร์ไซค์",
+    "car": "รถยนต์",
+    "locationNotice": "ตำแหน่งของคุณจะถูกใช้เพื่อค้นหางานจัดส่งที่อยู่ใกล้คุณ",
+    "submitButton": "ลงทะเบียนเป็นคนขับ"
+  },
+  "OrderTracking": {
+    "title": "ติดตามคำสั่งซื้อของคุณ",
+    "orderId": "รหัสคำสั่งซื้อ",
+    "statusTitle": "สถานะคำสั่งซื้อ",
+    "mapAlt": "แผนที่แสดงเส้นทางการจัดส่ง",
+    "stepPlaced": "สั่งซื้อสำเร็จ",
+    "stepProcessing": "กำลังดำเนินการ",
+    "stepOutForDelivery": "อยู่ระหว่างการจัดส่ง",
+    "stepDelivered": "จัดส่งสำเร็จ",
+    "statusCompleted": "เสร็จสมบูรณ์",
+    "statusInProgress": "กำลังดำเนินการ",
+    "statusPending": "รอดำเนินการ"
+  },
+  "VendorProfile": {
+    "bannerAlt": "แบนเนอร์หน้าร้านค้า",
+    "marketStall": "แผงลอยในตลาด",
+    "productsFrom": "สินค้าจาก {vendorName}"
+  },
+  "AdminDashboard": {
+    "sidebar": {
+      "superAdmin": "ผู้ดูแลสูงสุด",
+      "dashboard": "แดชบอร์ด",
+      "categories": "หมวดหมู่"
+    },
+    "main": {
+      "title": "แดชบอร์ดผู้ดูแลระบบ",
+      "stats": {
+        "totalRevenue": "รายรับทั้งหมด",
+        "totalOrders": "คำสั่งซื้อทั้งหมด",
+        "totalCustomers": "ลูกค้าทั้งหมด",
+        "totalProducts": "สินค้าทั้งหมด"
+      }
+    }
   }
 }

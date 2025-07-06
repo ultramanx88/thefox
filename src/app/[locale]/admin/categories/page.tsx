@@ -26,8 +26,8 @@ export default async function AdminCategoriesPage({
   const categories = await getCategories();
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-8">
-      <h1 className="font-headline text-3xl font-bold mb-8">{t('pageTitle')}</h1>
+    <div className="space-y-8">
+      <h1 className="font-headline text-3xl font-bold">{t('pageTitle')}</h1>
       <div className="grid gap-8 md:grid-cols-3">
         <div className="md:col-span-1">
           <CategoryAdmin />

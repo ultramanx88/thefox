@@ -8,6 +8,7 @@
     "guestUser": "Guest User",
     "profile": "Profile",
     "vendorDashboard": "Vendor Dashboard",
+    "adminDashboard": "Admin Dashboard",
     "logout": "Log out"
   },
   "HomePage": {
@@ -20,5 +21,107 @@
     "searchButton": "Search",
     "searchLabel": "Search products",
     "searchPlaceholder": "e.g., beef, cabbage"
+  },
+  "CategoryAdmin": {
+    "pageTitle": "Manage Categories",
+    "existingCategoriesTitle": "Existing Categories",
+    "nameHeader": "Name",
+    "slugHeader": "Slug",
+    "addNewCategoryTitle": "Add New Category",
+    "addNewCategoryDescription": "Create a new product category for your marketplace.",
+    "categoryNameLabel": "Category Name",
+    "categoryNamePlaceholder": "e.g., Fresh Vegetables",
+    "addCategoryButton": "Add Category",
+    "toastSuccessTitle": "Success!",
+    "toastSuccessDescription": "The new category has been added.",
+    "toastErrorTitle": "Error",
+    "toastErrorDescription": "Failed to add the category. Please try again."
+  },
+  "ProductDetail": {
+    "addToCart": "Add to Cart",
+    "deliveryInfo": "Standard delivery within 24 hours",
+    "customerReviews": "Customer Reviews"
+  },
+  "NewProduct": {
+    "title": "List a New Product",
+    "description": "Fill in the details below to add a new product to your store.",
+    "nameLabel": "Product Name",
+    "namePlaceholder": "e.g., Organic Cabbage",
+    "descriptionLabel": "Product Description",
+    "descriptionPlaceholder": "Describe your product...",
+    "priceLabel": "Price (THB)",
+    "pricePlaceholder": "e.g., 35",
+    "quantityLabel": "Stock Quantity",
+    "quantityPlaceholder": "e.g., 100",
+    "listProductButton": "List Product"
+  },
+  "VendorRegistration": {
+    "title": "Become a Vendor",
+    "description": "Join our marketplace and start selling your products.",
+    "storeNameLabel": "Store Name",
+    "storeNamePlaceholder": "e.g., Pa Nee's Vegetable Stall",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "submitButton": "Register Store",
+    "registrationSuccessTitle": "Registration Successful!",
+    "registrationSuccess": "Your store is now registered. Welcome!",
+    "registrationFailedTitle": "Registration Failed",
+    "registrationFailedGeneric": "An unexpected error occurred. Please try again.",
+    "validation": {
+      "storeNameRequired": "Store name is required.",
+      "invalidEmail": "Please enter a valid email address.",
+      "passwordLength": "Password must be at least 8 characters."
+    }
+  },
+  "DriverRegistration": {
+    "title": "Become a Driver",
+    "description": "Join our delivery fleet and start earning.",
+    "fullNameLabel": "Full Name",
+    "fullNamePlaceholder": "e.g., Somchai Jaidee",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "081-234-5678",
+    "vehicleTypeLabel": "Vehicle Type",
+    "motorcycle": "Motorcycle",
+    "car": "Car",
+    "locationNotice": "Your location will be used to find delivery jobs near you.",
+    "submitButton": "Register as Driver"
+  },
+  "OrderTracking": {
+    "title": "Track Your Order",
+    "orderId": "Order ID",
+    "statusTitle": "Order Status",
+    "mapAlt": "Map showing delivery route",
+    "stepPlaced": "Order Placed",
+    "stepProcessing": "Processing",
+    "stepOutForDelivery": "Out for Delivery",
+    "stepDelivered": "Delivered",
+    "statusCompleted": "Completed",
+    "statusInProgress": "In Progress",
+    "statusPending": "Pending"
+  },
+  "VendorProfile": {
+    "bannerAlt": "Vendor's store banner",
+    "marketStall": "Market Stall",
+    "productsFrom": "Products from {vendorName}"
+  },
+  "AdminDashboard": {
+    "sidebar": {
+      "superAdmin": "Super Admin",
+      "dashboard": "Dashboard",
+      "categories": "Categories"
+    },
+    "main": {
+      "title": "Admin Dashboard",
+      "stats": {
+        "totalRevenue": "Total Revenue",
+        "totalOrders": "Total Orders",
+        "totalCustomers": "Total Customers",
+        "totalProducts": "Total Products"
+      }
+    }
   }
 }
