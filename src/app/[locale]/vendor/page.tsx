@@ -24,7 +24,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowUpRight, ShoppingCart, DollarSign, Package, Bell, Printer, FileText, FileSpreadsheet } from 'lucide-react';
+import { ArrowUpRight, ShoppingCart, DollarSign, Package, Bell, Printer, FileText, FileSpreadsheet, CalendarClock } from 'lucide-react';
 import { Link } from '@/navigation';
 import { getStaffMembers } from '@/lib/staff';
 import { RevenueChart } from '@/components/RevenueChart';
@@ -52,6 +52,16 @@ export default async function VendorDashboardPage({
     { id: 'ORD-004', customer: 'ร้านก๋วยเตี๋ยวลุงชัย', amount: '฿850.00', status: 'ready', assignedTo: 'ปิติ ชูใจ' },
     { id: 'ORD-005', customer: 'คาเฟ่ The Nest', amount: '฿1,500.00', status: 'preparing', assignedTo: 'มานะ ใจดี' },
   ];
+
+  const scheduledOrders = [
+    { id: 'SCH-001', customer: 'โรงแรมแกรนด์พาเลซ', deliveryTime: 'วันนี้, 15:30', type: 'recurring' },
+    { id: 'SCH-002', customer: 'คาเฟ่ The Nest', deliveryTime: 'วันนี้, 14:00', type: 'oneTime' },
+    { id: 'SCH-003', customer: 'ร้านอาหารเจริญสุข', deliveryTime: 'พรุ่งนี้, 09:00', type: 'oneTime' },
+  ].sort((a, b) => {
+      if (a.type === 'recurring' && b.type !== 'recurring') return -1;
+      if (a.type !== 'recurring' && b.type === 'recurring') return 1;
+      return a.deliveryTime.localeCompare(b.deliveryTime);
+  });
 
   const revenueData = {
     today: [
@@ -129,6 +139,44 @@ export default async function VendorDashboardPage({
                     <RevenueChart data={revenueData.year} dataKey="month" />
                 </TabsContent>
             </Tabs>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+            <div className="grid gap-2">
+                <CardTitle className="flex items-center gap-2">
+                    <CalendarClock className="h-5 w-5 text-accent" />
+                    {t('scheduledOrders.title')}
+                </CardTitle>
+                <CardDescription>{t('scheduledOrders.description')}</CardDescription>
+            </div>
+        </CardHeader>
+        <CardContent>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>{t('tableHeaders.deliveryTime')}</TableHead>
+                        <TableHead>{t('tableHeaders.customer')}</TableHead>
+                        <TableHead>{t('tableHeaders.orderId')}</TableHead>
+                        <TableHead>{t('tableHeaders.type')}</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {scheduledOrders.map((order) => (
+                        <TableRow key={order.id} className={order.type === 'recurring' ? 'bg-amber-50 dark:bg-amber-950/50' : ''}>
+                            <TableCell className="font-medium">{order.deliveryTime}</TableCell>
+                            <TableCell>{order.customer}</TableCell>
+                            <TableCell>{order.id}</TableCell>
+                            <TableCell>
+                                <Badge variant={order.type === 'recurring' ? 'default' : 'secondary'} className={order.type === 'recurring' ? 'bg-accent text-accent-foreground' : ''}>
+                                    {t(`orderType.${order.type}` as any)}
+                                </Badge>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
         </CardContent>
       </Card>
 

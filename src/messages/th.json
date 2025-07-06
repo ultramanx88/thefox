@@ -178,7 +178,9 @@
         "customer": "ลูกค้า",
         "amount": "ยอดรวม",
         "status": "สถานะ",
-        "assignee": "มอบหมายให้"
+        "assignee": "มอบหมายให้",
+        "deliveryTime": "เวลาส่ง",
+        "type": "ประเภท"
       },
       "orderStatus": {
         "new": "ใหม่",
@@ -203,6 +205,14 @@
         "print": "พิมพ์",
         "exportPdf": "ส่งออก PDF",
         "exportExcel": "ส่งออก Excel"
+      },
+      "scheduledOrders": {
+        "title": "ออเดอร์ล่วงหน้า",
+        "description": "รายการออเดอร์ที่สั่งล่วงหน้าและออเดอร์ประจำ"
+      },
+      "orderType": {
+        "recurring": "ออเดอร์ประจำ",
+        "oneTime": "สั่งครั้งเดียว"
       }
     }
   },

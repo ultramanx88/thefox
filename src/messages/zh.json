@@ -178,7 +178,9 @@
         "customer": "顾客",
         "amount": "金额",
         "status": "状态",
-        "assignee": "分配给"
+        "assignee": "分配给",
+        "deliveryTime": "配送时间",
+        "type": "类型"
       },
       "orderStatus": {
         "new": "新订单",
@@ -203,6 +205,14 @@
         "print": "打印",
         "exportPdf": "导出PDF",
         "exportExcel": "导出Excel"
+      },
+      "scheduledOrders": {
+        "title": "预约订单",
+        "description": "优先显示即将到来和重复性的订单。"
+      },
+      "orderType": {
+        "recurring": "周期性订单",
+        "oneTime": "一次性订单"
       }
     }
   },

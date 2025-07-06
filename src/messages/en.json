@@ -178,7 +178,9 @@
         "customer": "Customer",
         "amount": "Amount",
         "status": "Status",
-        "assignee": "Assigned To"
+        "assignee": "Assigned To",
+        "deliveryTime": "Delivery Time",
+        "type": "Type"
       },
       "orderStatus": {
         "new": "New",
@@ -203,6 +205,14 @@
         "print": "Print",
         "exportPdf": "Export PDF",
         "exportExcel": "Export Excel"
+      },
+      "scheduledOrders": {
+        "title": "Scheduled Orders",
+        "description": "Prioritized view of upcoming and recurring orders."
+      },
+      "orderType": {
+        "recurring": "Recurring",
+        "oneTime": "One-Time"
       }
     }
   },
