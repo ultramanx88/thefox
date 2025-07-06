@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { type Product } from '@/lib/types';
+import { ProductCard } from '@/components/ProductCard';
 
 import { Rating } from "@/components/Rating";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,6 +21,90 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+// Mock data for demonstration
+const mockProducts: Product[] = [
+    {
+      id: '1',
+      name: 'กะหล่ำปลีออร์แกนิก',
+      price: 35.0,
+      imageUrl: 'https://placehold.co/600x400.png',
+      vendor: 'ร้านผักป้านี',
+      rating: 4.8,
+      reviewCount: 75,
+      dataAiHint: 'cabbage vegetable',
+    },
+    {
+      id: '2',
+      name: 'เนื้อสันในวัว',
+      price: 350.0,
+      imageUrl: 'https://placehold.co/600x400.png',
+      vendor: 'เขียงเนื้อลุงเดช',
+      rating: 5.0,
+      reviewCount: 42,
+      dataAiHint: 'beef steak',
+    },
+    {
+      id: '3',
+      name: 'มะม่วงน้ำดอกไม้',
+      price: 60.0,
+      imageUrl: 'https://placehold.co/600x400.png',
+      vendor: 'สวนผลไม้ป้าไหว',
+      rating: 4.9,
+      reviewCount: 150,
+      dataAiHint: 'mango fruit',
+    },
+    {
+      id: '4',
+      name: 'ปลาแซลมอนสด (ต่อ กก.)',
+      price: 750.0,
+      imageUrl: 'https://placehold.co/600x400.png',
+      vendor: 'เจ๊ออยอาหารทะเล',
+      rating: 4.9,
+      reviewCount: 88,
+      dataAiHint: 'salmon seafood',
+    },
+    {
+      id: '5',
+      name: 'ไข่ไก่เบอร์ 0 (แผง)',
+      price: 120.0,
+      imageUrl: 'https://placehold.co/600x400.png',
+      vendor: 'ฟาร์มไก่ลุงมี',
+      rating: 4.7,
+      reviewCount: 210,
+      dataAiHint: 'fresh eggs',
+    },
+    {
+      id: '6',
+      name: 'มะนาวแป้น (ต่อ กก.)',
+      price: 40.0,
+      imageUrl: 'https://placehold.co/600x400.png',
+      vendor: 'ร้านผักป้านี',
+      rating: 4.9,
+      reviewCount: 180,
+      dataAiHint: 'lime fruit',
+    },
+    {
+      id: '7',
+      name: 'อกไก่ (ต่อ กก.)',
+      price: 85.0,
+      imageUrl: 'https://placehold.co/600x400.png',
+      vendor: 'ฟาร์มไก่ลุงมี',
+      rating: 4.8,
+      reviewCount: 195,
+      dataAiHint: 'chicken breast',
+    },
+    {
+      id: '8',
+      name: 'กุ้งแม่น้ำ (ต่อ กก.)',
+      price: 450.0,
+      imageUrl: 'https://placehold.co/600x400.png',
+      vendor: 'เจ๊ออยอาหารทะเล',
+      rating: 4.8,
+      reviewCount: 112,
+      dataAiHint: 'river prawn',
+    },
+  ];
+
 export default function ProductDetailPage({ params }: { params: { id: string, locale: string } }) {
   const t = useTranslations('ProductDetail');
   
@@ -29,22 +115,26 @@ export default function ProductDetailPage({ params }: { params: { id: string, lo
   const timeSlots = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5'];
 
   const product = {
-    id: '2',
-    name: 'เนื้อสันในวัว',
-    price: 350.0,
+    id: '1',
+    name: 'กะหล่ำปลีออร์แกนิก',
+    price: 35.0,
     imageUrl: 'https://placehold.co/600x400.png',
-    dataAiHint: 'beef steak',
-    vendor: 'เขียงเนื้อลุงเดช',
-    vendorId: '123',
-    rating: 5.0,
-    reviewCount: 42,
-    description: "เนื้อสันในวัวคุณภาพเยี่ยมจากฟาร์มท้องถิ่น นุ่มและเหมาะสำหรับทำสเต็กหรืออาหารมื้อพิเศษ ขายต่อกิโลกรัม",
+    dataAiHint: 'cabbage vegetable',
+    vendor: 'ร้านผักป้านี',
+    vendorId: '456',
+    rating: 4.8,
+    reviewCount: 75,
+    description: "กะหล่ำปลีสดใหม่จากฟาร์มออร์แกนิก ปลูกด้วยความใส่ใจ ปลอดสารเคมี เหมาะสำหรับทำอาหารได้หลากหลายเมนู",
   };
 
   const reviews = [
-    { id: 1, author: 'ร้านอาหารเจริญสุข', rating: 5, comment: 'เนื้อดีมากครับ สั่งประจำ' },
-    { id: 2, author: 'ครัวคุณหน่อย', rating: 4, comment: 'คุณภาพดี แต่บางครั้งก็หมดเร็ว' },
+    { id: 1, author: 'ร้านอาหารเจริญสุข', rating: 5, comment: 'ผักสดดีมากครับ สั่งประจำ' },
+    { id: 2, author: 'ครัวคุณหน่อย', rating: 4, comment: 'คุณภาพดี แต่บางครั้งขนาดไม่เท่ากัน' },
   ];
+  
+  const relatedProducts = mockProducts.filter(
+    p => p.vendor === product.vendor && p.id !== product.id
+  );
 
   const handleIncrease = () => setQuantity(prev => prev + 1);
   const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
@@ -165,6 +255,20 @@ export default function ProductDetailPage({ params }: { params: { id: string, lo
             </div>
         </div>
       </div>
+
+      {relatedProducts.length > 0 && (
+        <>
+            <Separator className="my-12" />
+            <div>
+                <h2 className="font-headline text-3xl font-bold mb-6">{t('relatedProducts')}</h2>
+                <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                    {relatedProducts.map((p) => (
+                        <ProductCard key={p.id} product={p} />
+                    ))}
+                </div>
+            </div>
+        </>
+      )}
 
       <Separator className="my-12"/>
 
