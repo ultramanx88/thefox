@@ -134,5 +134,44 @@
     "getDirectionsButton": "获取路线 (GPS)",
     "confirmDeliveryButton": "确认送达",
     "mapAlt": "显示取货和配送路线的地图"
+  },
+  "VendorDashboard": {
+    "sidebar": {
+      "vendor": "摊主",
+      "dashboard": "仪表板",
+      "products": "产品",
+      "orders": "订单"
+    },
+    "main": {
+      "title": "摊主仪表板",
+      "addNewProduct": "添加新产品",
+      "stats": {
+        "todaysRevenue": "今日收入",
+        "newOrders": "新订单",
+        "activeProducts": "在售产品"
+      },
+      "recentOrdersTitle": "最近订单",
+      "recentOrdersDescription": "您有15个新订单等待准备。",
+      "viewAllButton": "查看全部",
+      "tableHeaders": {
+        "orderId": "订单号",
+        "customer": "顾客",
+        "amount": "金额",
+        "status": "状态"
+      },
+      "orderStatus": {
+        "new": "新订单",
+        "preparing": "准备中",
+        "ready": "可取货"
+      },
+      "ordersTitle": "管理订单",
+      "allOrders": "所有订单",
+      "allOrdersDescription": "来自您客户的所有订单列表。",
+      "ordersPlaceholder": "订单管理功能将在此处构建。",
+      "productsTitle": "管理产品",
+      "allProducts": "所有产品",
+      "allProductsDescription": "您的所有产品列表。",
+      "productsPlaceholder": "产品管理功能将在此处构建。"
+    }
   }
 }

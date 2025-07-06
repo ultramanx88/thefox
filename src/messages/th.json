@@ -134,5 +134,44 @@
     "getDirectionsButton": "นำทางด้วย GPS",
     "confirmDeliveryButton": "ยืนยันการจัดส่งสำเร็จ",
     "mapAlt": "แผนที่แสดงเส้นทางรับและส่งสินค้า"
+  },
+  "VendorDashboard": {
+    "sidebar": {
+      "vendor": "ร้านค้า",
+      "dashboard": "แดชบอร์ด",
+      "products": "สินค้า",
+      "orders": "ออเดอร์"
+    },
+    "main": {
+      "title": "แดชบอร์ดร้านค้า",
+      "addNewProduct": "เพิ่มสินค้าใหม่",
+      "stats": {
+        "todaysRevenue": "รายรับวันนี้",
+        "newOrders": "ออเดอร์ใหม่",
+        "activeProducts": "สินค้าที่ลงขาย"
+      },
+      "recentOrdersTitle": "ออเดอร์ล่าสุด",
+      "recentOrdersDescription": "คุณมีออเดอร์ใหม่ 15 รายการที่ต้องเตรียม",
+      "viewAllButton": "ดูทั้งหมด",
+      "tableHeaders": {
+        "orderId": "รหัสออเดอร์",
+        "customer": "ลูกค้า",
+        "amount": "ยอดรวม",
+        "status": "สถานะ"
+      },
+      "orderStatus": {
+        "new": "ใหม่",
+        "preparing": "กำลังเตรียม",
+        "ready": "พร้อมรับ"
+      },
+      "ordersTitle": "จัดการออเดอร์",
+      "allOrders": "ออเดอร์ทั้งหมด",
+      "allOrdersDescription": "รายการออเดอร์ทั้งหมดจากลูกค้าของคุณ",
+      "ordersPlaceholder": "ฟังก์ชันจัดการออเดอร์จะถูกสร้างที่นี่",
+      "productsTitle": "จัดการสินค้า",
+      "allProducts": "สินค้าทั้งหมด",
+      "allProductsDescription": "รายการสินค้าทั้งหมดของคุณ",
+      "productsPlaceholder": "ฟังก์ชันจัดการสินค้าจะถูกสร้างที่นี่"
+    }
   }
 }
