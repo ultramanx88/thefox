@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle, Package, Truck } from "lucide-react";
+import { CheckCircle, Package, Truck, Bike } from "lucide-react";
 import Image from "next/image";
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
@@ -9,9 +9,10 @@ export default async function OrderTrackingPage({ params }: { params: { id: stri
   const t = await getTranslations('OrderTracking');
 
   const steps = [
-    { name: t('stepPlaced'), icon: CheckCircle, status: 'completed' },
-    { name: t('stepProcessing'), icon: Package, status: 'completed' },
-    { name: t('stepOutForDelivery'), icon: Truck, status: 'active' },
+    { name: t('stepVendorReceived'), icon: CheckCircle, status: 'completed' },
+    { name: t('stepVendorPreparing'), icon: Package, status: 'completed' },
+    { name: t('stepDriverPickup'), icon: Bike, status: 'active' },
+    { name: t('stepOutForDelivery'), icon: Truck, status: 'pending' },
     { name: t('stepDelivered'), icon: CheckCircle, status: 'pending' },
   ];
 
