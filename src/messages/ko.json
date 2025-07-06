@@ -145,7 +145,8 @@
       "superAdmin": "최고 관리자",
       "dashboard": "대시보드",
       "categories": "카테고리",
-      "settings": "설정"
+      "settings": "설정",
+      "feeSimulator": "수수료 시뮬레이터"
     },
     "main": {
       "title": "관리자 대시보드",
@@ -165,6 +166,46 @@
     "geminiApiKeyLabel": "Google Gemini API 키",
     "geminiApiKeyPlaceholder": "Gemini API 키를 입력하십시오",
     "saveButton": "설정 저장"
+  },
+  "AdminFeeSimulator": {
+    "title": "수수료 시뮬레이터",
+    "description": "수수료 매개변수를 조정하고 주문을 시뮬레이션하여 실시간으로 재정적 영향을 확인합니다.",
+    "configCardTitle": "수수료 구성",
+    "configCardDescription": "플랫폼 전체의 핵심 수수료 매개변수를 조정합니다.",
+    "baseDeliveryFeeLabel": "기본 배송료",
+    "feePerKmLabel": "km당 수수료(3km 이후)",
+    "expressSurchargeLabel": "특급 할증료",
+    "premiumSurchargeLabel": "프리미엄 할증료",
+    "serviceFeePercentageLabel": "서비스 수수료 비율",
+    "minServiceFeeLabel": "최소 서비스 수수료",
+    "commissionRatesTitle": "수수료율",
+    "foodCommissionLabel": "식품 수수료",
+    "retailCommissionLabel": "소매 수수료",
+    "groceryCommissionLabel": "식료품 수수료",
+    "simulationCardTitle": "주문 시뮬레이션",
+    "simulationCardDescription": "수수료를 계산하기 위해 샘플 주문 세부 정보를 입력합니다.",
+    "orderValueLabel": "주문 금액(THB)",
+    "distanceLabel": "배송 거리(km)",
+    "serviceTypeLabel": "서비스 유형",
+    "storeCategoryLabel": "상점 카테고리",
+    "normal": "일반",
+    "express": "특급",
+    "premium": "프리미엄",
+    "food": "식품",
+    "retail": "소매",
+    "grocery": "식료품",
+    "resultsCardTitle": "계산 결과",
+    "resultsCardDescription": "시뮬레이션된 주문에 대한 수입 및 비용 분석입니다.",
+    "results": {
+      "customerTotal": "고객 지불액",
+      "deliveryFee": "배송료",
+      "serviceFee": "서비스 수수료",
+      "commission": "수수료",
+      "storeEarning": "상점 수입",
+      "driverEarning": "운전자 수입",
+      "platformRevenue": "플랫폼 수익",
+      "platformProfitPercentage": "플랫폼 이익률"
+    }
   },
   "DeliveryJob": {
     "title": "배송 상세 정보",

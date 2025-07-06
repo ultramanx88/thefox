@@ -145,7 +145,8 @@
       "superAdmin": "ผู้ดูแลสูงสุด",
       "dashboard": "แดชบอร์ด",
       "categories": "หมวดหมู่",
-      "settings": "ตั้งค่า"
+      "settings": "ตั้งค่า",
+      "feeSimulator": "เครื่องมือจำลองค่าธรรมเนียม"
     },
     "main": {
       "title": "แดชบอร์ดผู้ดูแลระบบ",
@@ -165,6 +166,46 @@
     "geminiApiKeyLabel": "Google Gemini API Key",
     "geminiApiKeyPlaceholder": "ป้อนคีย์ Gemini API ของคุณ",
     "saveButton": "บันทึกการตั้งค่า"
+  },
+  "AdminFeeSimulator": {
+    "title": "เครื่องมือจำลองค่าธรรมเนียม",
+    "description": "ปรับพารามิเตอร์ค่าธรรมเนียมและจำลองออเดอร์เพื่อดูผลกระทบทางการเงินแบบเรียลไทม์",
+    "configCardTitle": "การตั้งค่าธรรมเนียม",
+    "configCardDescription": "ปรับพารามิเตอร์ค่าธรรมเนียมหลักสำหรับทั้งแพลตฟอร์ม",
+    "baseDeliveryFeeLabel": "ค่าส่งพื้นฐาน",
+    "feePerKmLabel": "ค่าส่งต่อกม. (หลัง 3 กม.)",
+    "expressSurchargeLabel": "ค่าบริการ Express เพิ่มเติม",
+    "premiumSurchargeLabel": "ค่าบริการ Premium เพิ่มเติม",
+    "serviceFeePercentageLabel": "เปอร์เซ็นต์ค่าบริการ",
+    "minServiceFeeLabel": "ค่าบริการขั้นต่ำ",
+    "commissionRatesTitle": "อัตราค่าคอมมิชชั่น",
+    "foodCommissionLabel": "คอมมิชชั่นร้านอาหาร",
+    "retailCommissionLabel": "คอมมิชชั่นร้านค้าปลีก",
+    "groceryCommissionLabel": "คอมมิชชั่นร้านของชำ",
+    "simulationCardTitle": "การจำลองออเดอร์",
+    "simulationCardDescription": "ป้อนรายละเอียดออเดอร์ตัวอย่างเพื่อคำนวณค่าธรรมเนียม",
+    "orderValueLabel": "มูลค่าออเดอร์ (บาท)",
+    "distanceLabel": "ระยะทางจัดส่ง (กม.)",
+    "serviceTypeLabel": "ประเภทบริการ",
+    "storeCategoryLabel": "ประเภทของร้านค้า",
+    "normal": "ปกติ",
+    "express": "ด่วน",
+    "premium": "พรีเมียม",
+    "food": "อาหาร",
+    "retail": "ค้าปลีก",
+    "grocery": "ของชำ",
+    "resultsCardTitle": "ผลการคำนวณ",
+    "resultsCardDescription": "นี่คือรายละเอียดของรายได้และค่าใช้จ่ายสำหรับออเดอร์ที่จำลองขึ้น",
+    "results": {
+      "customerTotal": "ลูกค้าจ่ายทั้งหมด",
+      "deliveryFee": "ค่าจัดส่ง",
+      "serviceFee": "ค่าบริการ",
+      "commission": "ค่าคอมมิชชั่น",
+      "storeEarning": "รายได้ร้านค้า",
+      "driverEarning": "รายได้คนขับ",
+      "platformRevenue": "รายได้แพลตฟอร์ม",
+      "platformProfitPercentage": "อัตรากำไรแพลตฟอร์ม"
+    }
   },
   "DeliveryJob": {
     "title": "รายละเอียดงานจัดส่ง",

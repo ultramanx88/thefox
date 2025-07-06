@@ -145,7 +145,8 @@
       "superAdmin": "Super Admin",
       "dashboard": "Dashboard",
       "categories": "Categories",
-      "settings": "Settings"
+      "settings": "Settings",
+      "feeSimulator": "Fee Simulator"
     },
     "main": {
       "title": "Admin Dashboard",
@@ -165,6 +166,46 @@
     "geminiApiKeyLabel": "Google Gemini API Key",
     "geminiApiKeyPlaceholder": "Enter your Gemini API Key",
     "saveButton": "Save Settings"
+  },
+  "AdminFeeSimulator": {
+    "title": "Fee Simulator",
+    "description": "Adjust fee parameters and simulate orders to see the financial impact in real-time.",
+    "configCardTitle": "Fee Configuration",
+    "configCardDescription": "Adjust the core fee parameters for the entire platform.",
+    "baseDeliveryFeeLabel": "Base Delivery Fee",
+    "feePerKmLabel": "Fee Per km (after 3km)",
+    "expressSurchargeLabel": "Express Surcharge",
+    "premiumSurchargeLabel": "Premium Surcharge",
+    "serviceFeePercentageLabel": "Service Fee Percentage",
+    "minServiceFeeLabel": "Minimum Service Fee",
+    "commissionRatesTitle": "Commission Rates",
+    "foodCommissionLabel": "Food Commission",
+    "retailCommissionLabel": "Retail Commission",
+    "groceryCommissionLabel": "Grocery Commission",
+    "simulationCardTitle": "Order Simulation",
+    "simulationCardDescription": "Enter sample order details to calculate the fees.",
+    "orderValueLabel": "Order Value (THB)",
+    "distanceLabel": "Delivery Distance (km)",
+    "serviceTypeLabel": "Service Type",
+    "storeCategoryLabel": "Store Category",
+    "normal": "Normal",
+    "express": "Express",
+    "premium": "Premium",
+    "food": "Food",
+    "retail": "Retail",
+    "grocery": "Grocery",
+    "resultsCardTitle": "Calculation Results",
+    "resultsCardDescription": "This is a breakdown of earnings and costs for the simulated order.",
+    "results": {
+      "customerTotal": "Customer Pays",
+      "deliveryFee": "Delivery Fee",
+      "serviceFee": "Service Fee",
+      "commission": "Commission",
+      "storeEarning": "Store Earning",
+      "driverEarning": "Driver Earning",
+      "platformRevenue": "Platform Revenue",
+      "platformProfitPercentage": "Platform Profit Margin"
+    }
   },
   "DeliveryJob": {
     "title": "Delivery Details",

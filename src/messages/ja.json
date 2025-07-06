@@ -145,7 +145,8 @@
       "superAdmin": "スーパー管理者",
       "dashboard": "ダッシュボード",
       "categories": "カテゴリー",
-      "settings": "設定"
+      "settings": "設定",
+      "feeSimulator": "料金シミュレーター"
     },
     "main": {
       "title": "管理者ダッシュボード",
@@ -165,6 +166,46 @@
     "geminiApiKeyLabel": "Google Gemini APIキー",
     "geminiApiKeyPlaceholder": "Gemini APIキーを入力してください",
     "saveButton": "設定を保存"
+  },
+  "AdminFeeSimulator": {
+    "title": "料金シミュレーター",
+    "description": "料金パラメータを調整し、注文をシミュレートして、リアルタイムで財務上の影響を確認します。",
+    "configCardTitle": "料金設定",
+    "configCardDescription": "プラットフォーム全体のコア料金パラメータを調整します。",
+    "baseDeliveryFeeLabel": "基本配送料",
+    "feePerKmLabel": "kmあたりの料金（3km以降）",
+    "expressSurchargeLabel": "エクスプレス追加料金",
+    "premiumSurchargeLabel": "プレミアム追加料金",
+    "serviceFeePercentageLabel": "サービス手数料率",
+    "minServiceFeeLabel": "最低サービス手数料",
+    "commissionRatesTitle": "コミッション率",
+    "foodCommissionLabel": "食品コミッション",
+    "retailCommissionLabel": "小売コミッション",
+    "groceryCommissionLabel": "食料品コミッション",
+    "simulationCardTitle": "注文シミュレーション",
+    "simulationCardDescription": "サンプル注文の詳細を入力して料金を計算します。",
+    "orderValueLabel": "注文額（THB）",
+    "distanceLabel": "配送距離（km）",
+    "serviceTypeLabel": "サービスタイプ",
+    "storeCategoryLabel": "店舗カテゴリ",
+    "normal": "通常",
+    "express": "エクスプレス",
+    "premium": "プレミアム",
+    "food": "食品",
+    "retail": "小売",
+    "grocery": "食料品",
+    "resultsCardTitle": "計算結果",
+    "resultsCardDescription": "これは、シミュレートされた注文の収益と費用の内訳です。",
+    "results": {
+      "customerTotal": "顧客支払額",
+      "deliveryFee": "配送料",
+      "serviceFee": "サービス手数料",
+      "commission": "コミッション",
+      "storeEarning": "店舗収益",
+      "driverEarning": "ドライバー収益",
+      "platformRevenue": "プラットフォーム収益",
+      "platformProfitPercentage": "プラットフォーム利益率"
+    }
   },
   "DeliveryJob": {
     "title": "配送詳細",
