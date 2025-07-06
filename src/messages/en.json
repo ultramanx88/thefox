@@ -17,7 +17,7 @@
   },
   "HomePage": {
     "title": "Your Market, Delivered",
-    "subtitle": "Discover fresh ingredients from local markets, delivered directly to your restaurant.",
+    "subtitle": "Discover fresh ingredients from local markets, delivered directly to your doorstep.",
     "categoryLabel": "Category",
     "allCategories": "All Categories",
     "locationLabel": "Nearby Market",
@@ -45,21 +45,7 @@
     "addToCart": "Add to Cart",
     "deliveryInfo": "Standard delivery within 24 hours",
     "customerReviews": "Customer Reviews",
-    "relatedProducts": "More from this Vendor",
-    "scheduling": {
-      "title": "Delivery Options",
-      "deliverNow": "Deliver Now",
-      "scheduleLater": "Schedule for Later",
-      "selectDate": "Select a date",
-      "selectTime": "Select a time slot",
-      "timeSlots": {
-        "slot1": "09:00 - 10:00",
-        "slot2": "10:00 - 11:00",
-        "slot3": "11:00 - 12:00",
-        "slot4": "13:00 - 14:00",
-        "slot5": "14:00 - 15:00"
-      }
-    }
+    "relatedProducts": "More from this Vendor"
   },
   "NewProduct": {
     "title": "List a New Product",
@@ -415,3 +401,5 @@
     "korean": "Korean"
   }
 }
+
+    

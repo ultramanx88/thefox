@@ -17,7 +17,7 @@
   },
   "HomePage": {
     "title": "您的专属市场，即刻送达",
-    "subtitle": "从本地市场发现新鲜食材，直接送到您的餐厅。",
+    "subtitle": "从本地市场发现新鲜食材，直接送到您家门口。",
     "categoryLabel": "类别",
     "allCategories": "所有类别",
     "locationLabel": "附近市场",
@@ -45,21 +45,7 @@
     "addToCart": "加入购物车",
     "deliveryInfo": "24小时内标准配送",
     "customerReviews": "顾客评论",
-    "relatedProducts": "来自该摊主的其他产品",
-    "scheduling": {
-      "title": "配送选项",
-      "deliverNow": "立即配送",
-      "scheduleLater": "预约配送",
-      "selectDate": "选择日期",
-      "selectTime": "选择时间段",
-      "timeSlots": {
-        "slot1": "09:00 - 10:00",
-        "slot2": "10:00 - 11:00",
-        "slot3": "11:00 - 12:00",
-        "slot4": "13:00 - 14:00",
-        "slot5": "15:00 - 15:00"
-      }
-    }
+    "relatedProducts": "来自该摊主的其他产品"
   },
   "NewProduct": {
     "title": "上架新产品",
@@ -415,3 +401,5 @@
     "korean": "韩语"
   }
 }
+
+    

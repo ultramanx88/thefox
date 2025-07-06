@@ -17,7 +17,7 @@
   },
   "HomePage": {
     "title": "あなたの市場、お届けします",
-    "subtitle": "地元の市場で新鮮な食材を見つけ、あなたのレストランに直接お届けします。",
+    "subtitle": "地元の市場で新鮮な食材を見つけ、ご自宅まで直接お届けします。",
     "categoryLabel": "カテゴリー",
     "allCategories": "すべてのカテゴリー",
     "locationLabel": "近くの市場",
@@ -45,21 +45,7 @@
     "addToCart": "カートに入れる",
     "deliveryInfo": "24時間以内の標準配送",
     "customerReviews": "カスタマーレビュー",
-    "relatedProducts": "この販売者からの他の商品",
-    "scheduling": {
-      "title": "配送オプション",
-      "deliverNow": "すぐに配送",
-      "scheduleLater": "後で配送を予約",
-      "selectDate": "日付を選択",
-      "selectTime": "時間帯を選択",
-      "timeSlots": {
-        "slot1": "09:00 - 10:00",
-        "slot2": "10:00 - 11:00",
-        "slot3": "11:00 - 12:00",
-        "slot4": "13:00 - 14:00",
-        "slot5": "14:00 - 15:00"
-      }
-    }
+    "relatedProducts": "この販売者からの他の商品"
   },
   "NewProduct": {
     "title": "新商品を登録",
@@ -415,3 +401,5 @@
     "korean": "韓国語"
   }
 }
+
+    
