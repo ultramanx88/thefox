@@ -21,11 +21,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowUpRight, ShoppingCart, DollarSign, Package, Bell } from 'lucide-react';
+import { ArrowUpRight, ShoppingCart, DollarSign, Package, Bell, Printer, FileText, FileSpreadsheet } from 'lucide-react';
 import { Link } from '@/navigation';
 import { getStaffMembers } from '@/lib/staff';
+import { RevenueChart } from '@/components/RevenueChart';
 
 export default async function VendorDashboardPage({
   params: { locale },
@@ -50,6 +52,23 @@ export default async function VendorDashboardPage({
     { id: 'ORD-004', customer: 'ร้านก๋วยเตี๋ยวลุงชัย', amount: '฿850.00', status: 'ready', assignedTo: 'ปิติ ชูใจ' },
     { id: 'ORD-005', customer: 'คาเฟ่ The Nest', amount: '฿1,500.00', status: 'preparing', assignedTo: 'มานะ ใจดี' },
   ];
+
+  const revenueData = {
+    today: [
+      { time: '08:00', revenue: 1860 }, { time: '09:00', revenue: 3050 }, { time: '10:00', revenue: 2370 },
+      { time: '11:00', revenue: 730 }, { time: '12:00', revenue: 2090 }, { time: '13:00', revenue: 2140 },
+    ],
+    month: [
+      { week: 'Week 1', revenue: 78000 }, { week: 'Week 2', revenue: 92000 },
+      { week: 'Week 3', revenue: 110000 }, { week: 'Week 4', revenue: 85000 },
+    ],
+    year: [
+      { month: 'Jan', revenue: 650000 }, { month: 'Feb', revenue: 590000 }, { month: 'Mar', revenue: 800000 },
+      { month: 'Apr', revenue: 810000 }, { month: 'May', revenue: 560000 }, { month: 'Jun', revenue: 550000 },
+      { month: 'Jul', revenue: 400000 }, { month: 'Aug', revenue: 450000 }, { month: 'Sep', revenue: 520000 },
+      { month: 'Oct', revenue: 730000 }, { month: 'Nov', revenue: 820000 }, { month: 'Dec', revenue: 950000 },
+    ],
+  };
 
   return (
     <div className="space-y-8">
@@ -78,6 +97,40 @@ export default async function VendorDashboardPage({
           </Card>
         ))}
       </div>
+
+      <Card>
+        <CardHeader>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <CardTitle>{t('revenueOverview.title')}</CardTitle>
+                    <CardDescription>{t('revenueOverview.description')}</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm"><Printer className="mr-2 h-4 w-4" />{t('revenueOverview.print')}</Button>
+                    <Button variant="outline" size="sm"><FileSpreadsheet className="mr-2 h-4 w-4" />{t('revenueOverview.exportExcel')}</Button>
+                    <Button variant="outline" size="sm"><FileText className="mr-2 h-4 w-4" />{t('revenueOverview.exportPdf')}</Button>
+                </div>
+            </div>
+        </CardHeader>
+        <CardContent>
+            <Tabs defaultValue="month" className="w-full">
+                <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:inline-flex">
+                    <TabsTrigger value="today">{t('revenueOverview.today')}</TabsTrigger>
+                    <TabsTrigger value="month">{t('revenueOverview.thisMonth')}</TabsTrigger>
+                    <TabsTrigger value="year">{t('revenueOverview.thisYear')}</TabsTrigger>
+                </TabsList>
+                <TabsContent value="today">
+                    <RevenueChart data={revenueData.today} dataKey="time" />
+                </TabsContent>
+                <TabsContent value="month">
+                    <RevenueChart data={revenueData.month} dataKey="week" />
+                </TabsContent>
+                <TabsContent value="year">
+                    <RevenueChart data={revenueData.year} dataKey="month" />
+                </TabsContent>
+            </Tabs>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center">

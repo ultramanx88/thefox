@@ -177,7 +177,17 @@
       "productsTitle": "管理产品",
       "allProducts": "所有产品",
       "allProductsDescription": "您的所有产品列表。",
-      "productsPlaceholder": "产品管理功能将在此处构建。"
+      "productsPlaceholder": "产品管理功能将在此处构建。",
+      "revenueOverview": {
+        "title": "收入概览",
+        "description": "跟踪您的每日、每月和每年的业绩。",
+        "today": "今天",
+        "thisMonth": "本月",
+        "thisYear": "今年",
+        "print": "打印",
+        "exportPdf": "导出PDF",
+        "exportExcel": "导出Excel"
+      }
     }
   },
   "VendorHours": {

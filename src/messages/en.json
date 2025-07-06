@@ -177,7 +177,17 @@
       "productsTitle": "Manage Products",
       "allProducts": "All Products",
       "allProductsDescription": "A list of all your products.",
-      "productsPlaceholder": "Product management functionality will be built here."
+      "productsPlaceholder": "Product management functionality will be built here.",
+      "revenueOverview": {
+        "title": "Revenue Overview",
+        "description": "Track your daily, monthly, and yearly performance.",
+        "today": "Today",
+        "thisMonth": "This Month",
+        "thisYear": "This Year",
+        "print": "Print",
+        "exportPdf": "Export PDF",
+        "exportExcel": "Export Excel"
+      }
     }
   },
   "VendorHours": {

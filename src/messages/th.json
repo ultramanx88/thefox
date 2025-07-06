@@ -177,7 +177,17 @@
       "productsTitle": "จัดการสินค้า",
       "allProducts": "สินค้าทั้งหมด",
       "allProductsDescription": "รายการสินค้าทั้งหมดของคุณ",
-      "productsPlaceholder": "ฟังก์ชันจัดการสินค้าจะถูกสร้างที่นี่"
+      "productsPlaceholder": "ฟังก์ชันจัดการสินค้าจะถูกสร้างที่นี่",
+      "revenueOverview": {
+        "title": "ภาพรวมรายได้",
+        "description": "ติดตามประสิทธิภาพรายวัน รายเดือน และรายปีของคุณ",
+        "today": "วันนี้",
+        "thisMonth": "เดือนนี้",
+        "thisYear": "ปีนี้",
+        "print": "พิมพ์",
+        "exportPdf": "ส่งออก PDF",
+        "exportExcel": "ส่งออก Excel"
+      }
     }
   },
   "VendorHours": {
