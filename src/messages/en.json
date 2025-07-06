@@ -68,7 +68,12 @@
     "pricePlaceholder": "e.g., 35",
     "quantityLabel": "Stock Quantity",
     "quantityPlaceholder": "e.g., 100",
-    "listProductButton": "List Product"
+    "listProductButton": "List Product",
+    "allowedVehiclesLabel": "Allowed Vehicle Types",
+    "allowedVehiclesDescription": "Select which vehicle types can be used to deliver this product.",
+    "motorcycle": "Motorcycle",
+    "car": "Car",
+    "truck": "Pickup Truck"
   },
   "VendorRegistration": {
     "title": "Become a Vendor",
@@ -102,6 +107,7 @@
     "vehicleTypeLabel": "Vehicle Type",
     "motorcycle": "Motorcycle",
     "car": "Car",
+    "truck": "Pickup Truck",
     "locationNotice": "Your location will be used to find delivery jobs near you.",
     "submitButton": "Register as Driver"
   },

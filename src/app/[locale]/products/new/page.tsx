@@ -1,6 +1,7 @@
 import { CategorySuggestion } from "@/components/CategorySuggestion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,6 +41,25 @@ export default async function NewProductPage({params: {locale}}: {params: {local
                     <Label htmlFor="stock">{t('quantityLabel')}</Label>
                     <Input id="stock" type="number" placeholder={t('quantityPlaceholder')} />
                 </div>
+            </div>
+
+            <div className="space-y-2">
+                <Label>{t('allowedVehiclesLabel')}</Label>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 space-y-2 sm:space-y-0">
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="motorcycle" defaultChecked />
+                        <Label htmlFor="motorcycle" className="font-normal">{t('motorcycle')}</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="car" defaultChecked />
+                        <Label htmlFor="car" className="font-normal">{t('car')}</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="truck" />
+                        <Label htmlFor="truck" className="font-normal">{t('truck')}</Label>
+                    </div>
+                </div>
+                <p className="text-sm text-muted-foreground">{t('allowedVehiclesDescription')}</p>
             </div>
 
             <CategorySuggestion />

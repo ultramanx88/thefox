@@ -68,7 +68,12 @@
     "pricePlaceholder": "例如, 35",
     "quantityLabel": "库存数量",
     "quantityPlaceholder": "例如, 100",
-    "listProductButton": "上架产品"
+    "listProductButton": "上架产品",
+    "allowedVehiclesLabel": "允许的车辆类型",
+    "allowedVehiclesDescription": "选择可用于运送此产品的车辆类型。",
+    "motorcycle": "摩托车",
+    "car": "汽车",
+    "truck": "皮卡车"
   },
   "VendorRegistration": {
     "title": "成为摊主",
@@ -102,6 +107,7 @@
     "vehicleTypeLabel": "车辆类型",
     "motorcycle": "摩托车",
     "car": "汽车",
+    "truck": "皮卡车",
     "locationNotice": "您的位置将用于查找您附近的配送工作。",
     "submitButton": "注册成为司机"
   },

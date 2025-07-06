@@ -39,12 +39,12 @@ export default function DeliveryRegistrationPage() {
 
             <div className="space-y-3 pt-2">
               <Label>{t('vehicleTypeLabel')}</Label>
-              <RadioGroup defaultValue="motorcycle" className="grid grid-cols-2 gap-4">
+              <RadioGroup defaultValue="motorcycle" className="grid grid-cols-3 gap-4">
                 <div>
                   <RadioGroupItem value="motorcycle" id="motorcycle" className="peer sr-only" />
                   <Label
                     htmlFor="motorcycle"
-                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center"
                   >
                     <Bike className="mb-3 h-6 w-6" />
                     {t('motorcycle')}
@@ -54,10 +54,20 @@ export default function DeliveryRegistrationPage() {
                   <RadioGroupItem value="car" id="car" className="peer sr-only" />
                   <Label
                     htmlFor="car"
-                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center"
                   >
                     <Car className="mb-3 h-6 w-6" />
                     {t('car')}
+                  </Label>
+                </div>
+                 <div>
+                  <RadioGroupItem value="truck" id="truck" className="peer sr-only" />
+                  <Label
+                    htmlFor="truck"
+                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center"
+                  >
+                    <Truck className="mb-3 h-6 w-6" />
+                    {t('truck')}
                   </Label>
                 </div>
               </RadioGroup>

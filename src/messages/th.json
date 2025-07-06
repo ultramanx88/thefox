@@ -68,7 +68,12 @@
     "pricePlaceholder": "เช่น 35",
     "quantityLabel": "จำนวนสต็อก",
     "quantityPlaceholder": "เช่น 100",
-    "listProductButton": "ลงขายสินค้า"
+    "listProductButton": "ลงขายสินค้า",
+    "allowedVehiclesLabel": "ประเภทรถที่ใช้จัดส่งได้",
+    "allowedVehiclesDescription": "เลือกประเภทรถที่สามารถใช้จัดส่งสินค้านี้ได้",
+    "motorcycle": "มอเตอร์ไซค์",
+    "car": "รถยนต์",
+    "truck": "รถกระบะ"
   },
   "VendorRegistration": {
     "title": "สมัครเป็นผู้ขาย",
@@ -102,6 +107,7 @@
     "vehicleTypeLabel": "ประเภทรถ",
     "motorcycle": "มอเตอร์ไซค์",
     "car": "รถยนต์",
+    "truck": "รถกระบะ",
     "locationNotice": "ตำแหน่งของคุณจะถูกใช้เพื่อค้นหางานจัดส่งที่อยู่ใกล้คุณ",
     "submitButton": "ลงทะเบียนเป็นคนขับ"
   },
