@@ -3,8 +3,20 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'TaladMan',
-  description: 'Your local marketplace, connected.',
+  metadataBase: new URL('https://www.taladman.com'),
+  title: {
+    default: 'TaladMan - Your Market, Delivered',
+    template: '%s | TaladMan',
+  },
+  description: 'Your local marketplace, connected. Discover fresh ingredients from local markets, delivered directly to your doorstep.',
+  openGraph: {
+    title: 'TaladMan - Your Market, Delivered',
+    description: 'Your local marketplace, connected.',
+    url: 'https://www.taladman.com',
+    siteName: 'TaladMan',
+    locale: 'th_TH',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({

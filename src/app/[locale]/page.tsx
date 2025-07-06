@@ -1,5 +1,5 @@
 import { ProductCard } from '@/components/ProductCard';
-import { type Product } from '@/lib/types';
+import { getProducts } from '@/lib/products';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,94 +8,28 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { MapPin, Search } from 'lucide-react';
 import {getTranslations, unstable_setRequestLocale} from 'next-intl/server';
 import { getCategories } from '@/lib/categories';
+import type { Metadata } from 'next';
 
-const mockProducts: Product[] = [
-  {
-    id: '1',
-    name: 'กะหล่ำปลีออร์แกนิก',
-    price: 35.0,
-    imageUrl: 'https://placehold.co/600x400.png',
-    vendor: 'ร้านผักป้านี',
-    rating: 4.8,
-    reviewCount: 75,
-    dataAiHint: 'cabbage vegetable',
-  },
-  {
-    id: '2',
-    name: 'เนื้อสันในวัว',
-    price: 350.0,
-    imageUrl: 'https://placehold.co/600x400.png',
-    vendor: 'เขียงเนื้อลุงเดช',
-    rating: 5.0,
-    reviewCount: 42,
-    dataAiHint: 'beef steak',
-  },
-  {
-    id: '3',
-    name: 'มะม่วงน้ำดอกไม้',
-    price: 60.0,
-    imageUrl: 'https://placehold.co/600x400.png',
-    vendor: 'สวนผลไม้ป้าไหว',
-    rating: 4.9,
-    reviewCount: 150,
-    dataAiHint: 'mango fruit',
-  },
-  {
-    id: '4',
-    name: 'ปลาแซลมอนสด (ต่อ กก.)',
-    price: 750.0,
-    imageUrl: 'https://placehold.co/600x400.png',
-    vendor: 'เจ๊ออยอาหารทะเล',
-    rating: 4.9,
-    reviewCount: 88,
-    dataAiHint: 'salmon seafood',
-  },
-  {
-    id: '5',
-    name: 'ไข่ไก่เบอร์ 0 (แผง)',
-    price: 120.0,
-    imageUrl: 'https://placehold.co/600x400.png',
-    vendor: 'ฟาร์มไก่ลุงมี',
-    rating: 4.7,
-    reviewCount: 210,
-    dataAiHint: 'fresh eggs',
-  },
-  {
-    id: '6',
-    name: 'มะนาวแป้น (ต่อ กก.)',
-    price: 40.0,
-    imageUrl: 'https://placehold.co/600x400.png',
-    vendor: 'ร้านผักป้านี',
-    rating: 4.9,
-    reviewCount: 180,
-    dataAiHint: 'lime fruit',
-  },
-  {
-    id: '7',
-    name: 'อกไก่ (ต่อ กก.)',
-    price: 85.0,
-    imageUrl: 'https://placehold.co/600x400.png',
-    vendor: 'ฟาร์มไก่ลุงมี',
-    rating: 4.8,
-    reviewCount: 195,
-    dataAiHint: 'chicken breast',
-  },
-  {
-    id: '8',
-    name: 'กุ้งแม่น้ำ (ต่อ กก.)',
-    price: 450.0,
-    imageUrl: 'https://placehold.co/600x400.png',
-    vendor: 'เจ๊ออยอาหารทะเล',
-    rating: 4.8,
-    reviewCount: 112,
-    dataAiHint: 'river prawn',
-  },
-];
+export async function generateMetadata({params: {locale}}: {params: {locale: string}}): Promise<Metadata> {
+  const t = await getTranslations({locale, namespace: 'HomePage'});
+ 
+  return {
+    title: t('title'),
+    description: t('subtitle'),
+    openGraph: {
+      title: t('title'),
+      description: t('subtitle'),
+      images: ['/og-image.png'] // Replace with a real URL to a generic OG image
+    }
+  };
+}
+
 
 export default async function Home({params: {locale}}: {params: {locale: string}}) {
   unstable_setRequestLocale(locale);
   const t = await getTranslations('HomePage');
   const categories = await getCategories();
+  const products = await getProducts();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -151,7 +85,7 @@ export default async function Home({params: {locale}}: {params: {locale: string}
 
       <Separator className="mb-8" />
       <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-        {mockProducts.map((product) => (
+        {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
