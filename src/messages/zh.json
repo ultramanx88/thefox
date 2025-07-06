@@ -54,7 +54,7 @@
         "slot2": "10:00 - 11:00",
         "slot3": "11:00 - 12:00",
         "slot4": "13:00 - 14:00",
-        "slot5": "14:00 - 15:00"
+        "slot5": "15:00 - 15:00"
       }
     }
   },
@@ -105,12 +105,18 @@
     "emailPlaceholder": "you@example.com",
     "phoneLabel": "电话号码",
     "phonePlaceholder": "081-234-5678",
-    "vehicleTypeLabel": "主要车辆类型",
+    "vehicleTypeLabel": "车辆类型",
     "motorcycle": "摩托车",
     "car": "汽车",
     "truck": "皮卡车",
-    "locationNotice": "您的位置将用于查找您附近的配送工作。",
-    "submitButton": "注册成为司机"
+    "submitButton": "注册成为司机",
+    "documentsTitle": "所需文件",
+    "documentsDescription": "请上传以下文件的清晰照片。在您开始驾驶之前，需要我们的工作人员批准。",
+    "idCardLabel": "国民身份证",
+    "driverLicenseLabel": "驾驶执照",
+    "vehicleRegistrationLabel": "车辆登记册",
+    "vehicleRegistrationDescription": "为您注册的每种车型上传一份。",
+    "approvalNotice": "提交后，我们的工作人员将审核您的文件。一旦您的帐户获得批准，您将收到通知。"
   },
   "OrderTracking": {
     "title": "追踪您的订单",

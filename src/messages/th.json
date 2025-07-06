@@ -105,12 +105,18 @@
     "emailPlaceholder": "you@example.com",
     "phoneLabel": "เบอร์โทรศัพท์",
     "phonePlaceholder": "081-234-5678",
-    "vehicleTypeLabel": "ประเภทยานพาหนะหลัก",
+    "vehicleTypeLabel": "ประเภทยานพาหนะ",
     "motorcycle": "มอเตอร์ไซค์",
     "car": "รถยนต์",
     "truck": "รถกระบะ",
-    "locationNotice": "ตำแหน่งของคุณจะถูกใช้เพื่อค้นหางานจัดส่งที่อยู่ใกล้คุณ",
-    "submitButton": "ลงทะเบียนเป็นคนขับ"
+    "submitButton": "ลงทะเบียนเป็นคนขับ",
+    "documentsTitle": "เอกสารที่ต้องใช้",
+    "documentsDescription": "กรุณาอัปโหลดรูปภาพที่ชัดเจนของเอกสารต่อไปนี้ การอนุมัติจากเจ้าหน้าที่จะต้องดำเนินการก่อนที่คุณจะสามารถเริ่มขับได้",
+    "idCardLabel": "บัตรประจำตัวประชาชน",
+    "driverLicenseLabel": "ใบขับขี่",
+    "vehicleRegistrationLabel": "สำเนาคู่มือจดทะเบียนรถ",
+    "vehicleRegistrationDescription": "อัปโหลดสำหรับรถแต่ละประเภทที่คุณลงทะเบียน",
+    "approvalNotice": "หลังจากส่งข้อมูล เจ้าหน้าที่จะตรวจสอบเอกสารของคุณ คุณจะได้รับการแจ้งเตือนเมื่อบัญชีของคุณได้รับการอนุมัติ"
   },
   "OrderTracking": {
     "title": "ติดตามคำสั่งซื้อของคุณ",

@@ -109,8 +109,14 @@
     "motorcycle": "Motorcycle",
     "car": "Car",
     "truck": "Pickup Truck",
-    "locationNotice": "Your location will be used to find delivery jobs near you.",
-    "submitButton": "Register as Driver"
+    "submitButton": "Register as Driver",
+    "documentsTitle": "Required Documents",
+    "documentsDescription": "Please upload clear photos of the following documents. Approval from our staff is required before you can start driving.",
+    "idCardLabel": "National ID Card",
+    "driverLicenseLabel": "Driver's License",
+    "vehicleRegistrationLabel": "Vehicle Registration Book",
+    "vehicleRegistrationDescription": "Upload one for each vehicle type you register.",
+    "approvalNotice": "After submission, our staff will review your documents. You will be notified once your account is approved."
   },
   "OrderTracking": {
     "title": "Track Your Order",
