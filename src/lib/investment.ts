@@ -150,40 +150,61 @@ export async function addInvestor(
   name: string,
   amount: number,
   bank_info: BankInfo
-): Promise<{ success: boolean; message: string; investorShare?: number }> {
-  // Validate minimum investment
-  if (amount < 10000) {
-    return { success: false, message: 'Minimum investment is 10,000 baht.' };
-  }
+): Promise<{
+    success: boolean;
+    message?: string;
+    investor_id?: string;
+    investment_amount?: number;
+    percentage?: number;
+    milestone_status?: {
+      current_total: number;
+      milestone_reached: boolean;
+      amount_to_milestone: number;
+    };
+  }> {
+    // Validate minimum investment
+    if (amount < 10000) {
+        return { success: false, message: 'Minimum investment is 10,000 baht.' };
+    }
 
-  // Check if investor already exists
-  if (investors.find(inv => inv.id === id)) {
-    return { success: false, message: `Investor with ID ${id} already exists.` };
-  }
+    // Check if investor already exists
+    if (investors.find(inv => inv.id === id)) {
+        return { success: false, message: `Investor with ID ${id} already exists.` };
+    }
 
-  const newInvestor: Investor = {
-    id,
-    name,
-    total_investment: amount,
-    current_balance: 0,
-    total_earnings: 0,
-    total_withdrawn: 0,
-    join_date: new Date().toISOString().split('T')[0],
-    bank_info,
-    auto_withdraw: { enabled: false, threshold: 5000 }, // Default auto-withdraw to off
-  };
+    const newInvestor: Investor = {
+        id,
+        name,
+        total_investment: amount,
+        current_balance: 0,
+        total_earnings: 0,
+        total_withdrawn: 0,
+        join_date: new Date().toISOString().split('T')[0],
+        bank_info,
+        auto_withdraw: { enabled: false, threshold: 5000 }, // Default auto-withdraw to off
+    };
 
-  investors.push(newInvestor);
+    investors.push(newInvestor);
 
-  const total_investment_pool = investors.reduce((sum, inv) => sum + inv.total_investment, 0);
-  const investorShare = (amount / total_investment_pool) * 100;
+    const total_investment_pool = investors.reduce((sum, inv) => sum + inv.total_investment, 0);
+    const percentage = (amount / total_investment_pool) * 100;
+    const milestone_reached = total_investment_pool > FOUNDER_MILESTONE;
+    const amount_to_milestone = Math.max(0, FOUNDER_MILESTONE - total_investment_pool);
 
-  return { 
-    success: true, 
-    message: `Investor ${name} added successfully.`,
-    investorShare: parseFloat(investorShare.toFixed(2))
-  };
+
+    return {
+        success: true,
+        investor_id: id,
+        investment_amount: amount,
+        percentage: parseFloat(percentage.toFixed(2)),
+        milestone_status: {
+            current_total: total_investment_pool,
+            milestone_reached: milestone_reached,
+            amount_to_milestone: amount_to_milestone,
+        },
+    };
 }
+
 
 export async function getInvestmentData() {
     const totalInvestment = investors.reduce((sum, inv) => sum + inv.total_investment, 0);
