@@ -41,7 +41,21 @@
   "ProductDetail": {
     "addToCart": "เพิ่มลงตะกร้า",
     "deliveryInfo": "จัดส่งมาตรฐานภายใน 24 ชั่วโมง",
-    "customerReviews": "รีวิวจากลูกค้า"
+    "customerReviews": "รีวิวจากลูกค้า",
+    "scheduling": {
+      "title": "ตัวเลือกการจัดส่ง",
+      "deliverNow": "จัดส่งทันที",
+      "scheduleLater": "ตั้งเวลาล่วงหน้า",
+      "selectDate": "เลือกวันที่",
+      "selectTime": "เลือกช่วงเวลา",
+      "timeSlots": {
+        "slot1": "09:00 - 10:00 น.",
+        "slot2": "10:00 - 11:00 น.",
+        "slot3": "11:00 - 12:00 น.",
+        "slot4": "13:00 - 14:00 น.",
+        "slot5": "14:00 - 15:00 น."
+      }
+    }
   },
   "NewProduct": {
     "title": "เพิ่มสินค้าใหม่",

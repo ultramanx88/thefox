@@ -41,7 +41,21 @@
   "ProductDetail": {
     "addToCart": "加入购物车",
     "deliveryInfo": "24小时内标准配送",
-    "customerReviews": "顾客评论"
+    "customerReviews": "顾客评论",
+    "scheduling": {
+      "title": "配送选项",
+      "deliverNow": "立即配送",
+      "scheduleLater": "预约配送",
+      "selectDate": "选择日期",
+      "selectTime": "选择时间段",
+      "timeSlots": {
+        "slot1": "09:00 - 10:00",
+        "slot2": "10:00 - 11:00",
+        "slot3": "11:00 - 12:00",
+        "slot4": "13:00 - 14:00",
+        "slot5": "14:00 - 15:00"
+      }
+    }
   },
   "NewProduct": {
     "title": "上架新产品",

@@ -41,7 +41,21 @@
   "ProductDetail": {
     "addToCart": "Add to Cart",
     "deliveryInfo": "Standard delivery within 24 hours",
-    "customerReviews": "Customer Reviews"
+    "customerReviews": "Customer Reviews",
+    "scheduling": {
+      "title": "Delivery Options",
+      "deliverNow": "Deliver Now",
+      "scheduleLater": "Schedule for Later",
+      "selectDate": "Select a date",
+      "selectTime": "Select a time slot",
+      "timeSlots": {
+        "slot1": "09:00 - 10:00",
+        "slot2": "10:00 - 11:00",
+        "slot3": "11:00 - 12:00",
+        "slot4": "13:00 - 14:00",
+        "slot5": "14:00 - 15:00"
+      }
+    }
   },
   "NewProduct": {
     "title": "List a New Product",
