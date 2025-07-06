@@ -11,7 +11,8 @@
     "vendorDashboard": "แดชบอร์ดร้านค้า",
     "driverDashboard": "แดชบอร์ดคนขับ",
     "adminDashboard": "แดชบอร์ดผู้ดูแล",
-    "logout": "ออกจากระบบ"
+    "logout": "ออกจากระบบ",
+    "communicationLanguage": "ภาษาที่ใช้สื่อสาร"
   },
   "HomePage": {
     "title": "จ่ายตลาดแทนคุณ",
@@ -270,7 +271,7 @@
       "viewAllButton": "ดูทั้งหมด",
       "tableHeaders": {
         "orderId": "รหัสออเดอร์",
-        "customer": "ลูกค้า",
+        "customer": "ลูกค้า & ภาษา",
         "amount": "ยอดรวม",
         "status": "สถานะ",
         "assignee": "มอบหมายให้",

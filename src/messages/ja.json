@@ -11,7 +11,8 @@
     "vendorDashboard": "販売者ダッシュボード",
     "driverDashboard": "ドライバーダッシュボード",
     "adminDashboard": "管理者ダッシュボード",
-    "logout": "ログアウト"
+    "logout": "ログアウト",
+    "communicationLanguage": "連絡用言語"
   },
   "HomePage": {
     "title": "あなたの市場、お届けします",
@@ -270,7 +271,7 @@
       "viewAllButton": "すべて表示",
       "tableHeaders": {
         "orderId": "注文ID",
-        "customer": "顧客",
+        "customer": "顧客 & 言語",
         "amount": "金額",
         "status": "ステータス",
         "assignee": "担当者",

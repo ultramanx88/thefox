@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, Link } from '@/navigation';
-import { ShoppingCart, Store, Leaf, User, Menu, Globe, Settings, Truck } from 'lucide-react';
+import { ShoppingCart, Store, Leaf, User, Menu, Globe, Settings, Truck, Languages } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -11,7 +11,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuRadioGroup,
-  DropdownMenuRadioItem
+  DropdownMenuRadioItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
@@ -25,6 +29,7 @@ export function Header() {
   const router = useRouter();
   const locale = useLocale();
   const [isPending, startTransition] = useTransition();
+  const [communicationLang, setCommunicationLang] = React.useState('th');
 
   const navLinks = [
     { href: '/', label: t('marketplace') },
@@ -150,6 +155,24 @@ export function Header() {
                 <User className="mr-2 h-4 w-4" />
                  <Link href="/account/orders">{t('myOrders')}</Link>
               </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Languages className="mr-2 h-4 w-4" />
+                  <span>{t('communicationLanguage')}</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuRadioGroup value={communicationLang} onValueChange={setCommunicationLang}>
+                      <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="th">ไทย</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="zh">中文</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="ja">日本語</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="ko">한국어</DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+              <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <Store className="mr-2 h-4 w-4" />
                 <Link href="/vendor">{t('vendorDashboard')}</Link>

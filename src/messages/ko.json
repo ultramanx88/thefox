@@ -11,7 +11,8 @@
     "vendorDashboard": "판매자 대시보드",
     "driverDashboard": "드라이버 대시보드",
     "adminDashboard": "관리자 대시보드",
-    "logout": "로그아웃"
+    "logout": "로그아웃",
+    "communicationLanguage": "소통 언어"
   },
   "HomePage": {
     "title": "당신의 마켓, 배달해드립니다",
@@ -270,7 +271,7 @@
       "viewAllButton": "모두 보기",
       "tableHeaders": {
         "orderId": "주문 ID",
-        "customer": "고객",
+        "customer": "고객 & 언어",
         "amount": "금액",
         "status": "상태",
         "assignee": "담당자",

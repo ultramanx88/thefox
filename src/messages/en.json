@@ -11,7 +11,8 @@
     "vendorDashboard": "Vendor Dashboard",
     "driverDashboard": "Driver Dashboard",
     "adminDashboard": "Admin Dashboard",
-    "logout": "Log out"
+    "logout": "Log out",
+    "communicationLanguage": "Communication Language"
   },
   "HomePage": {
     "title": "Your Market, Delivered",
@@ -270,7 +271,7 @@
       "viewAllButton": "View All",
       "tableHeaders": {
         "orderId": "Order ID",
-        "customer": "Customer",
+        "customer": "Customer & Language",
         "amount": "Amount",
         "status": "Status",
         "assignee": "Assigned To",

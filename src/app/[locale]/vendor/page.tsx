@@ -47,11 +47,11 @@ export default async function VendorDashboardPage({
   ];
 
   const recentOrders = [
-    { id: 'ORD-001', customer: 'ร้านอาหารเจริญสุข', amount: '฿2,500.00', status: 'new', assignedTo: null, driver: null },
-    { id: 'ORD-002', customer: 'ครัวคุณหน่อย', amount: '฿1,200.50', status: 'preparing', assignedTo: 'มานะ ใจดี', driver: null },
-    { id: 'ORD-003', customer: 'โรงแรมแกรนด์พาเลซ', amount: '฿8,750.00', status: 'new', assignedTo: null, driver: null },
-    { id: 'ORD-004', customer: 'ร้านก๋วยเตี๋ยวลุงชัย', amount: '฿850.00', status: 'ready', assignedTo: 'ปิติ ชูใจ', driver: null },
-    { id: 'ORD-005', customer: 'คาเฟ่ The Nest', amount: '฿1,500.00', status: 'delivering', assignedTo: 'มานะ ใจดี', driver: { name: 'สมชาย ใจดี' } },
+    { id: 'ORD-001', customer: 'ร้านอาหารเจริญสุข', amount: '฿2,500.00', status: 'new', assignedTo: null, driver: null, language: 'th' },
+    { id: 'ORD-002', customer: 'ครัวคุณหน่อย', amount: '฿1,200.50', status: 'preparing', assignedTo: 'มานะ ใจดี', driver: null, language: 'th' },
+    { id: 'ORD-003', customer: 'โรงแรมแกรนด์พาเลซ', amount: '฿8,750.00', status: 'new', assignedTo: null, driver: null, language: 'en' },
+    { id: 'ORD-004', customer: 'ร้านก๋วยเตี๋ยวลุงชัย', amount: '฿850.00', status: 'ready', assignedTo: 'ปิติ ชูใจ', driver: null, language: 'zh' },
+    { id: 'ORD-005', customer: 'คาเฟ่ The Nest', amount: '฿1,500.00', status: 'delivering', assignedTo: 'มานะ ใจดี', driver: { name: 'สมชาย ใจดี' }, language: 'en' },
   ];
 
   const scheduledOrders = [
@@ -213,7 +213,12 @@ export default async function VendorDashboardPage({
               {recentOrders.map((order) => (
                 <TableRow key={order.id}>
                   <TableCell className="font-medium">{order.id}</TableCell>
-                  <TableCell>{order.customer}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <span>{order.customer}</span>
+                      <Badge variant="outline" className="text-xs font-mono">{order.language.toUpperCase()}</Badge>
+                    </div>
+                  </TableCell>
                   <TableCell className="text-right">{order.amount}</TableCell>
                   <TableCell className="text-center">
                     <Badge variant={order.status === 'new' || order.status === 'delivering' ? 'default' : 'secondary'} className={order.status === 'new' ? "bg-accent text-accent-foreground animate-pulse" : ""}>
