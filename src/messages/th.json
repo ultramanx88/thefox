@@ -1,3 +1,4 @@
+
 {
   "Header": {
     "marketplace": "ตลาด",
@@ -10,8 +11,17 @@
     "logout": "ออกจากระบบ"
   },
   "HomePage": {
-    "title": "สำรวจของสดใหม่",
-    "subtitle": "ค้นพบสินค้าที่ไม่เหมือนใครจากผู้ขายในท้องถิ่นและนักช้อปส่วนตัวใกล้บ้านคุณ"
+    "title": "ค้นหาสินค้าใกล้บ้านคุณ",
+    "subtitle": "พบกับสินค้าหลากหลายจากผู้ขายในพื้นที่และนักช้อปส่วนตัวใกล้คุณ",
+    "categoryLabel": "หมวดหมู่",
+    "allCategories": "ทุกหมวดหมู่",
+    "foodCategory": "อาหาร",
+    "clothingCategory": "เสื้อผ้า",
+    "householdCategory": "ของใช้ในบ้าน",
+    "electronicsCategory": "เครื่องใช้ไฟฟ้า",
+    "locationLabel": "พื้นที่ใกล้เคียง",
+    "locationPlaceholder": "เช่น บางซื่อ, กรุงเทพ",
+    "searchButton": "ค้นหา"
   },
   "DriverRegistration": {
     "title": "มาเป็นคนขับรถส่งของ",

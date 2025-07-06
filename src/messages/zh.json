@@ -1,3 +1,4 @@
+
 {
   "Header": {
     "marketplace": "市场",
@@ -10,8 +11,17 @@
     "logout": "登出"
   },
   "HomePage": {
-    "title": "探索新鮮發現",
-    "subtitle": "發現您附近本地供應商和個人購物者的獨特商品。"
+    "title": "探索您附近的新发现",
+    "subtitle": "发现您附近本地供应商和个人购物者的独特商品。",
+    "categoryLabel": "类别",
+    "allCategories": "所有类别",
+    "foodCategory": "食品",
+    "clothingCategory": "服装",
+    "householdCategory": "家居用品",
+    "electronicsCategory": "电子产品",
+    "locationLabel": "附近区域",
+    "locationPlaceholder": "例如，曼谷邦苏",
+    "searchButton": "搜索"
   },
   "DriverRegistration": {
     "title": "成为送货司机",

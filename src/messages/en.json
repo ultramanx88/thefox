@@ -1,3 +1,4 @@
+
 {
   "Header": {
     "marketplace": "Marketplace",
@@ -11,7 +12,16 @@
   },
   "HomePage": {
     "title": "Explore Fresh Finds",
-    "subtitle": "Discover unique items from local vendors and personal shoppers near you."
+    "subtitle": "Discover unique items from local vendors and personal shoppers near you.",
+    "categoryLabel": "Category",
+    "allCategories": "All Categories",
+    "foodCategory": "Food",
+    "clothingCategory": "Clothing",
+    "householdCategory": "Household",
+    "electronicsCategory": "Electronics",
+    "locationLabel": "Nearby Area",
+    "locationPlaceholder": "e.g., Bang Sue, Bangkok",
+    "searchButton": "Search"
   },
   "DriverRegistration": {
     "title": "Become a Delivery Driver",

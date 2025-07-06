@@ -1,6 +1,11 @@
 import { ProductCard } from '@/components/ProductCard';
 import { type Product } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MapPin, Search } from 'lucide-react';
 import {getTranslations, unstable_setRequestLocale} from 'next-intl/server';
 
 const mockProducts: Product[] = [
@@ -100,6 +105,38 @@ export default async function Home({params: {locale}}: {params: {locale: string}
           {t('subtitle')}
         </p>
       </div>
+
+      <div className="mb-8 p-4 sm:p-6 bg-card border rounded-lg shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+          <div className="lg:col-span-2 space-y-2">
+            <Label htmlFor="category">{t('categoryLabel')}</Label>
+            <Select>
+              <SelectTrigger id="category" className="w-full">
+                <SelectValue placeholder={t('allCategories')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('allCategories')}</SelectItem>
+                <SelectItem value="food">{t('foodCategory')}</SelectItem>
+                <SelectItem value="clothing">{t('clothingCategory')}</SelectItem>
+                <SelectItem value="household">{t('householdCategory')}</SelectItem>
+                <SelectItem value="electronics">{t('electronicsCategory')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="lg:col-span-2 space-y-2">
+            <Label htmlFor="location">{t('locationLabel')}</Label>
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input id="location" placeholder={t('locationPlaceholder')} className="pl-10" />
+            </div>
+          </div>
+          <Button className="w-full bg-accent hover:bg-accent/90">
+            <Search className="mr-2 h-4 w-4" /> {t('searchButton')}
+          </Button>
+        </div>
+      </div>
+
+
       <Separator className="mb-8" />
       <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
         {mockProducts.map((product) => (
