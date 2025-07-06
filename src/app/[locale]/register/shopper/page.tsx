@@ -6,10 +6,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Bike, Car, Truck } from "lucide-react";
 import {useTranslations} from 'next-intl';
-import {unstable_setRequestLocale} from 'next-intl/server';
 
-export default function DeliveryRegistrationPage({params: {locale}}: {params: {locale: string}}) {
-  unstable_setRequestLocale(locale);
+export default function DeliveryRegistrationPage() {
   const t = useTranslations('DriverRegistration');
   
   return (
