@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { CheckCircle, Package, Truck, Bike } from "lucide-react";
 import Image from "next/image";
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Rating } from "@/components/Rating";
 import { LanguageBadge } from "@/components/LanguageBadge";
+import { OrderChat } from "@/components/OrderChat";
 
 export default async function OrderTrackingPage({ params }: { params: { id: string, locale: string } }) {
   unstable_setRequestLocale(params.locale);
@@ -83,15 +83,18 @@ export default async function OrderTrackingPage({ params }: { params: { id: stri
                 </div>
             </div>
 
-            <div className="bg-muted rounded-lg overflow-hidden h-64 md:h-full">
-                <Image
-                    src="https://placehold.co/800x600.png"
-                    data-ai-hint="map route"
-                    alt={t('mapAlt')}
-                    width={800}
-                    height={600}
-                    className="w-full h-full object-cover"
-                />
+            <div className="space-y-8">
+                <OrderChat />
+                <div className="bg-muted rounded-lg overflow-hidden h-64 md:h-[400px]">
+                    <Image
+                        src="https://placehold.co/800x600.png"
+                        data-ai-hint="map route"
+                        alt={t('mapAlt')}
+                        width={800}
+                        height={600}
+                        className="w-full h-full object-cover"
+                    />
+                </div>
             </div>
         </CardContent>
       </Card>

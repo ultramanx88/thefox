@@ -142,6 +142,19 @@
     "driverProfileTitle": "담당 드라이버",
     "driverLanguages": "구사 가능 언어"
   },
+  "OrderChat": {
+    "title": "주문 채팅",
+    "inputPlaceholder": "메시지를 여기에 입력하세요...",
+    "sendButton": "보내기",
+    "attachButton": "파일 첨부",
+    "imageMessage": "첨부된 이미지",
+    "currentUser": "나",
+    "roles": {
+      "customer": "고객",
+      "vendor": "판매자",
+      "driver": "운전자"
+    }
+  },
   "VendorProfile": {
     "bannerAlt": "판매자 상점 배너",
     "marketStall": "시장 가판대",

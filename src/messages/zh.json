@@ -142,6 +142,19 @@
     "driverProfileTitle": "您的司机",
     "driverLanguages": "沟通语言"
   },
+  "OrderChat": {
+    "title": "订单聊天",
+    "inputPlaceholder": "在此输入您的消息...",
+    "sendButton": "发送",
+    "attachButton": "附加文件",
+    "imageMessage": "附加图片",
+    "currentUser": "您",
+    "roles": {
+      "customer": "顾客",
+      "vendor": "店家",
+      "driver": "司机"
+    }
+  },
   "VendorProfile": {
     "bannerAlt": "摊主店铺横幅",
     "marketStall": "市场摊位",

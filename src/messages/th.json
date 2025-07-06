@@ -142,6 +142,19 @@
     "driverProfileTitle": "คนขับของคุณ",
     "driverLanguages": "ภาษาที่สื่อสารได้"
   },
+  "OrderChat": {
+    "title": "แชทในออเดอร์",
+    "inputPlaceholder": "พิมพ์ข้อความของคุณที่นี่...",
+    "sendButton": "ส่ง",
+    "attachButton": "แนบไฟล์",
+    "imageMessage": "รูปภาพที่แนบ",
+    "currentUser": "คุณ",
+    "roles": {
+      "customer": "ลูกค้า",
+      "vendor": "ร้านค้า",
+      "driver": "คนขับ"
+    }
+  },
   "VendorProfile": {
     "bannerAlt": "แบนเนอร์หน้าร้านค้า",
     "marketStall": "แผงลอยในตลาด",

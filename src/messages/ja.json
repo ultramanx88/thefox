@@ -142,6 +142,19 @@
     "driverProfileTitle": "担当ドライバー",
     "driverLanguages": "話せる言語"
   },
+  "OrderChat": {
+    "title": "注文チャット",
+    "inputPlaceholder": "ここにメッセージを入力...",
+    "sendButton": "送信",
+    "attachButton": "ファイルを添付",
+    "imageMessage": "添付画像",
+    "currentUser": "あなた",
+    "roles": {
+      "customer": "顧客",
+      "vendor": "店舗",
+      "driver": "ドライバー"
+    }
+  },
   "VendorProfile": {
     "bannerAlt": "販売者のストアバナー",
     "marketStall": "市場の屋台",

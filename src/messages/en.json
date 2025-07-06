@@ -142,6 +142,19 @@
     "driverProfileTitle": "Your Driver",
     "driverLanguages": "Languages"
   },
+  "OrderChat": {
+    "title": "Order Chat",
+    "inputPlaceholder": "Type your message here...",
+    "sendButton": "Send",
+    "attachButton": "Attach File",
+    "imageMessage": "Attached Image",
+    "currentUser": "You",
+    "roles": {
+      "customer": "Customer",
+      "vendor": "Vendor",
+      "driver": "Driver"
+    }
+  },
   "VendorProfile": {
     "bannerAlt": "Vendor's store banner",
     "marketStall": "Market Stall",
