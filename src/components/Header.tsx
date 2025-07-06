@@ -146,7 +146,7 @@ export function Header() {
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
-                <span>{t('profile')}</span>
+                 <Link href="/account/orders">{t('myOrders')}</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Store className="mr-2 h-4 w-4" />

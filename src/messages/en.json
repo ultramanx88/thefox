@@ -7,6 +7,7 @@
     "cart": "Cart",
     "guestUser": "Guest User",
     "profile": "Profile",
+    "myOrders": "My Orders",
     "vendorDashboard": "Vendor Dashboard",
     "adminDashboard": "Admin Dashboard",
     "logout": "Log out"
@@ -215,5 +216,25 @@
     "friday": "Friday",
     "saturday": "Saturday",
     "sunday": "Sunday"
+  },
+  "CustomerDashboard": {
+    "title": "My Orders",
+    "description": "View your order history and track current orders.",
+    "orderId": "Order",
+    "orderDate": "Date",
+    "statusDelivered": "Delivered",
+    "statusInProgress": "In Progress",
+    "items": "Items in this order",
+    "product": "Product",
+    "quantity": "Qty",
+    "price": "Price",
+    "costSummary": "Cost Summary",
+    "subtotal": "Subtotal",
+    "deliveryFee": "Delivery Fee",
+    "serviceFee": "Service Fee",
+    "grandTotal": "Grand Total",
+    "printButton": "Print",
+    "downloadPdfButton": "Download PDF",
+    "downloadExcelButton": "Download Excel"
   }
 }

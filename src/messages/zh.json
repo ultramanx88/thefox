@@ -7,6 +7,7 @@
     "cart": "购物车",
     "guestUser": "访客用户",
     "profile": "个人资料",
+    "myOrders": "我的订单",
     "vendorDashboard": "摊主仪表板",
     "adminDashboard": "管理员仪表板",
     "logout": "登出"
@@ -215,5 +216,25 @@
     "friday": "星期五",
     "saturday": "星期六",
     "sunday": "星期日"
+  },
+  "CustomerDashboard": {
+    "title": "我的订单",
+    "description": "查看您的订单历史并跟踪当前订单。",
+    "orderId": "订单",
+    "orderDate": "日期",
+    "statusDelivered": "已送达",
+    "statusInProgress": "处理中",
+    "items": "此订单中的商品",
+    "product": "产品",
+    "quantity": "数量",
+    "price": "价格",
+    "costSummary": "费用摘要",
+    "subtotal": "小计",
+    "deliveryFee": "配送费",
+    "serviceFee": "服务费",
+    "grandTotal": "总计",
+    "printButton": "打印",
+    "downloadPdfButton": "下载PDF",
+    "downloadExcelButton": "下载Excel"
   }
 }

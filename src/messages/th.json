@@ -7,6 +7,7 @@
     "cart": "ตะกร้าสินค้า",
     "guestUser": "ผู้ใช้ทั่วไป",
     "profile": "โปรไฟล์",
+    "myOrders": "รายการสั่งซื้อของฉัน",
     "vendorDashboard": "แดชบอร์ดร้านค้า",
     "adminDashboard": "แดชบอร์ดผู้ดูแล",
     "logout": "ออกจากระบบ"
@@ -215,5 +216,25 @@
     "friday": "วันศุกร์",
     "saturday": "วันเสาร์",
     "sunday": "วันอาทิตย์"
+  },
+   "CustomerDashboard": {
+    "title": "รายการสั่งซื้อของฉัน",
+    "description": "ดูประวัติการสั่งซื้อและติดตามสถานะออเดอร์ปัจจุบัน",
+    "orderId": "ออเดอร์",
+    "orderDate": "วันที่",
+    "statusDelivered": "จัดส่งแล้ว",
+    "statusInProgress": "กำลังดำเนินการ",
+    "items": "รายการในออเดอร์นี้",
+    "product": "สินค้า",
+    "quantity": "จำนวน",
+    "price": "ราคา",
+    "costSummary": "สรุปค่าใช้จ่าย",
+    "subtotal": "ยอดรวม",
+    "deliveryFee": "ค่าจัดส่ง",
+    "serviceFee": "ค่าบริการ",
+    "grandTotal": "ยอดรวมทั้งหมด",
+    "printButton": "พิมพ์",
+    "downloadPdfButton": "ดาวน์โหลด PDF",
+    "downloadExcelButton": "ดาวน์โหลด Excel"
   }
 }
