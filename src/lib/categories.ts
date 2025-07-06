@@ -16,15 +16,3 @@ export async function getCategories(): Promise<Category[]> {
   // Simulate async operation
   return Promise.resolve(categories);
 }
-
-export async function addCategory(name: string): Promise<Category> {
-  // Simulate async operation and ID generation
-  const slug = name.toLowerCase().replace(/\s+/g, '-');
-  const newCategory: Category = {
-    id: String(Date.now()), // More unique ID
-    name,
-    slug,
-  };
-  categories.push(newCategory);
-  return Promise.resolve(newCategory);
-}

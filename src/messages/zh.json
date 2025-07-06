@@ -8,8 +8,7 @@
     "guestUser": "访客用户",
     "profile": "个人资料",
     "vendorDashboard": "摊主仪表板",
-    "logout": "登出",
-    "adminDashboardLink": "分类管理"
+    "logout": "登出"
   },
   "HomePage": {
     "title": "您的专属市场，即刻送达",
@@ -21,91 +20,5 @@
     "searchButton": "搜索",
     "searchLabel": "搜索产品",
     "searchPlaceholder": "例如，牛肉，卷心菜"
-  },
-  "DriverRegistration": {
-    "title": "成为配送司机",
-    "description": "加入我们的配送网络，通过配送本地市场的新鲜食材来赚取收入。",
-    "fullNameLabel": "全名",
-    "fullNamePlaceholder": "例如，张三",
-    "emailLabel": "电子邮件",
-    "emailPlaceholder": "you@example.com",
-    "phoneLabel": "电话号码",
-    "phonePlaceholder": "+86 1xx-xxxx-xxxx",
-    "vehicleTypeLabel": "车辆类型",
-    "motorcycle": "摩托车",
-    "car": "汽车",
-    "locationNotice": "我们将使用您的位置为您匹配附近的配送请求。",
-    "submitButton": "开始配送"
-  },
-  "VendorRegistration": {
-    "title": "成为摊主",
-    "description": "立即在 TaladMan 上设立您的摊位并开始销售新鲜食材。",
-    "storeNameLabel": "摊位名称",
-    "storeNamePlaceholder": "例如，阿妮菜摊",
-    "emailLabel": "电子邮件",
-    "emailPlaceholder": "you@example.com",
-    "passwordLabel": "密码",
-    "passwordPlaceholder": "您的安全密码",
-    "submitButton": "创建我的摊位",
-    "registrationSuccessTitle": "注册成功",
-    "registrationSuccess": "您的摊位已创建！现在您可以上架商品了。",
-    "registrationFailedTitle": "注册失败",
-    "registrationFailed": "发生错误，请重试。",
-    "registrationFailedGeneric": "出了点问题，请稍后再试。",
-    "validation": {
-      "storeNameRequired": "摊位名称为必填项。",
-      "invalidEmail": "请输入有效的电子邮件地址。",
-      "passwordLength": "密码长度至少为8个字符。"
-    }
-  },
-  "NewProduct": {
-    "title": "上架新产品",
-    "description": "填写以下详细信息，将您的新鲜食材上架到市场。",
-    "nameLabel": "产品名称",
-    "namePlaceholder": "例如，有机卷心菜",
-    "descriptionLabel": "描述",
-    "descriptionPlaceholder": "描述您产品的来源、新鲜度和质量。",
-    "priceLabel": "价格（每公斤/单位）",
-    "pricePlaceholder": "0.00",
-    "quantityLabel": "库存数量（公斤/单位）",
-    "quantityPlaceholder": "10",
-    "listProductButton": "上架产品"
-  },
-  "OrderTracking": {
-    "title": "订单追踪",
-    "orderId": "订单号",
-    "statusTitle": "订单状态",
-    "stepPlaced": "已下单",
-    "stepProcessing": "正在采购食材",
-    "stepOutForDelivery": "配送中",
-    "stepDelivered": "已送达",
-    "statusCompleted": "已完成",
-    "statusInProgress": "进行中",
-    "statusPending": "待处理",
-    "mapAlt": "显示送货路线的地图"
-  },
-  "ProductDetail": {
-    "addToCart": "加入购物车",
-    "deliveryInfo": "提供本地生鲜配送服务。",
-    "customerReviews": "顾客评论"
-  },
-  "VendorProfile": {
-    "bannerAlt": "市场摊位横幅",
-    "marketStall": "市场摊位",
-    "productsFrom": "来自 {vendorName} 的产品"
-  },
-  "CategoryAdmin": {
-    "pageTitle": "管理分类",
-    "addNewCategoryTitle": "添加新分类",
-    "addNewCategoryDescription": "为市场创建新的产品分类。",
-    "categoryNameLabel": "分类名称",
-    "categoryNamePlaceholder": "例如，有机产品",
-    "addCategoryButton": "添加分类",
-    "existingCategoriesTitle": "现有分类",
-    "nameHeader": "名称",
-    "slugHeader": "别名",
-    "toastSuccessTitle": "成功",
-    "toastSuccessDescription": "分类添加成功。",
-    "toastErrorTitle": "错误"
   }
 }

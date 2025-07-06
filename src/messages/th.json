@@ -8,8 +8,7 @@
     "guestUser": "ผู้ใช้ทั่วไป",
     "profile": "โปรไฟล์",
     "vendorDashboard": "แดชบอร์ดร้านค้า",
-    "logout": "ออกจากระบบ",
-    "adminDashboardLink": "จัดการหมวดหมู่"
+    "logout": "ออกจากระบบ"
   },
   "HomePage": {
     "title": "จ่ายตลาดแทนคุณ",
@@ -21,91 +20,5 @@
     "searchButton": "ค้นหา",
     "searchLabel": "ค้นหาสินค้า",
     "searchPlaceholder": "เช่น เนื้อวัว, กะหล่ำปลี"
-  },
-  "DriverRegistration": {
-    "title": "สมัครเป็นคนขับส่งของ",
-    "description": "เข้าร่วมเครือข่ายของเราและสร้างรายได้จากการส่งวัตถุดิบสดใหม่จากตลาดในพื้นที่",
-    "fullNameLabel": "ชื่อ-นามสกุล",
-    "fullNamePlaceholder": "เช่น สมชาย ใจดี",
-    "emailLabel": "อีเมล",
-    "emailPlaceholder": "you@example.com",
-    "phoneLabel": "เบอร์โทรศัพท์",
-    "phonePlaceholder": "+66 (xx) xxx-xxxx",
-    "vehicleTypeLabel": "ประเภทของยานพาหนะ",
-    "motorcycle": "มอเตอร์ไซค์",
-    "car": "รถยนต์",
-    "locationNotice": "เราจะใช้ตำแหน่งของคุณเพื่อเชื่อมต่อคุณกับคำขอจัดส่งในบริเวณใกล้เคียง",
-    "submitButton": "เริ่มการจัดส่ง"
-  },
-  "VendorRegistration": {
-    "title": "สมัครเป็นร้านค้า",
-    "description": "ตั้งร้านค้าของคุณและเริ่มขายวัตถุดิบสดใหม่บน TaladMan วันนี้",
-    "storeNameLabel": "ชื่อร้านค้า/แผง",
-    "storeNamePlaceholder": "เช่น ร้านผักป้านี",
-    "emailLabel": "อีเมล",
-    "emailPlaceholder": "you@example.com",
-    "passwordLabel": "รหัสผ่าน",
-    "passwordPlaceholder": "รหัสผ่านที่ปลอดภัยของคุณ",
-    "submitButton": "สร้างร้านค้าของฉัน",
-    "registrationSuccessTitle": "ลงทะเบียนสำเร็จ",
-    "registrationSuccess": "ร้านค้าของคุณถูกสร้างแล้ว! ตอนนี้คุณสามารถลงขายสินค้าได้เลย",
-    "registrationFailedTitle": "การลงทะเบียนล้มเหลว",
-    "registrationFailed": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
-    "registrationFailedGeneric": "เกิดข้อผิดพลาดบางอย่าง กรุณาลองใหม่อีกครั้งในภายหลัง",
-    "validation": {
-        "storeNameRequired": "กรุณากรอกชื่อร้านค้า",
-        "invalidEmail": "กรุณากรอกอีเมลที่ถูกต้อง",
-        "passwordLength": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร"
-    }
-  },
-  "NewProduct": {
-      "title": "ลงขายสินค้าใหม่",
-      "description": "กรอกรายละเอียดด้านล่างเพื่อลงขายวัตถุดิบสดใหม่ของคุณบนตลาดออนไลน์",
-      "nameLabel": "ชื่อสินค้า",
-      "namePlaceholder": "เช่น กะหล่ำปลีออร์แกนิก",
-      "descriptionLabel": "คำอธิบายสินค้า",
-      "descriptionPlaceholder": "อธิบายเกี่ยวกับแหล่งที่มา ความสดใหม่ และคุณภาพของสินค้าของคุณ",
-      "priceLabel": "ราคา (ต่อ กก./หน่วย)",
-      "pricePlaceholder": "0.00",
-      "quantityLabel": "จำนวนในสต็อก (กก./หน่วย)",
-      "quantityPlaceholder": "10",
-      "listProductButton": "ลงขายสินค้า"
-  },
-  "OrderTracking": {
-      "title": "ติดตามคำสั่งซื้อ",
-      "orderId": "รหัสคำสั่งซื้อ",
-      "statusTitle": "สถานะคำสั่งซื้อ",
-      "stepPlaced": "สั่งซื้อแล้ว",
-      "stepProcessing": "กำลังจัดหาวัตถุดิบ",
-      "stepOutForDelivery": "กำลังจัดส่ง",
-      "stepDelivered": "จัดส่งสำเร็จ",
-      "statusCompleted": "เสร็จสมบูรณ์",
-      "statusInProgress": "กำลังดำเนินการ",
-      "statusPending": "รอดำเนินการ",
-      "mapAlt": "แผนที่แสดงเส้นทางการจัดส่ง"
-  },
-  "ProductDetail": {
-      "addToCart": "เพิ่มลงตะกร้า",
-      "deliveryInfo": "มีบริการจัดส่งสดใหม่ในพื้นที่",
-      "customerReviews": "รีวิวจากลูกค้า"
-  },
-  "VendorProfile": {
-      "bannerAlt": "แบนเนอร์ร้านค้า",
-      "marketStall": "ร้านค้าในตลาด",
-      "productsFrom": "สินค้าจาก {vendorName}"
-  },
-  "CategoryAdmin": {
-    "pageTitle": "จัดการหมวดหมู่",
-    "addNewCategoryTitle": "เพิ่มหมวดหมู่ใหม่",
-    "addNewCategoryDescription": "สร้างหมวดหมู่สินค้าใหม่สำหรับตลาด",
-    "categoryNameLabel": "ชื่อหมวดหมู่",
-    "categoryNamePlaceholder": "เช่น, ผักออร์แกนิก",
-    "addCategoryButton": "เพิ่มหมวดหมู่",
-    "existingCategoriesTitle": "หมวดหมู่ที่มีอยู่",
-    "nameHeader": "ชื่อ",
-    "slugHeader": "Slug",
-    "toastSuccessTitle": "สำเร็จ",
-    "toastSuccessDescription": "เพิ่มหมวดหมู่เรียบร้อยแล้ว",
-    "toastErrorTitle": "ข้อผิดพลาด"
   }
 }

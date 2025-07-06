@@ -8,8 +8,7 @@
     "guestUser": "Guest User",
     "profile": "Profile",
     "vendorDashboard": "Vendor Dashboard",
-    "logout": "Log out",
-    "adminDashboardLink": "Category Management"
+    "logout": "Log out"
   },
   "HomePage": {
     "title": "Your Market, Delivered",
@@ -21,91 +20,5 @@
     "searchButton": "Search",
     "searchLabel": "Search products",
     "searchPlaceholder": "e.g., beef, cabbage"
-  },
-  "DriverRegistration": {
-    "title": "Become a Delivery Driver",
-    "description": "Join our network and earn by delivering fresh ingredients from local markets.",
-    "fullNameLabel": "Full Name",
-    "fullNamePlaceholder": "e.g., John Appleseed",
-    "emailLabel": "Email",
-    "emailPlaceholder": "you@example.com",
-    "phoneLabel": "Phone Number",
-    "phonePlaceholder": "+1 (555) 555-5555",
-    "vehicleTypeLabel": "Vehicle Type",
-    "motorcycle": "Motorcycle",
-    "car": "Car",
-    "locationNotice": "We'll use your location to connect you with nearby delivery requests.",
-    "submitButton": "Start Delivering"
-  },
-  "VendorRegistration": {
-    "title": "Become a Vendor",
-    "description": "Set up your stall and start selling fresh ingredients on TaladMan today.",
-    "storeNameLabel": "Stall Name",
-    "storeNamePlaceholder": "e.g., Auntie Nee's Veggies",
-    "emailLabel": "Email",
-    "emailPlaceholder": "you@example.com",
-    "passwordLabel": "Password",
-    "passwordPlaceholder": "Your secure password",
-    "submitButton": "Create My Stall",
-    "registrationSuccessTitle": "Registration Successful",
-    "registrationSuccess": "Your stall has been created! You can now list your products.",
-    "registrationFailedTitle": "Registration Failed",
-    "registrationFailed": "An error occurred. Please try again.",
-    "registrationFailedGeneric": "Something went wrong. Please try again later.",
-    "validation": {
-        "storeNameRequired": "Stall name is required.",
-        "invalidEmail": "Please enter a valid email address.",
-        "passwordLength": "Password must be at least 8 characters long."
-    }
-  },
-  "NewProduct": {
-      "title": "List a New Product",
-      "description": "Fill out the details below to list your fresh ingredients on the marketplace.",
-      "nameLabel": "Product Name",
-      "namePlaceholder": "e.g., Organic Cabbage",
-      "descriptionLabel": "Description",
-      "descriptionPlaceholder": "Describe the origin, freshness, and quality of your item.",
-      "priceLabel": "Price (per kg/unit)",
-      "pricePlaceholder": "0.00",
-      "quantityLabel": "Quantity in Stock (kg/units)",
-      "quantityPlaceholder": "10",
-      "listProductButton": "List Product"
-  },
-  "OrderTracking": {
-      "title": "Order Tracking",
-      "orderId": "Order ID",
-      "statusTitle": "Order Status",
-      "stepPlaced": "Order Placed",
-      "stepProcessing": "Sourcing Ingredients",
-      "stepOutForDelivery": "Out for Delivery",
-      "stepDelivered": "Delivered",
-      "statusCompleted": "Completed",
-      "statusInProgress": "In Progress",
-      "statusPending": "Pending",
-      "mapAlt": "Map showing delivery route"
-  },
-  "ProductDetail": {
-      "addToCart": "Add to Cart",
-      "deliveryInfo": "Fresh, local delivery available.",
-      "customerReviews": "Customer Reviews"
-  },
-  "VendorProfile": {
-      "bannerAlt": "Market stall banner",
-      "marketStall": "Market Stall",
-      "productsFrom": "Products from {vendorName}"
-  },
-  "CategoryAdmin": {
-    "pageTitle": "Manage Categories",
-    "addNewCategoryTitle": "Add New Category",
-    "addNewCategoryDescription": "Create a new product category for the marketplace.",
-    "categoryNameLabel": "Category Name",
-    "categoryNamePlaceholder": "e.g., Organic Produce",
-    "addCategoryButton": "Add Category",
-    "existingCategoriesTitle": "Existing Categories",
-    "nameHeader": "Name",
-    "slugHeader": "Slug",
-    "toastSuccessTitle": "Success",
-    "toastSuccessDescription": "Category added successfully.",
-    "toastErrorTitle": "Error"
   }
 }
