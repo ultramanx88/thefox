@@ -168,12 +168,24 @@
   },
   "AdminSettings": {
     "title": "System Settings",
-    "description": "Manage system-wide configurations, including API keys.",
+    "description": "Manage system-wide configurations, including API and payment gateways.",
     "apiKeyCardTitle": "API Keys",
-    "apiKeyCardDescription": "Enter the API keys for third-party services.",
+    "apiKeyCardDescription": "Enter the API keys for third-party services like Google AI.",
     "geminiApiKeyLabel": "Google Gemini API Key",
-    "geminiApiKeyPlaceholder": "Enter your Gemini API Key",
-    "saveButton": "Save Settings"
+    "saveButton": "Save Settings",
+    "paymentGatewayCardTitle": "Payment Gateway Settings",
+    "paymentGatewayCardDescription": "Configure your payment provider and API keys.",
+    "selectProviderLabel": "Select Active Payment Provider",
+    "stripe": "Stripe",
+    "omise": "Omise",
+    "qrCode": "Thai QR Code",
+    "stripeKeysLabel": "Stripe API Keys",
+    "omiseKeysLabel": "Omise API Keys",
+    "qrCodeInstructions": "QR Code payments are handled by the bank's application. No API key needed.",
+    "publishableKeyLabel": "Publishable Key",
+    "secretKeyLabel": "Secret Key",
+    "publishableKeyPlaceholder": "Enter your Publishable Key",
+    "secretKeyPlaceholder": "Enter your Secret Key"
   },
   "AdminFeeSimulator": {
     "title": "Fee Simulator",

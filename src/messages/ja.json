@@ -168,12 +168,24 @@
   },
   "AdminSettings": {
     "title": "システム設定",
-    "description": "APIキーを含むシステム全体の設定を管理します。",
+    "description": "APIキーや決済ゲートウェイなど、システム全体の設定を管理します。",
     "apiKeyCardTitle": "APIキー",
-    "apiKeyCardDescription": "サードパーティサービスのAPIキーを入力してください。",
+    "apiKeyCardDescription": "Google AIなどのサードパーティサービスのAPIキーを入力してください。",
     "geminiApiKeyLabel": "Google Gemini APIキー",
-    "geminiApiKeyPlaceholder": "Gemini APIキーを入力してください",
-    "saveButton": "設定を保存"
+    "saveButton": "設定を保存",
+    "paymentGatewayCardTitle": "決済ゲートウェイ設定",
+    "paymentGatewayCardDescription": "決済プロバイダーとAPIキーを設定します。",
+    "selectProviderLabel": "有効な決済プロバイダーを選択",
+    "stripe": "Stripe",
+    "omise": "Omise",
+    "qrCode": "タイのQRコード",
+    "stripeKeysLabel": "Stripe APIキー",
+    "omiseKeysLabel": "Omise APIキー",
+    "qrCodeInstructions": "QRコード決済は銀行のアプリケーションで処理されます。APIキーは不要です。",
+    "publishableKeyLabel": "公開可能キー",
+    "secretKeyLabel": "シークレットキー",
+    "publishableKeyPlaceholder": "公開可能キーを入力してください",
+    "secretKeyPlaceholder": "シークレットキーを入力してください"
   },
   "AdminFeeSimulator": {
     "title": "料金シミュレーター",

@@ -168,12 +168,24 @@
   },
   "AdminSettings": {
     "title": "시스템 설정",
-    "description": "API 키를 포함한 시스템 전체 구성을 관리합니다.",
+    "description": "API 키 및 결제 게이트웨이를 포함한 시스템 전체 구성을 관리합니다.",
     "apiKeyCardTitle": "API 키",
-    "apiKeyCardDescription": "타사 서비스의 API 키를 입력하십시오.",
+    "apiKeyCardDescription": "Google AI와 같은 타사 서비스의 API 키를 입력하십시오.",
     "geminiApiKeyLabel": "Google Gemini API 키",
-    "geminiApiKeyPlaceholder": "Gemini API 키를 입력하십시오",
-    "saveButton": "설정 저장"
+    "saveButton": "설정 저장",
+    "paymentGatewayCardTitle": "결제 게이트웨이 설정",
+    "paymentGatewayCardDescription": "결제 제공업체 및 API 키를 구성합니다.",
+    "selectProviderLabel": "활성 결제 제공업체 선택",
+    "stripe": "Stripe",
+    "omise": "Omise",
+    "qrCode": "태국 QR 코드",
+    "stripeKeysLabel": "Stripe API 키",
+    "omiseKeysLabel": "Omise API 키",
+    "qrCodeInstructions": "QR 코드 결제는 은행 애플리케이션에서 처리됩니다. API 키가 필요하지 않습니다.",
+    "publishableKeyLabel": "공개 가능 키",
+    "secretKeyLabel": "비밀 키",
+    "publishableKeyPlaceholder": "공개 가능 키를 입력하세요",
+    "secretKeyPlaceholder": "비밀 키를 입력하세요"
   },
   "AdminFeeSimulator": {
     "title": "수수료 시뮬레이터",

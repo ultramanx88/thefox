@@ -168,12 +168,24 @@
   },
   "AdminSettings": {
     "title": "ตั้งค่าระบบ",
-    "description": "จัดการการกำหนดค่าทั่วทั้งระบบ รวมถึงคีย์ API",
+    "description": "จัดการการตั้งค่าทั่วทั้งระบบ รวมถึง API และช่องทางการชำระเงิน",
     "apiKeyCardTitle": "คีย์ API",
-    "apiKeyCardDescription": "ป้อนคีย์ API สำหรับบริการของบุคคลที่สาม",
+    "apiKeyCardDescription": "ป้อนคีย์ API สำหรับบริการของบุคคลที่สาม เช่น Google AI",
     "geminiApiKeyLabel": "Google Gemini API Key",
-    "geminiApiKeyPlaceholder": "ป้อนคีย์ Gemini API ของคุณ",
-    "saveButton": "บันทึกการตั้งค่า"
+    "saveButton": "บันทึกการตั้งค่า",
+    "paymentGatewayCardTitle": "ตั้งค่าช่องทางการชำระเงิน",
+    "paymentGatewayCardDescription": "กำหนดค่าผู้ให้บริการชำระเงินและ API keys ของคุณ",
+    "selectProviderLabel": "เลือกผู้ให้บริการชำระเงินที่ใช้งาน",
+    "stripe": "Stripe",
+    "omise": "Omise",
+    "qrCode": "Thai QR Code",
+    "stripeKeysLabel": "Stripe API Keys",
+    "omiseKeysLabel": "Omise API Keys",
+    "qrCodeInstructions": "การชำระเงินด้วย QR Code จะจัดการผ่านแอปพลิเคชันของธนาคาร ไม่จำเป็นต้องใช้ API key",
+    "publishableKeyLabel": "Publishable Key",
+    "secretKeyLabel": "Secret Key",
+    "publishableKeyPlaceholder": "ป้อน Publishable Key ของคุณ",
+    "secretKeyPlaceholder": "ป้อน Secret Key ของคุณ"
   },
   "AdminFeeSimulator": {
     "title": "เครื่องมือจำลองค่าธรรมเนียม",
