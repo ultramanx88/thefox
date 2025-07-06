@@ -37,5 +37,51 @@
     "car": "Car",
     "locationNotice": "We'll use your location to connect you with nearby delivery requests.",
     "submitButton": "Start Delivering"
+  },
+  "VendorRegistration": {
+    "title": "Become a Vendor",
+    "description": "Set up your shop and start selling on TaladMan today.",
+    "storeNameLabel": "Store Name",
+    "storeNamePlaceholder": "e.g., Green Farms",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "submitButton": "Create My Store"
+  },
+  "NewProduct": {
+      "title": "Create a New Listing",
+      "description": "Fill out the details below to list your product on the marketplace.",
+      "nameLabel": "Product Name",
+      "namePlaceholder": "e.g., Handmade Ceramic Mug",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Describe your product's features, materials, and dimensions.",
+      "priceLabel": "Price",
+      "pricePlaceholder": "0.00",
+      "quantityLabel": "Quantity in Stock",
+      "quantityPlaceholder": "10",
+      "listProductButton": "List Product"
+  },
+  "OrderTracking": {
+      "title": "Order Tracking",
+      "orderId": "Order ID",
+      "statusTitle": "Order Status",
+      "stepPlaced": "Order Placed",
+      "stepProcessing": "Processing",
+      "stepOutForDelivery": "Out for Delivery",
+      "stepDelivered": "Delivered",
+      "statusCompleted": "Completed",
+      "statusInProgress": "In Progress",
+      "statusPending": "Pending",
+      "mapAlt": "Map showing delivery route"
+  },
+  "ProductDetail": {
+      "addToCart": "Add to Cart",
+      "deliveryInfo": "Fast, local delivery available.",
+      "customerReviews": "Customer Reviews"
+  },
+  "VendorProfile": {
+      "bannerAlt": "Vendor banner",
+      "location": "Local Farmer",
+      "productsFrom": "Products from {vendorName}"
   }
 }

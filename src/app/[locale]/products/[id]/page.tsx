@@ -6,10 +6,11 @@ import { Separator } from "@/components/ui/separator";
 import { Store, Truck } from "lucide-react";
 import Image from "next/image";
 import { Link } from '@/navigation';
-import {unstable_setRequestLocale} from 'next-intl/server';
+import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
-export default function ProductDetailPage({ params }: { params: { id: string, locale: string } }) {
+export default async function ProductDetailPage({ params }: { params: { id: string, locale: string } }) {
   unstable_setRequestLocale(params.locale);
+  const t = await getTranslations('ProductDetail');
   // Mock data for a single product
   const product = {
     id: '1',
@@ -61,12 +62,12 @@ export default function ProductDetailPage({ params }: { params: { id: string, lo
             <p className="text-foreground/80 leading-relaxed">{product.description}</p>
             
             <div className="mt-6">
-                <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90">Add to Cart</Button>
+                <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90">{t('addToCart')}</Button>
             </div>
 
             <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
                 <Truck className="h-4 w-4"/>
-                <span>Fast, local delivery available.</span>
+                <span>{t('deliveryInfo')}</span>
             </div>
         </div>
       </div>
@@ -74,7 +75,7 @@ export default function ProductDetailPage({ params }: { params: { id: string, lo
       <Separator className="my-12"/>
 
       <div>
-        <h2 className="font-headline text-3xl font-bold mb-6">Customer Reviews</h2>
+        <h2 className="font-headline text-3xl font-bold mb-6">{t('customerReviews')}</h2>
         <div className="space-y-6">
             {reviews.map(review => (
                 <Card key={review.id}>

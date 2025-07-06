@@ -37,5 +37,51 @@
     "car": "รถยนต์",
     "locationNotice": "เราจะใช้ตำแหน่งของคุณเพื่อเชื่อมต่อคุณกับคำขอจัดส่งในบริเวณใกล้เคียง",
     "submitButton": "เริ่มการจัดส่ง"
+  },
+  "VendorRegistration": {
+    "title": "มาเป็นผู้ขาย",
+    "description": "ตั้งร้านของคุณและเริ่มขายสินค้าบน TaladMan วันนี้",
+    "storeNameLabel": "ชื่อร้านค้า",
+    "storeNamePlaceholder": "เช่น กรีนฟาร์ม",
+    "emailLabel": "อีเมล",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "รหัสผ่าน",
+    "submitButton": "สร้างร้านค้าของฉัน"
+  },
+  "NewProduct": {
+      "title": "สร้างรายการสินค้าใหม่",
+      "description": "กรอกรายละเอียดด้านล่างเพื่อลงขายสินค้าของคุณบนตลาด",
+      "nameLabel": "ชื่อสินค้า",
+      "namePlaceholder": "เช่น แก้วเซรามิกทำมือ",
+      "descriptionLabel": "คำอธิบาย",
+      "descriptionPlaceholder": "อธิบายคุณสมบัติ, วัสดุ, และขนาดของสินค้าของคุณ",
+      "priceLabel": "ราคา",
+      "pricePlaceholder": "0.00",
+      "quantityLabel": "จำนวนสินค้าในสต็อก",
+      "quantityPlaceholder": "10",
+      "listProductButton": "ลงขายสินค้า"
+  },
+  "OrderTracking": {
+      "title": "ติดตามคำสั่งซื้อ",
+      "orderId": "รหัสคำสั่งซื้อ",
+      "statusTitle": "สถานะคำสั่งซื้อ",
+      "stepPlaced": "สั่งซื้อแล้ว",
+      "stepProcessing": "กำลังดำเนินการ",
+      "stepOutForDelivery": "กำลังจัดส่ง",
+      "stepDelivered": "จัดส่งสำเร็จ",
+      "statusCompleted": "เสร็จสมบูรณ์",
+      "statusInProgress": "กำลังดำเนินการ",
+      "statusPending": "รอดำเนินการ",
+      "mapAlt": "แผนที่แสดงเส้นทางการจัดส่ง"
+  },
+  "ProductDetail": {
+      "addToCart": "เพิ่มลงตะกร้า",
+      "deliveryInfo": "มีการจัดส่งที่รวดเร็วในพื้นที่",
+      "customerReviews": "รีวิวจากลูกค้า"
+  },
+  "VendorProfile": {
+      "bannerAlt": "แบนเนอร์ผู้ขาย",
+      "location": "เกษตรกรในพื้นที่",
+      "productsFrom": "สินค้าจาก {vendorName}"
   }
 }
