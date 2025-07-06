@@ -1,7 +1,7 @@
 // --- MOCK DATABASE ---
 // In a real application, this data would live in a database like Firestore or PostgreSQL.
 
-interface BankInfo {
+export interface BankInfo {
     bank_name: string;
     account_number: string;
     account_name: string;
@@ -110,6 +110,52 @@ if (dailyReports.length === 0) {
 }
 
 // --- API-like Functions ---
+
+/**
+ * Adds a new investor to the system.
+ * @param id The unique ID for the new investor.
+ * @param name The name of the investor.
+ * @param amount The investment amount. Must be at least 10,000.
+ * @param bank_info The investor's bank account information.
+ * @returns A status object with the result of the operation.
+ */
+export async function addInvestor(
+  id: string,
+  name: string,
+  amount: number,
+  bank_info: BankInfo
+): Promise<{ success: boolean; message: string; investorShare?: number }> {
+  // Validate minimum investment
+  if (amount < 10000) {
+    return { success: false, message: 'Minimum investment is 10,000 baht.' };
+  }
+
+  // Check if investor already exists
+  if (investors.find(inv => inv.id === id)) {
+    return { success: false, message: `Investor with ID ${id} already exists.` };
+  }
+
+  const newInvestor: Investor = {
+    id,
+    name,
+    total_investment: amount,
+    current_balance: 0,
+    total_earnings: 0,
+    join_date: new Date().toISOString().split('T')[0],
+    bank_info,
+  };
+
+  investors.push(newInvestor);
+
+  const total_investment_pool = investors.reduce((sum, inv) => sum + inv.total_investment, 0);
+  const investorShare = (amount / total_investment_pool) * 100;
+
+  return { 
+    success: true, 
+    message: `Investor ${name} added successfully.`,
+    investorShare: parseFloat(investorShare.toFixed(2))
+  };
+}
 
 export async function getInvestmentData() {
     const totalInvestment = investors.reduce((sum, inv) => sum + inv.total_investment, 0);
