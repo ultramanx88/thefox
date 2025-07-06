@@ -19,7 +19,7 @@ import { cn } from '@/lib/utils';
 const navLinks = [
   { href: '/', label: 'Marketplace' },
   { href: '/products/new', label: 'Sell Your Products' },
-  { href: '/register/shopper', label: 'Become a Shopper' },
+  { href: '/register/shopper', label: 'Become a Driver' },
 ];
 
 export function Header() {
