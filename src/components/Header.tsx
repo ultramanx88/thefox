@@ -28,7 +28,7 @@ export function Header() {
 
   const navLinks = [
     { href: '/', label: t('marketplace') },
-    { href: '/products/new', label: t('sellYourProducts') },
+    { href: '/register/vendor', label: t('becomeAVendor') },
     { href: '/register/shopper', label: t('becomeADriver') },
   ];
 
