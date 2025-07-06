@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Store, Truck } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from '@/navigation';
 import {unstable_setRequestLocale} from 'next-intl/server';
 
 export default function ProductDetailPage({ params }: { params: { id: string, locale: string } }) {

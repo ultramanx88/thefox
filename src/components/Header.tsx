@@ -1,6 +1,6 @@
 'use client';
 
-import { Link, usePathname, useRouter } from 'next-intl/navigation';
+import { usePathname, useRouter, Link } from '@/navigation';
 import { ShoppingCart, Store, Leaf, User, Menu, Globe } from 'lucide-react';
 import { Button } from './ui/button';
 import {
