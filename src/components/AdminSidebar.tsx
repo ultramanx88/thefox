@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Boxes, LayoutDashboard, Settings, Calculator, LineChart } from 'lucide-react';
+import { Boxes, LayoutDashboard, Settings, Calculator, LineChart, MapPin } from 'lucide-react';
 
 export function AdminSidebar({
   adminName,
@@ -25,6 +25,7 @@ export function AdminSidebar({
     { href: '/admin/investment', label: t('investment'), icon: LineChart },
     { href: '/admin/categories', label: t('categories'), icon: Boxes },
     { href: '/admin/fees', label: t('feeSimulator'), icon: Calculator },
+    { href: '/admin/service-areas', label: t('serviceAreas'), icon: MapPin },
     { href: '/admin/settings', label: t('settings'), icon: Settings },
   ];
 

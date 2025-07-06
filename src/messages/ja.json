@@ -156,7 +156,8 @@
       "categories": "カテゴリー",
       "settings": "設定",
       "feeSimulator": "料金シミュレーター",
-      "investment": "投資"
+      "investment": "投資",
+      "serviceAreas": "サービスエリア"
     },
     "main": {
       "title": "管理者ダッシュボード",
@@ -290,12 +291,56 @@
       "founderShare": "創設者の分け前"
     }
   },
+   "AdminServiceAreas": {
+    "title": "サービスエリア管理",
+    "description": "サービスが利用可能な都道府県や地区を追加、編集、削除します。",
+    "tableTitle": "現在のサービスエリア",
+    "addButton": "新しいエリアを追加",
+    "tableHeaders": {
+      "name": "エリア名",
+      "province": "都道府県",
+      "districts": "地区",
+      "status": "ステータス",
+      "actions": "アクション"
+    },
+    "noAreas": "サービスエリアがまだ設定されていません。",
+    "status": {
+      "active": "有効",
+      "inactive": "無効"
+    },
+    "editAction": "編集",
+    "deleteAction": "削除",
+    "dialog": {
+      "addTitle": "新しいサービスエリアを追加",
+      "editTitle": "サービスエリアを編集",
+      "description": "以下の詳細を入力してください。複数の地区はカンマで区切ってください。",
+      "nameLabel": "エリア名",
+      "namePlaceholder": "例：バンコク中心部",
+      "provinceLabel": "都道府県",
+      "provincePlaceholder": "例：バンコク",
+      "districtsLabel": "地区（カンマ区切り）",
+      "districtsPlaceholder": "例：パトゥムワン、サトーン",
+      "statusLabel": "有効",
+      "cancelButton": "キャンセル",
+      "saveButton": "変更を保存",
+      "createButton": "エリアを作成"
+    },
+    "deleteDialog": {
+      "title": "本当によろしいですか？",
+      "description": "これにより、<b>{areaName}</b> サービスエリアが完全に削除されます。この操作は元に戻せません。",
+      "confirmButton": "はい、削除します"
+    },
+    "toast": {
+      "addSuccess": "サービスエリアが正常に追加されました。",
+      "updateSuccess": "サービスエリアが正常に更新されました。",
+      "deleteSuccess": "サービスエリアが正常に削除されました。",
+      "error": "エラーが発生しました。もう一度お試しください。"
+    }
+  },
   "DeliveryJob": {
     "title": "配送詳細",
     "subtitle": "注文番号 #{orderId}",
     "pickupTitle": "ピックアップ場所",
-    "pickupDescription": "正確な店舗の場所（精度1〜5m）に移動してください。",
-    "deliveryTitle": "配送先住所",
     "deliveryDescription": "正確な顧客の配送先（精度1〜5m）に移動してください。",
     "getDirectionsButton": "GPSで経路案内",
     "confirmDeliveryButton": "配送完了を確認",

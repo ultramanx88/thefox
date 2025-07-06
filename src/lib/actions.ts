@@ -6,6 +6,11 @@ import { suggestProductCategory } from '@/ai/flows/suggest-product-category';
 import { revalidatePath } from 'next/cache';
 import { addCategory as addCategoryToDb } from '@/lib/categories';
 import { updateInvestorInfo, type BankInfo } from '@/lib/investment';
+import {
+  addServiceArea,
+  updateServiceArea,
+  deleteServiceArea,
+} from '@/lib/serviceAreas';
 
 export interface ActionState {
   error?: string;
@@ -123,5 +128,103 @@ export async function updateInvestorAction(
   } catch (e) {
     console.error(e);
     return { error: 'Failed to update investor.' };
+  }
+}
+
+
+// --- Service Area Actions ---
+
+export interface ServiceAreaActionState {
+  error?: string;
+  success?: boolean;
+}
+
+const serviceAreaSchema = z.object({
+  name: z.string().min(1, 'Name is required.'),
+  province: z.string().min(1, 'Province is required.'),
+  districts: z.string().min(1, 'At least one district is required.'),
+  status: z.enum(['active', 'inactive']),
+});
+
+export async function addServiceAreaAction(
+  prevState: ServiceAreaActionState,
+  formData: FormData
+): Promise<ServiceAreaActionState> {
+  const rawDistricts = (formData.get('districts') as string) || '';
+  const districts = rawDistricts.split(',').map(d => d.trim()).filter(Boolean);
+
+  const validatedFields = serviceAreaSchema.safeParse({
+    name: formData.get('name'),
+    province: formData.get('province'),
+    districts: districts.join(','), // Pass as string for validation
+    status: formData.get('status') === 'on' ? 'active' : 'inactive',
+  });
+
+  if (!validatedFields.success) {
+    return { error: 'Invalid data. Please check all fields.' };
+  }
+
+  try {
+    const { name, province, status } = validatedFields.data;
+    await addServiceArea({ name, province, districts, status });
+    revalidatePath('/admin/service-areas');
+    return { success: true };
+  } catch (e) {
+    console.error(e);
+    return { error: 'Failed to add service area.' };
+  }
+}
+
+export async function updateServiceAreaAction(
+  prevState: ServiceAreaActionState,
+  formData: FormData
+): Promise<ServiceAreaActionState> {
+  const id = formData.get('id') as string;
+  if (!id) {
+    return { error: 'Area ID is missing.' };
+  }
+
+  const rawDistricts = (formData.get('districts') as string) || '';
+  const districts = rawDistricts.split(',').map(d => d.trim()).filter(Boolean);
+
+  const validatedFields = serviceAreaSchema.safeParse({
+    name: formData.get('name'),
+    province: formData.get('province'),
+    districts: districts.join(','), // Pass as string for validation
+    status: formData.get('status') === 'on' ? 'active' : 'inactive',
+  });
+
+  if (!validatedFields.success) {
+    return { error: 'Invalid data. Please check all fields.' };
+  }
+
+  try {
+    const { name, province, status } = validatedFields.data;
+    await updateServiceArea(id, { name, province, districts, status });
+    revalidatePath('/admin/service-areas');
+    return { success: true };
+  } catch (e) {
+    console.error(e);
+    return { error: 'Failed to update service area.' };
+  }
+}
+
+
+export async function deleteServiceAreaAction(
+  prevState: ServiceAreaActionState,
+  formData: FormData
+): Promise<ServiceAreaActionState> {
+  const id = formData.get('id') as string;
+  if (!id) {
+    return { error: 'Area ID is missing.' };
+  }
+
+  try {
+    await deleteServiceArea(id);
+    revalidatePath('/admin/service-areas');
+    return { success: true };
+  } catch (e) {
+    console.error(e);
+    return { error: 'Failed to delete service area.' };
   }
 }

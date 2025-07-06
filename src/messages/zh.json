@@ -156,7 +156,8 @@
       "categories": "分类",
       "settings": "系统设置",
       "feeSimulator": "费用模拟器",
-      "investment": "投资管理"
+      "investment": "投资管理",
+      "serviceAreas": "服务区域"
     },
     "main": {
       "title": "管理员仪表板",
@@ -288,6 +289,52 @@
       "dailyRevenue": "每日收入",
       "investorPool": "投资者资金池",
       "founderShare": "创始人份额"
+    }
+  },
+  "AdminServiceAreas": {
+    "title": "管理服务区域",
+    "description": "添加、编辑或删除您的服务可用的省份和地区。",
+    "tableTitle": "当前服务区域",
+    "addButton": "添加新区域",
+    "tableHeaders": {
+      "name": "区域名称",
+      "province": "省份",
+      "districts": "地区",
+      "status": "状态",
+      "actions": "操作"
+    },
+    "noAreas": "尚未配置服务区域。",
+    "status": {
+      "active": "活动",
+      "inactive": "非活动"
+    },
+    "editAction": "编辑",
+    "deleteAction": "删除",
+    "dialog": {
+      "addTitle": "添加新服务区域",
+      "editTitle": "编辑服务区域",
+      "description": "填写以下详细信息。对于多个地区，请用逗号分隔。",
+      "nameLabel": "区域名称",
+      "namePlaceholder": "例如，曼谷市中心",
+      "provinceLabel": "省份",
+      "provincePlaceholder": "例如，曼谷",
+      "districtsLabel": "地区（逗号分隔）",
+      "districtsPlaceholder": "例如，巴吞湾, 沙吞",
+      "statusLabel": "活动",
+      "cancelButton": "取消",
+      "saveButton": "保存更改",
+      "createButton": "创建区域"
+    },
+    "deleteDialog": {
+      "title": "您确定吗？",
+      "description": "这将永久删除 <b>{areaName}</b> 服务区域。此操作无法撤销。",
+      "confirmButton": "是的，删除区域"
+    },
+    "toast": {
+      "addSuccess": "服务区域添加成功。",
+      "updateSuccess": "服务区域更新成功。",
+      "deleteSuccess": "服务区域删除成功。",
+      "error": "发生错误。请再试一次。"
     }
   },
    "DeliveryJob": {

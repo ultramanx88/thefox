@@ -156,7 +156,8 @@
       "categories": "Categories",
       "settings": "Settings",
       "feeSimulator": "Fee Simulator",
-      "investment": "Investment"
+      "investment": "Investment",
+      "serviceAreas": "Service Areas"
     },
     "main": {
       "title": "Admin Dashboard",
@@ -288,6 +289,52 @@
       "dailyRevenue": "Daily Revenue",
       "investorPool": "Investor Pool",
       "founderShare": "Founder's Share"
+    }
+  },
+  "AdminServiceAreas": {
+    "title": "Manage Service Areas",
+    "description": "Add, edit, or remove provinces and districts where your service is available.",
+    "tableTitle": "Current Service Areas",
+    "addButton": "Add New Area",
+    "tableHeaders": {
+      "name": "Area Name",
+      "province": "Province",
+      "districts": "Districts",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "noAreas": "No service areas have been configured yet.",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "editAction": "Edit",
+    "deleteAction": "Delete",
+    "dialog": {
+      "addTitle": "Add New Service Area",
+      "editTitle": "Edit Service Area",
+      "description": "Fill in the details below. For multiple districts, separate each with a comma.",
+      "nameLabel": "Area Name",
+      "namePlaceholder": "e.g., Central Bangkok",
+      "provinceLabel": "Province",
+      "provincePlaceholder": "e.g., Bangkok",
+      "districtsLabel": "Districts (comma-separated)",
+      "districtsPlaceholder": "e.g., Pathum Wan, Sathon",
+      "statusLabel": "Active",
+      "cancelButton": "Cancel",
+      "saveButton": "Save Changes",
+      "createButton": "Create Area"
+    },
+    "deleteDialog": {
+      "title": "Are you absolutely sure?",
+      "description": "This will permanently delete the <b>{areaName}</b> service area. This action cannot be undone.",
+      "confirmButton": "Yes, delete area"
+    },
+    "toast": {
+      "addSuccess": "Service area added successfully.",
+      "updateSuccess": "Service area updated successfully.",
+      "deleteSuccess": "Service area deleted successfully.",
+      "error": "An error occurred. Please try again."
     }
   },
   "DeliveryJob": {

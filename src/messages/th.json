@@ -156,7 +156,8 @@
       "categories": "หมวดหมู่",
       "settings": "ตั้งค่า",
       "feeSimulator": "เครื่องมือจำลองค่าธรรมเนียม",
-      "investment": "การลงทุน"
+      "investment": "การลงทุน",
+      "serviceAreas": "พื้นที่บริการ"
     },
     "main": {
       "title": "แดชบอร์ดผู้ดูแลระบบ",
@@ -288,6 +289,52 @@
       "dailyRevenue": "รายได้ประจำวัน",
       "investorPool": "ส่วนแบ่งนักลงทุน",
       "founderShare": "ส่วนแบ่งผู้ก่อตั้ง"
+    }
+  },
+  "AdminServiceAreas": {
+    "title": "จัดการพื้นที่บริการ",
+    "description": "เพิ่ม แก้ไข หรือลบจังหวัดและอำเภอที่ให้บริการ",
+    "tableTitle": "พื้นที่บริการปัจจุบัน",
+    "addButton": "เพิ่มพื้นที่ใหม่",
+    "tableHeaders": {
+      "name": "ชื่อพื้นที่",
+      "province": "จังหวัด",
+      "districts": "อำเภอ",
+      "status": "สถานะ",
+      "actions": "การดำเนินการ"
+    },
+    "noAreas": "ยังไม่มีการกำหนดค่าพื้นที่บริการ",
+    "status": {
+      "active": "ใช้งาน",
+      "inactive": "ไม่ใช้งาน"
+    },
+    "editAction": "แก้ไข",
+    "deleteAction": "ลบ",
+    "dialog": {
+      "addTitle": "เพิ่มพื้นที่บริการใหม่",
+      "editTitle": "แก้ไขพื้นที่บริการ",
+      "description": "กรอกรายละเอียดด้านล่าง หากมีหลายอำเภอให้คั่นด้วยเครื่องหมายจุลภาค (,)",
+      "nameLabel": "ชื่อพื้นที่",
+      "namePlaceholder": "เช่น กรุงเทพฯ ชั้นใน",
+      "provinceLabel": "จังหวัด",
+      "provincePlaceholder": "เช่น กรุงเทพมหานคร",
+      "districtsLabel": "อำเภอ (คั่นด้วยจุลภาค)",
+      "districtsPlaceholder": "เช่น ปทุมวัน, สาทร",
+      "statusLabel": "เปิดใช้งาน",
+      "cancelButton": "ยกเลิก",
+      "saveButton": "บันทึกการเปลี่ยนแปลง",
+      "createButton": "สร้างพื้นที่"
+    },
+    "deleteDialog": {
+      "title": "คุณแน่ใจหรือไม่?",
+      "description": "การดำเนินการนี้จะลบพื้นที่บริการ <b>{areaName}</b> อย่างถาวรและไม่สามารถย้อนกลับได้",
+      "confirmButton": "ใช่, ลบพื้นที่"
+    },
+    "toast": {
+      "addSuccess": "เพิ่มพื้นที่บริการเรียบร้อยแล้ว",
+      "updateSuccess": "อัปเดตพื้นที่บริการเรียบร้อยแล้ว",
+      "deleteSuccess": "ลบพื้นที่บริการเรียบร้อยแล้ว",
+      "error": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
     }
   },
   "DeliveryJob": {
