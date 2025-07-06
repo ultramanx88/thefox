@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
 export default function AdminSettingsPage() {
   const t = useTranslations('AdminSettings');
@@ -48,6 +49,34 @@ export default function AdminSettingsPage() {
                 />
               </div>
               <Button type="submit">{t('saveButton')}</Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('firebaseCardTitle')}</CardTitle>
+            <CardDescription>{t('firebaseCardDescription')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-4 max-w-lg">
+              <div className="space-y-2">
+                <Label htmlFor="firebase-service-account">{t('serviceAccountJsonLabel')}</Label>
+                <Textarea
+                  id="firebase-service-account"
+                  placeholder={t('serviceAccountJsonPlaceholder')}
+                  rows={8}
+                />
+              </div>
+               <div className="space-y-2">
+                <Label htmlFor="firebase-web-api-key">{t('webApiKeyLabel')}</Label>
+                <Input
+                  id="firebase-web-api-key"
+                  placeholder={t('webApiKeyPlaceholder')}
+                />
+                 <p className="text-xs text-muted-foreground">{t('webApiKeyDescription')}</p>
+              </div>
+              <Button type="submit">{t('saveFirebaseButton')}</Button>
             </form>
           </CardContent>
         </Card>
