@@ -1,7 +1,8 @@
 'use client';
 
-import Link from 'next/link';
-import { ShoppingCart, Store, Leaf, User, Menu } from 'lucide-react';
+import { usePathname, useRouter } from 'next-intl/navigation';
+import Link from 'next-intl/link';
+import { ShoppingCart, Store, Leaf, User, Menu, Globe } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -10,20 +11,51 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
-import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-
-const navLinks = [
-  { href: '/', label: 'Marketplace' },
-  { href: '/products/new', label: 'Sell Your Products' },
-  { href: '/register/shopper', label: 'Become a Driver' },
-];
+import { useTranslations, useLocale } from 'next-intl';
+import React, { useTransition } from 'react';
 
 export function Header() {
+  const t = useTranslations('Header');
   const pathname = usePathname();
+  const router = useRouter();
+  const locale = useLocale();
+  const [isPending, startTransition] = useTransition();
+
+  const navLinks = [
+    { href: '/', label: t('marketplace') },
+    { href: '/products/new', label: t('sellYourProducts') },
+    { href: '/register/shopper', label: t('becomeADriver') },
+  ];
+
+  function onSelectLocale(nextLocale: string) {
+    startTransition(() => {
+      router.replace(pathname, {locale: nextLocale});
+    });
+  }
+
+  const LanguageSwitcher = () => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" disabled={isPending}>
+          <Globe className="h-5 w-5" />
+          <span className="sr-only">Change language</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuRadioGroup value={locale} onValueChange={onSelectLocale}>
+            <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="th">ไทย</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="zh">中文</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 
   const NavLinks = ({ className }: { className?: string }) => (
     <nav className={cn('flex items-center space-x-4 lg:space-x-6', className)}>
@@ -88,9 +120,10 @@ export function Header() {
         </div>
 
         <div className="flex flex-1 items-center justify-end space-x-2">
+          <LanguageSwitcher />
           <Button variant="ghost" size="icon">
             <ShoppingCart className="h-5 w-5" />
-            <span className="sr-only">Cart</span>
+            <span className="sr-only">{t('cart')}</span>
           </Button>
 
           <DropdownMenu>
@@ -105,7 +138,7 @@ export function Header() {
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">Guest User</p>
+                  <p className="text-sm font-medium leading-none">{t('guestUser')}</p>
                   <p className="text-xs leading-none text-muted-foreground">
                     guest@taladman.com
                   </p>
@@ -114,15 +147,15 @@ export function Header() {
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
+                <span>{t('profile')}</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Store className="mr-2 h-4 w-4" />
-                <Link href="/register/vendor">Vendor Dashboard</Link>
+                <Link href="/register/vendor">{t('vendorDashboard')}</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <span>Log out</span>
+                <span>{t('logout')}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

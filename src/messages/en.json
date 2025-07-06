@@ -1,0 +1,31 @@
+{
+  "Header": {
+    "marketplace": "Marketplace",
+    "sellYourProducts": "Sell Your Products",
+    "becomeADriver": "Become a Driver",
+    "cart": "Cart",
+    "guestUser": "Guest User",
+    "profile": "Profile",
+    "vendorDashboard": "Vendor Dashboard",
+    "logout": "Log out"
+  },
+  "HomePage": {
+    "title": "Explore Fresh Finds",
+    "subtitle": "Discover unique items from local vendors and personal shoppers near you."
+  },
+  "DriverRegistration": {
+    "title": "Become a Delivery Driver",
+    "description": "Join our delivery network and start earning by delivering goods.",
+    "fullNameLabel": "Full Name",
+    "fullNamePlaceholder": "e.g., John Appleseed",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "+1 (555) 555-5555",
+    "vehicleTypeLabel": "Vehicle Type",
+    "motorcycle": "Motorcycle",
+    "car": "Car",
+    "locationNotice": "We'll use your location to connect you with nearby delivery requests.",
+    "submitButton": "Start Delivering"
+  }
+}

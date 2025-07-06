@@ -1,0 +1,31 @@
+{
+  "Header": {
+    "marketplace": "市场",
+    "sellYourProducts": "销售您的产品",
+    "becomeADriver": "成为司机",
+    "cart": "购物车",
+    "guestUser": "访客用户",
+    "profile": "个人资料",
+    "vendorDashboard": "供应商仪表板",
+    "logout": "登出"
+  },
+  "HomePage": {
+    "title": "探索新鮮發現",
+    "subtitle": "發現您附近本地供應商和個人購物者的獨特商品。"
+  },
+  "DriverRegistration": {
+    "title": "成为送货司机",
+    "description": "加入我们的配送网络，通过配送货物开始赚钱。",
+    "fullNameLabel": "全名",
+    "fullNamePlaceholder": "例如，张三",
+    "emailLabel": "电子邮件",
+    "emailPlaceholder": "you@example.com",
+    "phoneLabel": "电话号码",
+    "phonePlaceholder": "+86 1xx-xxxx-xxxx",
+    "vehicleTypeLabel": "车辆类型",
+    "motorcycle": "摩托车",
+    "car": "汽车",
+    "locationNotice": "我们将使用您的位置将您与附近的送货请求联系起来。",
+    "submitButton": "开始配送"
+  }
+}

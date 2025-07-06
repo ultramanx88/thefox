@@ -1,0 +1,31 @@
+{
+  "Header": {
+    "marketplace": "ตลาด",
+    "sellYourProducts": "ขายสินค้าของคุณ",
+    "becomeADriver": "มาเป็นคนขับ",
+    "cart": "ตะกร้าสินค้า",
+    "guestUser": "ผู้ใช้ทั่วไป",
+    "profile": "โปรไฟล์",
+    "vendorDashboard": "แดชบอร์ดผู้ขาย",
+    "logout": "ออกจากระบบ"
+  },
+  "HomePage": {
+    "title": "สำรวจของสดใหม่",
+    "subtitle": "ค้นพบสินค้าที่ไม่เหมือนใครจากผู้ขายในท้องถิ่นและนักช้อปส่วนตัวใกล้บ้านคุณ"
+  },
+  "DriverRegistration": {
+    "title": "มาเป็นคนขับรถส่งของ",
+    "description": "เข้าร่วมเครือข่ายการจัดส่งของเราและเริ่มสร้างรายได้จากการจัดส่งสินค้า",
+    "fullNameLabel": "ชื่อ-นามสกุล",
+    "fullNamePlaceholder": "เช่น จอห์น แอปเปิ้ลซี้ด",
+    "emailLabel": "อีเมล",
+    "emailPlaceholder": "you@example.com",
+    "phoneLabel": "เบอร์โทรศัพท์",
+    "phonePlaceholder": "+66 (xx) xxx-xxxx",
+    "vehicleTypeLabel": "ประเภทของยานพาหนะ",
+    "motorcycle": "มอเตอร์ไซค์",
+    "car": "รถยนต์",
+    "locationNotice": "เราจะใช้ตำแหน่งของคุณเพื่อเชื่อมต่อคุณกับคำขอจัดส่งในบริเวณใกล้เคียง",
+    "submitButton": "เริ่มการจัดส่ง"
+  }
+}
