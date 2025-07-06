@@ -22,9 +22,8 @@ export type ServiceArea = AdministrativeArea | RadiusArea;
 
 // In a real application, this would be a database.
 let serviceAreas: ServiceArea[] = [
-  { id: 'area-1', type: 'administrative', name: 'Central Business District', province: 'Bangkok', districts: ['Pathum Wan', 'Bang Rak', 'Sathon'], status: 'active' },
-  { id: 'area-2', type: 'radius', name: 'Chiang Mai City Center', lat: 18.7883, lng: 98.9853, radius: 8, status: 'active' },
-  { id: 'area-3', type: 'administrative', name: 'Sukhumvit Area', province: 'Bangkok', districts: ['Khlong Toei', 'Watthana'], status: 'inactive' },
+  { id: 'area-1', type: 'radius', name: 'ตัวเมืองเชียงใหม่', lat: 18.7883, lng: 98.9853, radius: 10, status: 'active' },
+  { id: 'area-2', type: 'administrative', name: 'อำเภอรอบนอกเชียงใหม่', province: 'เชียงใหม่', districts: ['สันทราย', 'สันกำแพง', 'สารภี', 'หางดง', 'แม่ริม'], status: 'active' },
 ];
 
 export async function getServiceAreas(): Promise<ServiceArea[]> {
