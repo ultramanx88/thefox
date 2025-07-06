@@ -17,8 +17,10 @@
     "categoryLabel": "类别",
     "allCategories": "所有类别",
     "locationLabel": "附近市场",
-    "locationPlaceholder": "例如，曼谷空堤市场",
-    "searchButton": "搜索"
+    "locationPlaceholder": "例如，空堤市场",
+    "searchButton": "搜索",
+    "searchLabel": "搜索产品",
+    "searchPlaceholder": "例如，牛肉，卷心菜"
   },
   "DriverRegistration": {
     "title": "成为配送司机",

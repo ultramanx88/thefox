@@ -17,8 +17,10 @@
     "categoryLabel": "Category",
     "allCategories": "All Categories",
     "locationLabel": "Nearby Market",
-    "locationPlaceholder": "e.g., Klong Toey Market, Bangkok",
-    "searchButton": "Search"
+    "locationPlaceholder": "e.g., Klong Toey Market",
+    "searchButton": "Search",
+    "searchLabel": "Search products",
+    "searchPlaceholder": "e.g., beef, cabbage"
   },
   "DriverRegistration": {
     "title": "Become a Delivery Driver",

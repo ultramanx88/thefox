@@ -17,8 +17,10 @@
     "categoryLabel": "หมวดหมู่",
     "allCategories": "ทุกหมวดหมู่",
     "locationLabel": "ตลาดใกล้เคียง",
-    "locationPlaceholder": "เช่น ตลาดคลองเตย, กรุงเทพฯ",
-    "searchButton": "ค้นหา"
+    "locationPlaceholder": "เช่น ตลาดคลองเตย",
+    "searchButton": "ค้นหา",
+    "searchLabel": "ค้นหาสินค้า",
+    "searchPlaceholder": "เช่น เนื้อวัว, กะหล่ำปลี"
   },
   "DriverRegistration": {
     "title": "สมัครเป็นคนขับส่งของ",
