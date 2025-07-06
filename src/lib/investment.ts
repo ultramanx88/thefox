@@ -240,7 +240,15 @@ function processWithdrawal(details: {
   amount: number;
   type: 'auto' | 'manual';
   bank_info: BankInfo;
-}): { success: boolean; message: string; withdrawal_id?: string } {
+}): {
+    success: boolean;
+    message?: string;
+    withdrawal_id?: string;
+    amount?: number;
+    status?: 'processing' | 'completed' | 'failed';
+    estimated_completion?: string;
+    transaction_reference?: string;
+  } {
     const investor = investors.find(inv => inv.id === details.investor_id);
 
     if (!investor) {
@@ -271,7 +279,14 @@ function processWithdrawal(details: {
 
     console.log(`Processed ${details.type} withdrawal for ${investor.name}: ${details.amount} THB`);
 
-    return { success: true, message: 'Withdrawal processed successfully.', withdrawal_id };
+    return { 
+        success: true,
+        withdrawal_id: newWithdrawal.withdrawal_id,
+        amount: newWithdrawal.amount,
+        status: newWithdrawal.status,
+        estimated_completion: newWithdrawal.completed_at,
+        transaction_reference: newWithdrawal.transaction_id,
+    };
 }
 
 
