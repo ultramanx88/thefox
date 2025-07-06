@@ -144,7 +144,8 @@
     "sidebar": {
       "superAdmin": "최고 관리자",
       "dashboard": "대시보드",
-      "categories": "카테고리"
+      "categories": "카테고리",
+      "settings": "설정"
     },
     "main": {
       "title": "관리자 대시보드",
@@ -155,6 +156,15 @@
         "totalProducts": "총 상품"
       }
     }
+  },
+  "AdminSettings": {
+    "title": "시스템 설정",
+    "description": "API 키를 포함한 시스템 전체 구성을 관리합니다.",
+    "apiKeyCardTitle": "API 키",
+    "apiKeyCardDescription": "타사 서비스의 API 키를 입력하십시오.",
+    "geminiApiKeyLabel": "Google Gemini API 키",
+    "geminiApiKeyPlaceholder": "Gemini API 키를 입력하십시오",
+    "saveButton": "설정 저장"
   },
   "DeliveryJob": {
     "title": "배송 상세 정보",
@@ -321,5 +331,3 @@
     "downloadExcelButton": "Excel 다운로드"
   }
 }
-
-    

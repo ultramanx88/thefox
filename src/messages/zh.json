@@ -144,7 +144,8 @@
     "sidebar": {
       "superAdmin": "超级管理员",
       "dashboard": "仪表板",
-      "categories": "分类"
+      "categories": "分类",
+      "settings": "系统设置"
     },
     "main": {
       "title": "管理员仪表板",
@@ -155,6 +156,15 @@
         "totalProducts": "总产品"
       }
     }
+  },
+  "AdminSettings": {
+    "title": "系统设置",
+    "description": "管理系统范围的配置，包括 API 密钥。",
+    "apiKeyCardTitle": "API 密钥",
+    "apiKeyCardDescription": "输入第三方服务的 API 密钥。",
+    "geminiApiKeyLabel": "Google Gemini API 密钥",
+    "geminiApiKeyPlaceholder": "输入您的 Gemini API 密钥",
+    "saveButton": "保存设置"
   },
    "DeliveryJob": {
     "title": "配送详情",

@@ -144,7 +144,8 @@
     "sidebar": {
       "superAdmin": "Super Admin",
       "dashboard": "Dashboard",
-      "categories": "Categories"
+      "categories": "Categories",
+      "settings": "Settings"
     },
     "main": {
       "title": "Admin Dashboard",
@@ -155,6 +156,15 @@
         "totalProducts": "Total Products"
       }
     }
+  },
+  "AdminSettings": {
+    "title": "System Settings",
+    "description": "Manage system-wide configurations, including API keys.",
+    "apiKeyCardTitle": "API Keys",
+    "apiKeyCardDescription": "Enter the API keys for third-party services.",
+    "geminiApiKeyLabel": "Google Gemini API Key",
+    "geminiApiKeyPlaceholder": "Enter your Gemini API Key",
+    "saveButton": "Save Settings"
   },
   "DeliveryJob": {
     "title": "Delivery Details",

@@ -144,7 +144,8 @@
     "sidebar": {
       "superAdmin": "スーパー管理者",
       "dashboard": "ダッシュボード",
-      "categories": "カテゴリー"
+      "categories": "カテゴリー",
+      "settings": "設定"
     },
     "main": {
       "title": "管理者ダッシュボード",
@@ -155,6 +156,15 @@
         "totalProducts": "総商品数"
       }
     }
+  },
+  "AdminSettings": {
+    "title": "システム設定",
+    "description": "APIキーを含むシステム全体の設定を管理します。",
+    "apiKeyCardTitle": "APIキー",
+    "apiKeyCardDescription": "サードパーティサービスのAPIキーを入力してください。",
+    "geminiApiKeyLabel": "Google Gemini APIキー",
+    "geminiApiKeyPlaceholder": "Gemini APIキーを入力してください",
+    "saveButton": "設定を保存"
   },
   "DeliveryJob": {
     "title": "配送詳細",
@@ -321,5 +331,3 @@
     "downloadExcelButton": "Excelをダウンロード"
   }
 }
-
-    

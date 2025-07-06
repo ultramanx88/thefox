@@ -144,7 +144,8 @@
     "sidebar": {
       "superAdmin": "ผู้ดูแลสูงสุด",
       "dashboard": "แดชบอร์ด",
-      "categories": "หมวดหมู่"
+      "categories": "หมวดหมู่",
+      "settings": "ตั้งค่า"
     },
     "main": {
       "title": "แดชบอร์ดผู้ดูแลระบบ",
@@ -155,6 +156,15 @@
         "totalProducts": "สินค้าทั้งหมด"
       }
     }
+  },
+  "AdminSettings": {
+    "title": "ตั้งค่าระบบ",
+    "description": "จัดการการกำหนดค่าทั่วทั้งระบบ รวมถึงคีย์ API",
+    "apiKeyCardTitle": "คีย์ API",
+    "apiKeyCardDescription": "ป้อนคีย์ API สำหรับบริการของบุคคลที่สาม",
+    "geminiApiKeyLabel": "Google Gemini API Key",
+    "geminiApiKeyPlaceholder": "ป้อนคีย์ Gemini API ของคุณ",
+    "saveButton": "บันทึกการตั้งค่า"
   },
   "DeliveryJob": {
     "title": "รายละเอียดงานจัดส่ง",
