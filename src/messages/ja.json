@@ -1,0 +1,323 @@
+
+{
+  "Header": {
+    "marketplace": "Marketplace",
+    "becomeAVendor": "Become a Vendor",
+    "becomeADriver": "Become a Driver",
+    "cart": "Cart",
+    "guestUser": "Guest User",
+    "profile": "Profile",
+    "myOrders": "My Orders",
+    "vendorDashboard": "Vendor Dashboard",
+    "driverDashboard": "Driver Dashboard",
+    "adminDashboard": "Admin Dashboard",
+    "logout": "Log out"
+  },
+  "HomePage": {
+    "title": "Your Market, Delivered",
+    "subtitle": "Discover fresh ingredients from local markets, delivered directly to your restaurant.",
+    "categoryLabel": "Category",
+    "allCategories": "All Categories",
+    "locationLabel": "Nearby Market",
+    "locationPlaceholder": "e.g., Klong Toey Market",
+    "searchButton": "Search",
+    "searchLabel": "Search products",
+    "searchPlaceholder": "e.g., beef, cabbage"
+  },
+  "CategoryAdmin": {
+    "pageTitle": "Manage Categories",
+    "existingCategoriesTitle": "Existing Categories",
+    "nameHeader": "Name",
+    "slugHeader": "Slug",
+    "addNewCategoryTitle": "Add New Category",
+    "addNewCategoryDescription": "Create a new product category for your marketplace.",
+    "categoryNameLabel": "Category Name",
+    "categoryNamePlaceholder": "e.g., Fresh Vegetables",
+    "addCategoryButton": "Add Category",
+    "toastSuccessTitle": "Success!",
+    "toastSuccessDescription": "The new category has been added.",
+    "toastErrorTitle": "Error",
+    "toastErrorDescription": "Failed to add the category. Please try again."
+  },
+  "ProductDetail": {
+    "addToCart": "Add to Cart",
+    "deliveryInfo": "Standard delivery within 24 hours",
+    "customerReviews": "Customer Reviews",
+    "scheduling": {
+      "title": "Delivery Options",
+      "deliverNow": "Deliver Now",
+      "scheduleLater": "Schedule for Later",
+      "selectDate": "Select a date",
+      "selectTime": "Select a time slot",
+      "timeSlots": {
+        "slot1": "09:00 - 10:00",
+        "slot2": "10:00 - 11:00",
+        "slot3": "11:00 - 12:00",
+        "slot4": "13:00 - 14:00",
+        "slot5": "14:00 - 15:00"
+      }
+    }
+  },
+  "NewProduct": {
+    "title": "List a New Product",
+    "description": "Fill in the details below to add a new product to your store.",
+    "nameLabel": "Product Name",
+    "namePlaceholder": "e.g., Organic Cabbage",
+    "descriptionLabel": "Product Description",
+    "descriptionPlaceholder": "Describe your product...",
+    "priceLabel": "Price (THB)",
+    "pricePlaceholder": "e.g., 35",
+    "quantityLabel": "Stock Quantity",
+    "quantityPlaceholder": "e.g., 100",
+    "listProductButton": "List Product",
+    "allowedVehiclesLabel": "Allowed Vehicle Types",
+    "allowedVehiclesDescription": "Select which vehicle types can be used to deliver this product.",
+    "motorcycle": "Motorcycle",
+    "car": "Car",
+    "truck": "Pickup Truck"
+  },
+  "VendorRegistration": {
+    "title": "Become a Vendor",
+    "description": "Join our marketplace and start selling your products.",
+    "storeNameLabel": "Store Name",
+    "storeNamePlaceholder": "e.g., Pa Nee's Vegetable Stall",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "submitButton": "Register Store",
+    "registrationSuccessTitle": "Registration Successful!",
+    "registrationSuccess": "Your store is now registered. Welcome!",
+    "registrationFailedTitle": "Registration Failed",
+    "registrationFailedGeneric": "An unexpected error occurred. Please try again.",
+    "validation": {
+      "storeNameRequired": "Store name is required.",
+      "invalidEmail": "Please enter a valid email address.",
+      "passwordLength": "Password must be at least 8 characters."
+    }
+  },
+  "DriverRegistration": {
+    "title": "Become a Driver",
+    "description": "Join our delivery fleet and start earning.",
+    "fullNameLabel": "Full Name",
+    "fullNamePlaceholder": "e.g., Somchai Jaidee",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "you@example.com",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "081-234-5678",
+    "vehicleTypeLabel": "Primary Vehicle Type",
+    "motorcycle": "Motorcycle",
+    "car": "Car",
+    "truck": "Pickup Truck",
+    "submitButton": "Register as Driver",
+    "documentsTitle": "Required Documents",
+    "documentsDescription": "Please upload clear photos of the following documents. Approval from our staff is required before you can start driving.",
+    "idCardLabel": "National ID Card",
+    "driverLicenseLabel": "Driver's License",
+    "vehicleRegistrationLabel": "Vehicle Registration Book",
+    "vehicleRegistrationDescription": "Upload one for each vehicle type you register.",
+    "approvalNotice": "After submission, our staff will review your documents. You will be notified once your account is approved."
+  },
+  "OrderTracking": {
+    "title": "Track Your Order",
+    "orderId": "Order ID",
+    "statusTitle": "Order Status",
+    "mapAlt": "Map showing delivery route",
+    "stepVendorReceived": "Vendor Received Order",
+    "stepVendorPreparing": "Preparing Order",
+    "stepDriverPickup": "Driver Picking Up",
+    "stepOutForDelivery": "Out for Delivery",
+    "stepDelivered": "Delivered",
+    "statusCompleted": "Completed",
+    "statusInProgress": "In Progress",
+    "statusPending": "Pending",
+    "driverProfileTitle": "Your Driver"
+  },
+  "VendorProfile": {
+    "bannerAlt": "Vendor's store banner",
+    "marketStall": "Market Stall",
+    "productsFrom": "Products from {vendorName}",
+    "closingSoonTitle": "Store Closing Soon",
+    "closingSoonDescription": "This store will stop accepting new orders in less than 30 minutes."
+  },
+  "AdminDashboard": {
+    "sidebar": {
+      "superAdmin": "Super Admin",
+      "dashboard": "Dashboard",
+      "categories": "Categories"
+    },
+    "main": {
+      "title": "Admin Dashboard",
+      "stats": {
+        "totalRevenue": "Total Revenue",
+        "totalOrders": "Total Orders",
+        "totalCustomers": "Total Customers",
+        "totalProducts": "Total Products"
+      }
+    }
+  },
+  "DeliveryJob": {
+    "title": "Delivery Details",
+    "subtitle": "Order #{orderId}",
+    "pickupTitle": "Pickup Location",
+    "pickupDescription": "Navigate to the precise vendor location (1-5m accuracy).",
+    "deliveryTitle": "Delivery Address",
+    "deliveryDescription": "Navigate to the precise customer drop-off point (1-5m accuracy).",
+    "getDirectionsButton": "Get Directions (GPS)",
+    "confirmDeliveryButton": "Confirm Delivery",
+    "mapAlt": "Map showing pickup and delivery route"
+  },
+  "DriverJobs": {
+    "title": "Delivery Jobs",
+    "description": "View and accept available delivery jobs.",
+    "availableJobs": "Available Jobs",
+    "mySchedule": "My Schedule",
+    "tableHeaders": {
+      "orderId": "Order ID",
+      "route": "Route",
+      "payout": "Payout",
+      "timeWindow": "Time Window",
+      "action": "Action",
+      "time": "Time",
+      "status": "Status",
+      "distance": "Distance"
+    },
+    "pickup": "Pickup",
+    "delivery": "Delivery",
+    "acceptJob": "Accept Job",
+    "viewDetails": "View Details",
+    "cancelJob": "Cancel Job",
+    "statusScheduled": "Scheduled",
+    "statusInProgress": "In Progress",
+    "statusAccepted": "Accepted",
+    "noAvailableJobs": "No available jobs at the moment. Check back soon!",
+    "noScheduledJobs": "You have no scheduled jobs.",
+    "dispatchRules": {
+      "title": "Dispatching Rules",
+      "description": "Jobs are shown within a 3km radius. This expands to 5km if the job isn't accepted quickly."
+    }
+  },
+  "VendorDashboard": {
+    "sidebar": {
+      "vendor": "Vendor",
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "orders": "Orders",
+      "hours": "Store Hours",
+      "staff": "Staff"
+    },
+    "main": {
+      "title": "Vendor Dashboard",
+      "addNewProduct": "Add New Product",
+      "stats": {
+        "todaysRevenue": "Today's Revenue",
+        "newOrders": "New Orders",
+        "activeProducts": "Active Products"
+      },
+      "recentOrdersTitle": "Recent Orders",
+      "recentOrdersDescription": "You have 15 new orders waiting for preparation.",
+      "viewAllButton": "View All",
+      "tableHeaders": {
+        "orderId": "Order ID",
+        "customer": "Customer",
+        "amount": "Amount",
+        "status": "Status",
+        "assignee": "Assigned To",
+        "deliveryTime": "Delivery Time",
+        "type": "Type",
+        "driver": "Driver"
+      },
+      "orderStatus": {
+        "new": "New",
+        "preparing": "Preparing",
+        "ready": "Ready for Pickup",
+        "delivering": "Out for Delivery"
+      },
+      "unassigned": "Unassigned",
+      "noDriverAssigned": "No driver assigned",
+      "ordersTitle": "Manage Orders",
+      "allOrders": "All Orders",
+      "allOrdersDescription": "A list of all orders from your customers.",
+      "ordersPlaceholder": "Order management functionality will be built here.",
+      "productsTitle": "Manage Products",
+      "allProducts": "All Products",
+      "allProductsDescription": "A list of all your products.",
+      "productsPlaceholder": "Product management functionality will be built here.",
+      "revenueOverview": {
+        "title": "Revenue Overview",
+        "description": "Track your daily, monthly, and yearly performance.",
+        "today": "Today",
+        "thisMonth": "This Month",
+        "thisYear": "This Year",
+        "print": "Print",
+        "exportPdf": "Export PDF",
+        "exportExcel": "Export Excel"
+      },
+      "scheduledOrders": {
+        "title": "Scheduled Orders",
+        "description": "Prioritized view of upcoming and recurring orders."
+      },
+      "orderType": {
+        "recurring": "Recurring",
+        "oneTime": "One-Time"
+      }
+    }
+  },
+  "VendorHours": {
+    "title": "Manage Store Hours",
+    "description": "Set your regular business hours and add any special closures or exceptions.",
+    "regularHoursTitle": "Regular Business Hours",
+    "editButton": "Edit",
+    "specialHoursTitle": "Upcoming Closures & Special Hours",
+    "addSpecialHoursButton": "Add Special Hours",
+    "noSpecialHours": "No special hours or closures have been added.",
+    "statusOpen": "Open",
+    "statusClosed": "Closed"
+  },
+  "VendorStaff": {
+    "title": "Manage Staff",
+    "description": "Add, edit, or remove staff members who help manage your store.",
+    "currentStaffTitle": "Current Staff Members",
+    "addStaffButton": "Add New Staff Member",
+    "tableHeaders": {
+      "name": "Name",
+      "role": "Role",
+      "actions": "Actions"
+    },
+    "roles": {
+      "manager": "Manager",
+      "packer": "Packer"
+    },
+    "editAction": "Edit",
+    "removeAction": "Remove"
+  },
+  "Days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  },
+  "CustomerDashboard": {
+    "title": "My Orders",
+    "description": "View your order history and track current orders.",
+    "orderId": "Order",
+    "orderDate": "Date",
+    "statusDelivered": "Delivered",
+    "statusInProgress": "In Progress",
+    "items": "Items in this order",
+    "product": "Product",
+    "quantity": "Qty",
+    "price": "Price",
+    "costSummary": "Cost Summary",
+    "subtotal": "Subtotal",
+    "deliveryFee": "Delivery Fee",
+    "serviceFee": "Service Fee",
+    "grandTotal": "Grand Total",
+    "printButton": "Print",
+    "downloadPdfButton": "Download PDF",
+    "downloadExcelButton": "Download Excel"
+  }
+}

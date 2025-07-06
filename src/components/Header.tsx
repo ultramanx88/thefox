@@ -51,6 +51,7 @@ export function Header() {
             <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
             <DropdownMenuRadioItem value="th">ไทย</DropdownMenuRadioItem>
             <DropdownMenuRadioItem value="zh">中文</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="ja">日本語</DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
