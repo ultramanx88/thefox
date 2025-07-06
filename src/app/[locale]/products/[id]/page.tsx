@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Store, Truck, Calendar as CalendarIcon } from "lucide-react";
+import { Store, Truck, Calendar as CalendarIcon, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { Link } from '@/navigation';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -24,6 +24,7 @@ export default function ProductDetailPage({ params }: { params: { id: string, lo
   
   const [deliveryOption, setDeliveryOption] = useState('now');
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [quantity, setQuantity] = useState(1);
   
   const timeSlots = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5'];
 
@@ -44,6 +45,9 @@ export default function ProductDetailPage({ params }: { params: { id: string, lo
     { id: 1, author: 'ร้านอาหารเจริญสุข', rating: 5, comment: 'เนื้อดีมากครับ สั่งประจำ' },
     { id: 2, author: 'ครัวคุณหน่อย', rating: 4, comment: 'คุณภาพดี แต่บางครั้งก็หมดเร็ว' },
   ];
+
+  const handleIncrease = () => setQuantity(prev => prev + 1);
+  const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -72,7 +76,7 @@ export default function ProductDetailPage({ params }: { params: { id: string, lo
                 <Rating rating={product.rating} reviewCount={product.reviewCount} />
             </div>
 
-            <p className="text-4xl font-bold text-primary my-4">฿{product.price.toFixed(2)}</p>
+            <p className="text-4xl font-bold text-primary my-4">฿{(product.price * quantity).toFixed(2)}</p>
 
             <p className="text-foreground/80 leading-relaxed">{product.description}</p>
             
@@ -142,8 +146,17 @@ export default function ProductDetailPage({ params }: { params: { id: string, lo
                 </CardContent>
             </Card>
 
-            <div className="mt-6">
-                <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90">{t('addToCart')}</Button>
+            <div className="mt-6 flex items-center gap-4">
+                <div className="flex items-center gap-2 rounded-md border">
+                    <Button variant="ghost" size="icon" onClick={handleDecrease} className="h-11 w-11">
+                        <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="w-10 text-center text-lg font-bold">{quantity}</span>
+                    <Button variant="ghost" size="icon" onClick={handleIncrease} className="h-11 w-11">
+                        <Plus className="h-4 w-4" />
+                    </Button>
+                </div>
+                <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90 flex-1">{t('addToCart')}</Button>
             </div>
 
             <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
