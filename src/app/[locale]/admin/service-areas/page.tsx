@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { PlusCircle, Pencil, Trash2, Loader2, MapPin } from 'lucide-react';
+import { PlusCircle, Pencil, Trash2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ServiceAreaDialog } from '@/components/ServiceAreaDialog';
 import { DeleteAreaDialog } from '@/components/DeleteAreaDialog';
@@ -60,19 +60,24 @@ export default function ServiceAreasPage() {
   };
   
   const onDialogClose = (open: boolean) => {
-    setIsDialogOpen(open);
     if (!open) {
         setSelectedArea(null);
-        refetchAreas();
+        // Short delay to allow dialog to close before refetching
+        setTimeout(() => {
+            refetchAreas();
+        }, 100);
     }
+    setIsDialogOpen(open);
   }
 
   const onDeleteDialogClose = (open: boolean) => {
-    setIsDeleteDialogOpen(open);
-    if (!open) {
+     if (!open) {
         setSelectedArea(null);
-        refetchAreas();
+        setTimeout(() => {
+            refetchAreas();
+        }, 100);
     }
+    setIsDeleteDialogOpen(open);
   }
 
   return (
@@ -97,8 +102,8 @@ export default function ServiceAreasPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>{t('tableHeaders.name')}</TableHead>
-                <TableHead>{t('tableHeaders.province')}</TableHead>
-                <TableHead>{t('tableHeaders.districts')}</TableHead>
+                <TableHead>{t('tableHeaders.type')}</TableHead>
+                <TableHead>{t('tableHeaders.details')}</TableHead>
                 <TableHead>{t('tableHeaders.status')}</TableHead>
                 <TableHead className="text-right">{t('tableHeaders.actions')}</TableHead>
               </TableRow>
@@ -108,7 +113,7 @@ export default function ServiceAreasPage() {
                 Array.from({ length: 3 }).map((_, i) => (
                     <TableRow key={i}>
                         <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-                        <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                        <TableCell><Skeleton className="h-6 w-28" /></TableCell>
                         <TableCell><Skeleton className="h-5 w-48" /></TableCell>
                         <TableCell><Skeleton className="h-6 w-20" /></TableCell>
                         <TableCell className="text-right"><Skeleton className="h-8 w-20 inline-block" /></TableCell>
@@ -118,14 +123,24 @@ export default function ServiceAreasPage() {
                 areas.map((area) => (
                   <TableRow key={area.id}>
                     <TableCell className="font-medium">{area.name}</TableCell>
-                    <TableCell>{area.province}</TableCell>
                     <TableCell>
-                      <div className="flex flex-wrap gap-1 max-w-sm">
-                        {area.districts.map(d => <Badge variant="secondary" key={d}>{d}</Badge>)}
-                      </div>
+                      <Badge variant="outline" className="capitalize">{t(`areaType.${area.type}` as any)}</Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={area.status === 'active' ? 'default' : 'outline'}>
+                      {area.type === 'administrative' ? (
+                        <div className="flex flex-col text-xs">
+                          <span className="font-semibold">{area.province}</span>
+                          <span className="text-muted-foreground max-w-xs truncate">{area.districts.join(', ')}</span>
+                        </div>
+                      ) : (
+                         <div className="flex flex-col text-xs">
+                          <span className="font-semibold">{t('radius')}: {area.radius} km</span>
+                          <span className="text-muted-foreground font-mono">Center: ({area.lat.toFixed(4)}, {area.lng.toFixed(4)})</span>
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={area.status === 'active' ? 'default' : 'destructive'}>
                         {t(`status.${area.status}`)}
                       </Badge>
                     </TableCell>

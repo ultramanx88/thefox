@@ -293,33 +293,42 @@
   },
   "AdminServiceAreas": {
     "title": "จัดการพื้นที่บริการ",
-    "description": "เพิ่ม แก้ไข หรือลบจังหวัดและอำเภอที่ให้บริการ",
+    "description": "กำหนดพื้นที่ให้บริการแบบไดนามิกตามเขตการปกครองหรือรัศมี",
     "tableTitle": "พื้นที่บริการปัจจุบัน",
     "addButton": "เพิ่มพื้นที่ใหม่",
     "tableHeaders": {
       "name": "ชื่อพื้นที่",
-      "province": "จังหวัด",
-      "districts": "อำเภอ",
+      "type": "ประเภท",
+      "details": "รายละเอียด",
       "status": "สถานะ",
       "actions": "การดำเนินการ"
     },
     "noAreas": "ยังไม่มีการกำหนดค่าพื้นที่บริการ",
+    "radius": "รัศมี",
     "status": {
       "active": "ใช้งาน",
       "inactive": "ไม่ใช้งาน"
+    },
+    "areaType": {
+      "administrative": "ตามเขตปกครอง",
+      "radius": "ตามรัศมี"
     },
     "editAction": "แก้ไข",
     "deleteAction": "ลบ",
     "dialog": {
       "addTitle": "เพิ่มพื้นที่บริการใหม่",
       "editTitle": "แก้ไขพื้นที่บริการ",
-      "description": "กรอกรายละเอียดด้านล่าง หากมีหลายอำเภอให้คั่นด้วยเครื่องหมายจุลภาค (,)",
+      "description": "กำหนดคุณสมบัติสำหรับพื้นที่บริการ",
       "nameLabel": "ชื่อพื้นที่",
       "namePlaceholder": "เช่น กรุงเทพฯ ชั้นใน",
+      "typeLabel": "ประเภทพื้นที่",
       "provinceLabel": "จังหวัด",
       "provincePlaceholder": "เช่น กรุงเทพมหานคร",
       "districtsLabel": "อำเภอ (คั่นด้วยจุลภาค)",
       "districtsPlaceholder": "เช่น ปทุมวัน, สาทร",
+      "latLabel": "ละติจูด",
+      "lngLabel": "ลองจิจูด",
+      "radiusLabel": "รัศมี (กม.)",
       "statusLabel": "เปิดใช้งาน",
       "cancelButton": "ยกเลิก",
       "saveButton": "บันทึกการเปลี่ยนแปลง",

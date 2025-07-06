@@ -293,33 +293,42 @@
   },
   "AdminServiceAreas": {
     "title": "Manage Service Areas",
-    "description": "Add, edit, or remove provinces and districts where your service is available.",
+    "description": "Define dynamic service areas based on administrative boundaries or radius.",
     "tableTitle": "Current Service Areas",
     "addButton": "Add New Area",
     "tableHeaders": {
       "name": "Area Name",
-      "province": "Province",
-      "districts": "Districts",
+      "type": "Type",
+      "details": "Details",
       "status": "Status",
       "actions": "Actions"
     },
     "noAreas": "No service areas have been configured yet.",
+    "radius": "Radius",
     "status": {
       "active": "Active",
       "inactive": "Inactive"
+    },
+    "areaType": {
+      "administrative": "Administrative",
+      "radius": "Radius"
     },
     "editAction": "Edit",
     "deleteAction": "Delete",
     "dialog": {
       "addTitle": "Add New Service Area",
       "editTitle": "Edit Service Area",
-      "description": "Fill in the details below. For multiple districts, separate each with a comma.",
+      "description": "Define the properties for the service area.",
       "nameLabel": "Area Name",
       "namePlaceholder": "e.g., Central Bangkok",
+      "typeLabel": "Area Type",
       "provinceLabel": "Province",
       "provincePlaceholder": "e.g., Bangkok",
       "districtsLabel": "Districts (comma-separated)",
       "districtsPlaceholder": "e.g., Pathum Wan, Sathon",
+      "latLabel": "Latitude",
+      "lngLabel": "Longitude",
+      "radiusLabel": "Radius (km)",
       "statusLabel": "Active",
       "cancelButton": "Cancel",
       "saveButton": "Save Changes",

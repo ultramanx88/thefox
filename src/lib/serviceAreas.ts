@@ -1,16 +1,30 @@
-export interface ServiceArea {
+export interface AdministrativeArea {
   id: string;
-  name: string; // e.g., "Central Bangkok"
-  province: string; // e.g., "Bangkok"
-  districts: string[]; // e.g., ["Pathum Wan", "Siam", "Ratchathewi"]
+  type: 'administrative';
+  name: string;
+  province: string;
+  districts: string[];
   status: 'active' | 'inactive';
 }
 
+export interface RadiusArea {
+  id: string;
+  type: 'radius';
+  name: string;
+  lat: number;
+  lng: number;
+  radius: number; // in km
+  status: 'active' | 'inactive';
+}
+
+export type ServiceArea = AdministrativeArea | RadiusArea;
+
+
 // In a real application, this would be a database.
 let serviceAreas: ServiceArea[] = [
-  { id: 'area-1', name: 'Central Business District', province: 'Bangkok', districts: ['Pathum Wan', 'Bang Rak', 'Sathon'], status: 'active' },
-  { id: 'area-2', name: 'Sukhumvit Area', province: 'Bangkok', districts: ['Khlong Toei', 'Watthana'], status: 'active' },
-  { id: 'area-3', name: 'Chiang Mai City', province: 'Chiang Mai', districts: ['Mueang Chiang Mai'], status: 'inactive' },
+  { id: 'area-1', type: 'administrative', name: 'Central Business District', province: 'Bangkok', districts: ['Pathum Wan', 'Bang Rak', 'Sathon'], status: 'active' },
+  { id: 'area-2', type: 'radius', name: 'Chiang Mai City Center', lat: 18.7883, lng: 98.9853, radius: 8, status: 'active' },
+  { id: 'area-3', type: 'administrative', name: 'Sukhumvit Area', province: 'Bangkok', districts: ['Khlong Toei', 'Watthana'], status: 'inactive' },
 ];
 
 export async function getServiceAreas(): Promise<ServiceArea[]> {
@@ -20,7 +34,7 @@ export async function getServiceAreas(): Promise<ServiceArea[]> {
 
 export async function addServiceArea(area: Omit<ServiceArea, 'id'>): Promise<ServiceArea> {
   const newId = `area-${Date.now()}`;
-  const newArea: ServiceArea = { id: newId, ...area };
+  const newArea = { id: newId, ...area } as ServiceArea;
   serviceAreas.push(newArea);
   return Promise.resolve(newArea);
 }
@@ -30,7 +44,9 @@ export async function updateServiceArea(id: string, updates: Partial<Omit<Servic
   if (areaIndex === -1) {
     return null;
   }
-  serviceAreas[areaIndex] = { ...serviceAreas[areaIndex], ...updates };
+  // This simplistic update works because we are replacing all defining fields.
+  // In a real DB, you might need more nuanced logic.
+  serviceAreas[areaIndex] = { ...serviceAreas[areaIndex], ...updates, id } as ServiceArea;
   return Promise.resolve(serviceAreas[areaIndex]);
 }
 

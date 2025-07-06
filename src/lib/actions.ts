@@ -7,9 +7,10 @@ import { revalidatePath } from 'next/cache';
 import { addCategory as addCategoryToDb } from '@/lib/categories';
 import { updateInvestorInfo, type BankInfo } from '@/lib/investment';
 import {
-  addServiceArea,
-  updateServiceArea,
-  deleteServiceArea,
+  addServiceArea as addServiceAreaToDb,
+  updateServiceArea as updateServiceAreaToDb,
+  deleteServiceArea as deleteServiceAreaFromDb,
+  type ServiceArea,
 } from '@/lib/serviceAreas';
 
 export interface ActionState {
@@ -139,35 +140,67 @@ export interface ServiceAreaActionState {
   success?: boolean;
 }
 
-const serviceAreaSchema = z.object({
-  name: z.string().min(1, 'Name is required.'),
+const baseAreaSchema = z.object({
+    name: z.string().min(1, 'Name is required.'),
+    status: z.enum(['active', 'inactive']),
+});
+
+const administrativeSchema = baseAreaSchema.extend({
+  type: z.literal('administrative'),
   province: z.string().min(1, 'Province is required.'),
   districts: z.string().min(1, 'At least one district is required.'),
-  status: z.enum(['active', 'inactive']),
 });
+
+const radiusSchema = baseAreaSchema.extend({
+  type: z.literal('radius'),
+  lat: z.coerce.number().min(-90, 'Invalid Latitude').max(90, 'Invalid Latitude'),
+  lng: z.coerce.number().min(-180, 'Invalid Longitude').max(180, 'Invalid Longitude'),
+  radius: z.coerce.number().positive('Radius must be a positive number.'),
+});
+
+const serviceAreaSchema = z.discriminatedUnion('type', [
+  administrativeSchema,
+  radiusSchema,
+]);
+
 
 export async function addServiceAreaAction(
   prevState: ServiceAreaActionState,
   formData: FormData
 ): Promise<ServiceAreaActionState> {
-  const rawDistricts = (formData.get('districts') as string) || '';
-  const districts = rawDistricts.split(',').map(d => d.trim()).filter(Boolean);
-
-  const validatedFields = serviceAreaSchema.safeParse({
+  const rawData = {
+    type: formData.get('type'),
     name: formData.get('name'),
-    province: formData.get('province'),
-    districts: districts.join(','), // Pass as string for validation
     status: formData.get('status') === 'on' ? 'active' : 'inactive',
-  });
+    province: formData.get('province'),
+    districts: formData.get('districts'),
+    lat: formData.get('lat'),
+    lng: formData.get('lng'),
+    radius: formData.get('radius'),
+  };
+
+  const validatedFields = serviceAreaSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
+    console.log(validatedFields.error.flatten());
     return { error: 'Invalid data. Please check all fields.' };
   }
 
   try {
-    const { name, province, status } = validatedFields.data;
-    await addServiceArea({ name, province, districts, status });
-    revalidatePath('/admin/service-areas');
+    let dataToAdd: Omit<ServiceArea, 'id'>;
+    const { name, status } = validatedFields.data;
+
+    if (validatedFields.data.type === 'administrative') {
+      const { province } = validatedFields.data;
+      const districts = validatedFields.data.districts.split(',').map(d => d.trim()).filter(Boolean);
+      dataToAdd = { type: 'administrative', name, province, districts, status };
+    } else { // type === 'radius'
+      const { lat, lng, radius } = validatedFields.data;
+      dataToAdd = { type: 'radius', name, lat, lng, radius, status };
+    }
+    
+    await addServiceAreaToDb(dataToAdd);
+    revalidatePath('/[locale]/admin/service-areas', 'page');
     return { success: true };
   } catch (e) {
     console.error(e);
@@ -184,24 +217,38 @@ export async function updateServiceAreaAction(
     return { error: 'Area ID is missing.' };
   }
 
-  const rawDistricts = (formData.get('districts') as string) || '';
-  const districts = rawDistricts.split(',').map(d => d.trim()).filter(Boolean);
-
-  const validatedFields = serviceAreaSchema.safeParse({
+  const rawData = {
+    type: formData.get('type'),
     name: formData.get('name'),
-    province: formData.get('province'),
-    districts: districts.join(','), // Pass as string for validation
     status: formData.get('status') === 'on' ? 'active' : 'inactive',
-  });
+    province: formData.get('province'),
+    districts: formData.get('districts'),
+    lat: formData.get('lat'),
+    lng: formData.get('lng'),
+    radius: formData.get('radius'),
+  };
+
+  const validatedFields = serviceAreaSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
     return { error: 'Invalid data. Please check all fields.' };
   }
-
+  
   try {
-    const { name, province, status } = validatedFields.data;
-    await updateServiceArea(id, { name, province, districts, status });
-    revalidatePath('/admin/service-areas');
+    let dataToUpdate: Partial<Omit<ServiceArea, 'id'>>;
+    const { name, status } = validatedFields.data;
+
+    if (validatedFields.data.type === 'administrative') {
+      const { province } = validatedFields.data;
+      const districts = validatedFields.data.districts.split(',').map(d => d.trim()).filter(Boolean);
+      dataToUpdate = { type: 'administrative', name, province, districts, status };
+    } else { // type === 'radius'
+      const { lat, lng, radius } = validatedFields.data;
+      dataToUpdate = { type: 'radius', name, lat, lng, radius, status };
+    }
+
+    await updateServiceAreaToDb(id, dataToUpdate);
+    revalidatePath('/[locale]/admin/service-areas', 'page');
     return { success: true };
   } catch (e) {
     console.error(e);
@@ -220,8 +267,8 @@ export async function deleteServiceAreaAction(
   }
 
   try {
-    await deleteServiceArea(id);
-    revalidatePath('/admin/service-areas');
+    await deleteServiceAreaFromDb(id);
+    revalidatePath('/[locale]/admin/service-areas', 'page');
     return { success: true };
   } catch (e) {
     console.error(e);
