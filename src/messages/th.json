@@ -105,7 +105,7 @@
     "emailPlaceholder": "you@example.com",
     "phoneLabel": "เบอร์โทรศัพท์",
     "phonePlaceholder": "081-234-5678",
-    "vehicleTypeLabel": "ยานพาหนะของคุณ (เลือกได้หลายประเภท)",
+    "vehicleTypeLabel": "ประเภทยานพาหนะหลัก",
     "motorcycle": "มอเตอร์ไซค์",
     "car": "รถยนต์",
     "truck": "รถกระบะ",

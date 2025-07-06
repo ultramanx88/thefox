@@ -105,7 +105,7 @@
     "emailPlaceholder": "you@example.com",
     "phoneLabel": "Phone Number",
     "phonePlaceholder": "081-234-5678",
-    "vehicleTypeLabel": "Your Vehicles (select all that apply)",
+    "vehicleTypeLabel": "Primary Vehicle Type",
     "motorcycle": "Motorcycle",
     "car": "Car",
     "truck": "Pickup Truck",

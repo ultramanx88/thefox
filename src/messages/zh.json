@@ -105,7 +105,7 @@
     "emailPlaceholder": "you@example.com",
     "phoneLabel": "电话号码",
     "phonePlaceholder": "081-234-5678",
-    "vehicleTypeLabel": "您的车辆 (可多选)",
+    "vehicleTypeLabel": "主要车辆类型",
     "motorcycle": "摩托车",
     "car": "汽车",
     "truck": "皮卡车",
