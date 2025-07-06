@@ -123,5 +123,16 @@
         "totalProducts": "总产品"
       }
     }
+  },
+   "DeliveryJob": {
+    "title": "配送详情",
+    "subtitle": "订单 #{orderId}",
+    "pickupTitle": "取货地点",
+    "pickupDescription": "从摊主处取货。",
+    "deliveryTitle": "配送地址",
+    "deliveryDescription": "将货物送达客户。",
+    "getDirectionsButton": "获取路线 (GPS)",
+    "confirmDeliveryButton": "确认送达",
+    "mapAlt": "显示取货和配送路线的地图"
   }
 }

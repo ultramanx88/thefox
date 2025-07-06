@@ -123,5 +123,16 @@
         "totalProducts": "สินค้าทั้งหมด"
       }
     }
+  },
+  "DeliveryJob": {
+    "title": "รายละเอียดงานจัดส่ง",
+    "subtitle": "ออเดอร์ #{orderId}",
+    "pickupTitle": "สถานที่รับสินค้า",
+    "pickupDescription": "ไปรับสินค้าจากร้านค้า",
+    "deliveryTitle": "ที่อยู่จัดส่ง",
+    "deliveryDescription": "นำสินค้าไปส่งให้ลูกค้า",
+    "getDirectionsButton": "นำทางด้วย GPS",
+    "confirmDeliveryButton": "ยืนยันการจัดส่งสำเร็จ",
+    "mapAlt": "แผนที่แสดงเส้นทางรับและส่งสินค้า"
   }
 }

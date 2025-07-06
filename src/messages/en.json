@@ -123,5 +123,16 @@
         "totalProducts": "Total Products"
       }
     }
+  },
+  "DeliveryJob": {
+    "title": "Delivery Details",
+    "subtitle": "Order #{orderId}",
+    "pickupTitle": "Pickup Location",
+    "pickupDescription": "Collect items from the vendor.",
+    "deliveryTitle": "Delivery Address",
+    "deliveryDescription": "Deliver items to the customer.",
+    "getDirectionsButton": "Get Directions (GPS)",
+    "confirmDeliveryButton": "Confirm Delivery",
+    "mapAlt": "Map showing pickup and delivery route"
   }
 }
