@@ -27,7 +27,7 @@
     "title": "มาเป็นคนขับรถส่งของ",
     "description": "เข้าร่วมเครือข่ายการจัดส่งของเราและเริ่มสร้างรายได้จากการจัดส่งสินค้า",
     "fullNameLabel": "ชื่อ-นามสกุล",
-    "fullNamePlaceholder": "เช่น จอห์น แอปเปิ้ลซี้ด",
+    "fullNamePlaceholder": "เช่น สมชาย ใจดี",
     "emailLabel": "อีเมล",
     "emailPlaceholder": "you@example.com",
     "phoneLabel": "เบอร์โทรศัพท์",
@@ -46,7 +46,18 @@
     "emailLabel": "อีเมล",
     "emailPlaceholder": "you@example.com",
     "passwordLabel": "รหัสผ่าน",
-    "submitButton": "สร้างร้านค้าของฉัน"
+    "passwordPlaceholder": "รหัสผ่านที่ปลอดภัยของคุณ",
+    "submitButton": "สร้างร้านค้าของฉัน",
+    "registrationSuccessTitle": "ลงทะเบียนสำเร็จ",
+    "registrationSuccess": "ร้านค้าของคุณถูกสร้างแล้ว! ตอนนี้คุณสามารถลงขายสินค้าได้เลย",
+    "registrationFailedTitle": "การลงทะเบียนล้มเหลว",
+    "registrationFailed": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+    "registrationFailedGeneric": "เกิดข้อผิดพลาดบางอย่าง กรุณาลองใหม่อีกครั้งในภายหลัง",
+    "validation": {
+        "storeNameRequired": "กรุณากรอกชื่อร้านค้า",
+        "invalidEmail": "กรุณากรอกอีเมลที่ถูกต้อง",
+        "passwordLength": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร"
+    }
   },
   "NewProduct": {
       "title": "สร้างรายการสินค้าใหม่",

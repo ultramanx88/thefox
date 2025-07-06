@@ -46,7 +46,18 @@
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
     "passwordLabel": "Password",
-    "submitButton": "Create My Store"
+    "passwordPlaceholder": "Your secure password",
+    "submitButton": "Create My Store",
+    "registrationSuccessTitle": "Registration Successful",
+    "registrationSuccess": "Your store has been created! You can now list products.",
+    "registrationFailedTitle": "Registration Failed",
+    "registrationFailed": "An error occurred. Please try again.",
+    "registrationFailedGeneric": "Something went wrong. Please try again later.",
+    "validation": {
+        "storeNameRequired": "Store name is required.",
+        "invalidEmail": "Please enter a valid email address.",
+        "passwordLength": "Password must be at least 8 characters long."
+    }
   },
   "NewProduct": {
       "title": "Create a New Listing",

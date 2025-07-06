@@ -37,5 +37,62 @@
     "car": "汽车",
     "locationNotice": "我们将使用您的位置将您与附近的送货请求联系起来。",
     "submitButton": "开始配送"
+  },
+  "VendorRegistration": {
+    "title": "成为卖家",
+    "description": "立即在 TaladMan 上开设您的商店并开始销售。",
+    "storeNameLabel": "店铺名称",
+    "storeNamePlaceholder": "例如，绿色农场",
+    "emailLabel": "电子邮件",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "密码",
+    "passwordPlaceholder": "您的安全密码",
+    "submitButton": "创建我的商店",
+    "registrationSuccessTitle": "注册成功",
+    "registrationSuccess": "您的商店已创建！现在您可以上架商品了。",
+    "registrationFailedTitle": "注册失败",
+    "registrationFailed": "发生错误，请重试。",
+    "registrationFailedGeneric": "出了点问题，请稍后再试。",
+    "validation": {
+      "storeNameRequired": "店铺名称为必填项。",
+      "invalidEmail": "请输入有效的电子邮件地址。",
+      "passwordLength": "密码长度至少为8个字符。"
+    }
+  },
+  "NewProduct": {
+    "title": "创建新商品列表",
+    "description": "填写以下详细信息，将您的产品在市场上架。",
+    "nameLabel": "产品名称",
+    "namePlaceholder": "例如，手工陶瓷杯",
+    "descriptionLabel": "描述",
+    "descriptionPlaceholder": "描述您产品的功能、材料和尺寸。",
+    "priceLabel": "价格",
+    "pricePlaceholder": "0.00",
+    "quantityLabel": "库存数量",
+    "quantityPlaceholder": "10",
+    "listProductButton": "上架产品"
+  },
+  "OrderTracking": {
+    "title": "订单追踪",
+    "orderId": "订单号",
+    "statusTitle": "订单状态",
+    "stepPlaced": "已下单",
+    "stepProcessing": "处理中",
+    "stepOutForDelivery": "配送中",
+    "stepDelivered": "已送达",
+    "statusCompleted": "已完成",
+    "statusInProgress": "进行中",
+    "statusPending": "待处理",
+    "mapAlt": "显示送货路线的地图"
+  },
+  "ProductDetail": {
+    "addToCart": "加入购物车",
+    "deliveryInfo": "提供快速本地配送。",
+    "customerReviews": "顾客评论"
+  },
+  "VendorProfile": {
+    "bannerAlt": "卖家横幅",
+    "location": "本地农户",
+    "productsFrom": "来自 {vendorName} 的产品"
   }
 }
