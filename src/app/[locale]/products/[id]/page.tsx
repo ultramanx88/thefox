@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
 import { type Product } from '@/lib/types';
 import { ProductCard } from '@/components/ProductCard';
 
@@ -12,14 +10,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Store, Truck, Calendar as CalendarIcon, Minus, Plus } from "lucide-react";
+import { Store, Truck, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { Link } from '@/navigation';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 // Mock data for demonstration
 const mockProducts: Product[] = [
@@ -108,12 +101,8 @@ const mockProducts: Product[] = [
 export default function ProductDetailPage({ params }: { params: { id: string, locale: string } }) {
   const t = useTranslations('ProductDetail');
   
-  const [deliveryOption, setDeliveryOption] = useState('now');
-  const [date, setDate] = useState<Date | undefined>(new Date());
   const [quantity, setQuantity] = useState(1);
   
-  const timeSlots = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5'];
-
   const product = {
     id: '1',
     name: 'กะหล่ำปลีออร์แกนิก',
@@ -170,72 +159,6 @@ export default function ProductDetailPage({ params }: { params: { id: string, lo
 
             <p className="text-foreground/80 leading-relaxed">{product.description}</p>
             
-            <Card className="mt-6 bg-muted/50">
-                <CardHeader>
-                    <CardTitle className="text-xl">{t('scheduling.title')}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <RadioGroup value={deliveryOption} onValueChange={setDeliveryOption} className="grid grid-cols-2 gap-4">
-                        <div>
-                            <RadioGroupItem value="now" id="now" className="peer sr-only" />
-                            <Label htmlFor="now" className="flex items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center">
-                            {t('scheduling.deliverNow')}
-                            </Label>
-                        </div>
-                        <div>
-                            <RadioGroupItem value="later" id="later" className="peer sr-only" />
-                            <Label htmlFor="later" className="flex items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center">
-                            {t('scheduling.scheduleLater')}
-                            </Label>
-                        </div>
-                    </RadioGroup>
-                    {deliveryOption === 'later' && (
-                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t">
-                            <div className="space-y-2">
-                                <Label>{t('scheduling.selectDate')}</Label>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                    <Button
-                                        variant={"outline"}
-                                        className={cn(
-                                        "w-full justify-start text-left font-normal",
-                                        !date && "text-muted-foreground"
-                                        )}
-                                    >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {date ? format(date, "PPP") : <span>{t('scheduling.selectDate')}</span>}
-                                    </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0">
-                                    <Calendar
-                                        mode="single"
-                                        selected={date}
-                                        onSelect={setDate}
-                                        initialFocus
-                                    />
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>{t('scheduling.selectTime')}</Label>
-                                <Select>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder={t('scheduling.selectTime')} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {timeSlots.map(slot => (
-                                            <SelectItem key={slot} value={t(`scheduling.timeSlots.${slot}` as any)}>
-                                                {t(`scheduling.timeSlots.${slot}` as any)}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-
             <div className="mt-6 flex items-center gap-4">
                 <div className="flex items-center gap-2 rounded-md border">
                     <Button variant="ghost" size="icon" onClick={handleDecrease} className="h-11 w-11">
