@@ -285,3 +285,80 @@ export async function processAutoWithdrawals() {
   // Return a promise to match the async nature of other functions
   return Promise.resolve();
 }
+
+// --- Reporting Functions ---
+
+// Mock helper functions for generateReport
+function getDailyReports(start_date?: string, end_date?: string): DailyReport[] {
+  // In a real app, this would filter by date. Here we return all reports.
+  return dailyReports;
+}
+
+function getInvestorData(investor_id: string): Investor | undefined {
+  return investors.find(inv => inv.id === investor_id);
+}
+
+function generatePDFReport(data: any): { format: string, data: any } {
+  console.log("Generating PDF report...");
+  return { format: "pdf", data };
+}
+
+function generateExcelReport(data: any): { format: string, data: any } {
+  console.log("Generating Excel report...");
+  return { format: "excel", data };
+}
+
+
+/**
+ * Generates a detailed report for a specific investor over a given period.
+ * Can return raw data or simulate creating a PDF/Excel file.
+ * @param investor_id The ID of the investor to report on.
+ * @param start_date The start date of the report period.
+ * @param end_date The end date of the report period.
+ * @param export_type 'json' (default), 'pdf', or 'excel'.
+ * @returns A report object or a simulated file object.
+ */
+export async function generateReport(
+    investor_id: string,
+    start_date: string,
+    end_date: string,
+    export_type: 'json' | 'pdf' | 'excel' = 'json'
+) {
+  const reports = getDailyReports(start_date, end_date);
+  const investor_data = getInvestorData(investor_id);
+
+  if (!investor_data) {
+    throw new Error(`Investor with ID ${investor_id} not found.`);
+  }
+
+  const report_data = {
+    investor_info: investor_data,
+    daily_reports: reports.map(report => {
+        const earning_entry = report.investor_earnings.find(e => e.investorName === investor_data.name);
+        return {
+            date: report.date,
+            total_revenue: report.total_revenue,
+            investor_pool: report.revenue_distribution.investor_pool,
+            my_earning: earning_entry ? earning_entry.earnings : 0,
+        }
+    }),
+    summary: {
+      total_days: reports.length,
+      total_earnings: reports.reduce((sum, r) => {
+          const earning_entry = r.investor_earnings.find(e => e.investorName === investor_data.name);
+          return sum + (earning_entry ? earning_entry.earnings : 0);
+      }, 0),
+      get avg_daily() {
+          return this.total_days > 0 ? this.total_earnings / this.total_days : 0;
+      }
+    }
+  };
+  
+  if (export_type === 'pdf') {
+    return generatePDFReport(report_data);
+  } else if (export_type === 'excel') {
+    return generateExcelReport(report_data);
+  }
+  
+  return report_data;
+}
