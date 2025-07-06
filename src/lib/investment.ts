@@ -13,8 +13,13 @@ interface Investor {
     total_investment: number;
     current_balance: number;
     total_earnings: number;
+    total_withdrawn: number;
     join_date: string;
     bank_info: BankInfo;
+    auto_withdraw: {
+        enabled: boolean;
+        threshold: number;
+    };
 }
 
 interface DailyReport {
@@ -29,25 +34,41 @@ interface DailyReport {
     investor_earnings: { investorName: string; earnings: number }[];
 }
 
+interface Withdrawal {
+    withdrawal_id: string;
+    investor_id: string;
+    amount: number;
+    status: 'processing' | 'completed' | 'failed';
+    type: 'auto' | 'manual';
+    transaction_id?: string;
+    created_at: string;
+    completed_at?: string;
+}
+
+
 let investors: Investor[] = [
     { 
         id: 'inv_001', name: 'Nattapong', total_investment: 100000, current_balance: 0, 
-        total_earnings: 0, join_date: '2024-01-01', 
-        bank_info: { bank_name: 'K-Bank', account_number: 'xxx-x-x1234-x', account_name: 'Nattapong' } 
+        total_earnings: 0, total_withdrawn: 0, join_date: '2024-01-01', 
+        bank_info: { bank_name: 'K-Bank', account_number: 'xxx-x-x1234-x', account_name: 'Nattapong' },
+        auto_withdraw: { enabled: true, threshold: 5000 }
     },
     { 
         id: 'inv_002', name: 'Siriporn', total_investment: 250000, current_balance: 0, 
-        total_earnings: 0, join_date: '2024-01-15', 
-        bank_info: { bank_name: 'SCB', account_number: 'xxx-x-x5678-x', account_name: 'Siriporn' } 
+        total_earnings: 0, total_withdrawn: 0, join_date: '2024-01-15', 
+        bank_info: { bank_name: 'SCB', account_number: 'xxx-x-x5678-x', account_name: 'Siriporn' },
+        auto_withdraw: { enabled: true, threshold: 10000 }
     },
     { 
         id: 'inv_003', name: 'Somchai', total_investment: 50000, current_balance: 0, 
-        total_earnings: 0, join_date: '2024-02-01', 
-        bank_info: { bank_name: 'BBL', account_number: 'xxx-x-x9012-x', account_name: 'Somchai' } 
+        total_earnings: 0, total_withdrawn: 0, join_date: '2024-02-01', 
+        bank_info: { bank_name: 'BBL', account_number: 'xxx-x-x9012-x', account_name: 'Somchai' },
+        auto_withdraw: { enabled: false, threshold: 0 }
     },
 ];
 
 let dailyReports: DailyReport[] = [];
+let withdrawals: Withdrawal[] = [];
 
 // --- BUSINESS LOGIC ---
 
@@ -108,6 +129,7 @@ if (dailyReports.length === 0) {
     investors.forEach(inv => {
         inv.total_earnings = 0;
         inv.current_balance = 0;
+        inv.total_withdrawn = 0;
     });
     dailyReports.push(processDailyRevenue(40000));
     dailyReports.push(processDailyRevenue(30000));
@@ -145,8 +167,10 @@ export async function addInvestor(
     total_investment: amount,
     current_balance: 0,
     total_earnings: 0,
+    total_withdrawn: 0,
     join_date: new Date().toISOString().split('T')[0],
     bank_info,
+    auto_withdraw: { enabled: false, threshold: 5000 }, // Default auto-withdraw to off
   };
 
   investors.push(newInvestor);
@@ -184,4 +208,80 @@ export async function getInvestmentData() {
         investors: JSON.parse(JSON.stringify(investorsWithROI)),
         dailyReports: JSON.parse(JSON.stringify(dailyReports.slice(-5).reverse())), // last 5 days
     });
+}
+
+/**
+ * Mocks the processing of a single withdrawal request.
+ * In a real app, this would interact with a payment gateway.
+ */
+function processWithdrawal(details: {
+  investor_id: string;
+  amount: number;
+  type: 'auto' | 'manual';
+  bank_info: BankInfo;
+}): { success: boolean; message: string; withdrawal_id?: string } {
+    const investor = investors.find(inv => inv.id === details.investor_id);
+
+    if (!investor) {
+        return { success: false, message: 'Investor not found.' };
+    }
+
+    if (investor.current_balance < details.amount) {
+        return { success: false, message: 'Insufficient balance.' };
+    }
+
+    const withdrawal_id = `wd_${Date.now()}`;
+    const newWithdrawal: Withdrawal = {
+        withdrawal_id,
+        investor_id: details.investor_id,
+        amount: details.amount,
+        status: 'completed', // Simulate immediate completion
+        type: details.type,
+        transaction_id: `txn_${Math.random().toString(36).substring(2, 15)}`,
+        created_at: new Date().toISOString(),
+        completed_at: new Date().toISOString(),
+    };
+
+    withdrawals.push(newWithdrawal);
+
+    // Update investor's balance
+    investor.current_balance -= details.amount;
+    investor.total_withdrawn += details.amount;
+
+    console.log(`Processed ${details.type} withdrawal for ${investor.name}: ${details.amount} THB`);
+
+    return { success: true, message: 'Withdrawal processed successfully.', withdrawal_id };
+}
+
+
+/**
+ * Filters and returns investors who have auto-withdrawal enabled.
+ */
+function getInvestorsForAutoWithdraw(): Investor[] {
+    return investors.filter(investor => investor.auto_withdraw.enabled);
+}
+
+
+/**
+ * Simulates the daily auto-withdrawal process.
+ * This would be triggered by a cron job in a real application.
+ */
+export async function processAutoWithdrawals() {
+  console.log('Starting auto-withdrawal process...');
+  const eligible_investors = getInvestorsForAutoWithdraw();
+  
+  eligible_investors.forEach(investor => {
+    if (investor.current_balance >= investor.auto_withdraw.threshold) {
+      console.log(`Investor ${investor.name} is eligible for auto-withdrawal. Balance: ${investor.current_balance}, Threshold: ${investor.auto_withdraw.threshold}`);
+      processWithdrawal({
+        investor_id: investor.id,
+        amount: investor.current_balance, // Withdraw the entire balance
+        type: 'auto',
+        bank_info: investor.bank_info
+      });
+    }
+  });
+  console.log('Auto-withdrawal process finished.');
+  // Return a promise to match the async nature of other functions
+  return Promise.resolve();
 }
