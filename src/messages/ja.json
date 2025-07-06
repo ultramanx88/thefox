@@ -154,7 +154,8 @@
       "dashboard": "ダッシュボード",
       "categories": "カテゴリー",
       "settings": "設定",
-      "feeSimulator": "料金シミュレーター"
+      "feeSimulator": "料金シミュレーター",
+      "investment": "投資"
     },
     "main": {
       "title": "管理者ダッシュボード",
@@ -225,6 +226,38 @@
       "driverEarning": "ドライバー収益",
       "platformRevenue": "プラットフォーム収益",
       "platformProfitPercentage": "プラットフォーム利益率"
+    }
+  },
+  "AdminInvestment": {
+    "title": "投資管理",
+    "description": "マイルストーンベースの投資および利益分配システムを監督します。",
+    "stats": {
+      "totalInvestment": "総投資額",
+      "totalRevenue": "プラットフォーム総収益",
+      "totalInvestors": "総投資家数",
+      "founderEarnings": "創設者の総収益"
+    },
+    "investors": {
+      "title": "投資家概要",
+      "description": "すべての投資家の詳細と現在の状況。",
+      "tableHeaders": {
+        "name": "投資家名",
+        "investment": "投資額",
+        "earnings": "総収益",
+        "roi": "ROI",
+        "joinDate": "参加日"
+      }
+    },
+    "reports": {
+      "title": "日次利益分配",
+      "description": "日次収益処理と利益分配の履歴。",
+      "processDaily": "日次収益を処理",
+      "exportExcel": "Excelをエクスポート",
+      "exportPdf": "PDFをエクスポート",
+      "reportDate": "報告日",
+      "dailyRevenue": "日次収益",
+      "investorPool": "投資家プール",
+      "founderShare": "創設者の分け前"
     }
   },
   "DeliveryJob": {

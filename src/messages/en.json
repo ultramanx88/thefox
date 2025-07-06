@@ -154,7 +154,8 @@
       "dashboard": "Dashboard",
       "categories": "Categories",
       "settings": "Settings",
-      "feeSimulator": "Fee Simulator"
+      "feeSimulator": "Fee Simulator",
+      "investment": "Investment"
     },
     "main": {
       "title": "Admin Dashboard",
@@ -225,6 +226,38 @@
       "driverEarning": "Driver Earning",
       "platformRevenue": "Platform Revenue",
       "platformProfitPercentage": "Platform Profit Margin"
+    }
+  },
+  "AdminInvestment": {
+    "title": "Investment Management",
+    "description": "Oversee the milestone-based investment and profit-sharing system.",
+    "stats": {
+      "totalInvestment": "Total Investment",
+      "totalRevenue": "Total Platform Revenue",
+      "totalInvestors": "Total Investors",
+      "founderEarnings": "Founder's Total Earnings"
+    },
+    "investors": {
+      "title": "Investor Overview",
+      "description": "Details of all investors and their current standing.",
+      "tableHeaders": {
+        "name": "Investor Name",
+        "investment": "Investment Amount",
+        "earnings": "Total Earnings",
+        "roi": "ROI",
+        "joinDate": "Join Date"
+      }
+    },
+    "reports": {
+      "title": "Daily Profit Distribution",
+      "description": "History of daily revenue processing and profit splits.",
+      "processDaily": "Process Daily Revenue",
+      "exportExcel": "Export Excel",
+      "exportPdf": "Export PDF",
+      "reportDate": "Report Date",
+      "dailyRevenue": "Daily Revenue",
+      "investorPool": "Investor Pool",
+      "founderShare": "Founder's Share"
     }
   },
   "DeliveryJob": {

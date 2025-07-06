@@ -154,7 +154,8 @@
       "dashboard": "대시보드",
       "categories": "카테고리",
       "settings": "설정",
-      "feeSimulator": "수수료 시뮬레이터"
+      "feeSimulator": "수수료 시뮬레이터",
+      "investment": "투자"
     },
     "main": {
       "title": "관리자 대시보드",
@@ -225,6 +226,38 @@
       "driverEarning": "운전자 수입",
       "platformRevenue": "플랫폼 수익",
       "platformProfitPercentage": "플랫폼 이익률"
+    }
+  },
+  "AdminInvestment": {
+    "title": "투자 관리",
+    "description": "마일스톤 기반 투자 및 이익 공유 시스템을 감독합니다.",
+    "stats": {
+      "totalInvestment": "총 투자액",
+      "totalRevenue": "플랫폼 총 수익",
+      "totalInvestors": "총 투자자 수",
+      "founderEarnings": "설립자 총 수입"
+    },
+    "investors": {
+      "title": "투자자 개요",
+      "description": "모든 투자자의 세부 정보 및 현재 상태.",
+      "tableHeaders": {
+        "name": "투자자 이름",
+        "investment": "투자 금액",
+        "earnings": "총 수입",
+        "roi": "ROI",
+        "joinDate": "가입일"
+      }
+    },
+    "reports": {
+      "title": "일일 이익 분배",
+      "description": "일일 수익 처리 및 이익 분배 내역.",
+      "processDaily": "일일 수익 처리",
+      "exportExcel": "Excel로 내보내기",
+      "exportPdf": "PDF로 내보내기",
+      "reportDate": "보고일",
+      "dailyRevenue": "일일 수익",
+      "investorPool": "투자자 풀",
+      "founderShare": "설립자 지분"
     }
   },
   "DeliveryJob": {

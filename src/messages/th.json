@@ -154,7 +154,8 @@
       "dashboard": "แดชบอร์ด",
       "categories": "หมวดหมู่",
       "settings": "ตั้งค่า",
-      "feeSimulator": "เครื่องมือจำลองค่าธรรมเนียม"
+      "feeSimulator": "เครื่องมือจำลองค่าธรรมเนียม",
+      "investment": "การลงทุน"
     },
     "main": {
       "title": "แดชบอร์ดผู้ดูแลระบบ",
@@ -225,6 +226,38 @@
       "driverEarning": "รายได้คนขับ",
       "platformRevenue": "รายได้แพลตฟอร์ม",
       "platformProfitPercentage": "อัตรากำไรแพลตฟอร์ม"
+    }
+  },
+  "AdminInvestment": {
+    "title": "การจัดการการลงทุน",
+    "description": "ดูแลระบบการลงทุนและแบ่งปันผลกำไรตามขั้นความสำเร็จ (Milestone-Based)",
+    "stats": {
+      "totalInvestment": "เงินลงทุนรวม",
+      "totalRevenue": "รายได้รวมของแพลตฟอร์ม",
+      "totalInvestors": "จำนวนนักลงทุนทั้งหมด",
+      "founderEarnings": "รายได้รวมของผู้ก่อตั้ง"
+    },
+    "investors": {
+      "title": "ภาพรวมนักลงทุน",
+      "description": "รายละเอียดของนักลงทุนทั้งหมดและสถานะปัจจุบัน",
+      "tableHeaders": {
+        "name": "ชื่อนักลงทุน",
+        "investment": "จำนวนเงินลงทุน",
+        "earnings": "รายได้ทั้งหมด",
+        "roi": "ผลตอบแทนจากการลงทุน (ROI)",
+        "joinDate": "วันที่เข้าร่วม"
+      }
+    },
+    "reports": {
+      "title": "การแบ่งปันผลกำไรรายวัน",
+      "description": "ประวัติการประมวลผลรายได้รายวันและการแบ่งผลกำไร",
+      "processDaily": "ประมวลผลรายได้รายวัน",
+      "exportExcel": "ส่งออกเป็น Excel",
+      "exportPdf": "ส่งออกเป็น PDF",
+      "reportDate": "วันที่รายงาน",
+      "dailyRevenue": "รายได้ประจำวัน",
+      "investorPool": "ส่วนแบ่งนักลงทุน",
+      "founderShare": "ส่วนแบ่งผู้ก่อตั้ง"
     }
   },
   "DeliveryJob": {

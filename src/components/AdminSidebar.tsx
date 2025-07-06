@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Boxes, LayoutDashboard, Settings, Calculator } from 'lucide-react';
+import { Boxes, LayoutDashboard, Settings, Calculator, LineChart } from 'lucide-react';
 
 export function AdminSidebar({
   adminName,
@@ -22,6 +22,7 @@ export function AdminSidebar({
   const pathname = usePathname();
   const menuItems = [
     { href: '/admin', label: t('dashboard'), icon: LayoutDashboard },
+    { href: '/admin/investment', label: t('investment'), icon: LineChart },
     { href: '/admin/categories', label: t('categories'), icon: Boxes },
     { href: '/admin/fees', label: t('feeSimulator'), icon: Calculator },
     { href: '/admin/settings', label: t('settings'), icon: Settings },
