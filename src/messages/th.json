@@ -128,9 +128,9 @@
     "title": "รายละเอียดงานจัดส่ง",
     "subtitle": "ออเดอร์ #{orderId}",
     "pickupTitle": "สถานที่รับสินค้า",
-    "pickupDescription": "ไปรับสินค้าจากร้านค้า",
+    "pickupDescription": "นำทางไปยังตำแหน่งร้านค้าที่แม่นยำ (ความคลาดเคลื่อน 1-5 เมตร)",
     "deliveryTitle": "ที่อยู่จัดส่ง",
-    "deliveryDescription": "นำสินค้าไปส่งให้ลูกค้า",
+    "deliveryDescription": "นำทางไปยังจุดส่งมอบลูกค้าที่แม่นยำ (ความคลาดเคลื่อน 1-5 เมตร)",
     "getDirectionsButton": "นำทางด้วย GPS",
     "confirmDeliveryButton": "ยืนยันการจัดส่งสำเร็จ",
     "mapAlt": "แผนที่แสดงเส้นทางรับและส่งสินค้า"

@@ -128,9 +128,9 @@
     "title": "Delivery Details",
     "subtitle": "Order #{orderId}",
     "pickupTitle": "Pickup Location",
-    "pickupDescription": "Collect items from the vendor.",
+    "pickupDescription": "Navigate to the precise vendor location (1-5m accuracy).",
     "deliveryTitle": "Delivery Address",
-    "deliveryDescription": "Deliver items to the customer.",
+    "deliveryDescription": "Navigate to the precise customer drop-off point (1-5m accuracy).",
     "getDirectionsButton": "Get Directions (GPS)",
     "confirmDeliveryButton": "Confirm Delivery",
     "mapAlt": "Map showing pickup and delivery route"
