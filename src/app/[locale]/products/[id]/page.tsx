@@ -6,8 +6,10 @@ import { Separator } from "@/components/ui/separator";
 import { Store, Truck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import {unstable_setRequestLocale} from 'next-intl/server';
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+export default function ProductDetailPage({ params }: { params: { id: string, locale: string } }) {
+  unstable_setRequestLocale(params.locale);
   // Mock data for a single product
   const product = {
     id: '1',

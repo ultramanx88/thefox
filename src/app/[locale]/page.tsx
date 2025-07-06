@@ -1,7 +1,7 @@
 import { ProductCard } from '@/components/ProductCard';
 import { type Product } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
-import {getTranslations} from 'next-intl/server';
+import {getTranslations, unstable_setRequestLocale} from 'next-intl/server';
 
 const mockProducts: Product[] = [
   {
@@ -86,7 +86,8 @@ const mockProducts: Product[] = [
   },
 ];
 
-export default async function Home() {
+export default async function Home({params: {locale}}: {params: {locale: string}}) {
+  unstable_setRequestLocale(locale);
   const t = await getTranslations('HomePage');
 
   return (

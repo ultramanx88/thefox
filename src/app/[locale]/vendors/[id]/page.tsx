@@ -6,13 +6,15 @@ import { Separator } from '@/components/ui/separator';
 import { type Product } from '@/lib/types';
 import { MapPin, Star } from 'lucide-react';
 import Image from 'next/image';
+import {unstable_setRequestLocale} from 'next-intl/server';
 
 const mockVendorProducts: Product[] = [
     { id: '1', name: 'Organic Avocados', price: 4.99, imageUrl: 'https://placehold.co/600x400.png', vendor: 'Green Farms', rating: 4.5, reviewCount: 120, dataAiHint: "avocado fruit" },
     { id: '6', name: 'Fresh Sourdough Bread', price: 7.00, imageUrl: 'https://placehold.co/600x400.png', vendor: 'Green Farms', rating: 4.9, reviewCount: 95, dataAiHint: "sourdough bread" },
 ];
 
-export default function VendorProfilePage({ params }: { params: { id: string } }) {
+export default function VendorProfilePage({ params }: { params: { id: string, locale: string } }) {
+  unstable_setRequestLocale(params.locale);
   const vendorName = "Green Farms";
   
   return (

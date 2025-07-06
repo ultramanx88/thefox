@@ -2,8 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle, Package, Truck } from "lucide-react";
 import Image from "next/image";
+import {unstable_setRequestLocale} from 'next-intl/server';
 
-export default function OrderTrackingPage({ params }: { params: { id: string } }) {
+export default function OrderTrackingPage({ params }: { params: { id: string, locale: string } }) {
+  unstable_setRequestLocale(params.locale);
   const steps = [
     { name: 'Order Placed', icon: CheckCircle, status: 'completed' },
     { name: 'Processing', icon: Package, status: 'completed' },

@@ -3,8 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Store } from "lucide-react";
+import {unstable_setRequestLocale} from 'next-intl/server';
 
-export default function VendorRegistrationPage() {
+export default function VendorRegistrationPage({params: {locale}}: {params: {locale: string}}) {
+  unstable_setRequestLocale(locale);
   return (
     <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[calc(100vh-8rem)]">
       <Card className="w-full max-w-md">
