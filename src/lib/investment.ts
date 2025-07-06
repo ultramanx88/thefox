@@ -334,25 +334,14 @@ function getInvestorData(investor_id: string): Investor | undefined {
   return investors.find(inv => inv.id === investor_id);
 }
 
-function generatePDFReport(data: any): { format: string, data: any } {
-  console.log("Generating PDF report...");
-  return { format: "pdf", data };
-}
-
-function generateExcelReport(data: any): { format: string, data: any } {
-  console.log("Generating Excel report...");
-  return { format: "excel", data };
-}
-
-
 /**
  * Generates a detailed report for a specific investor over a given period.
- * Can return raw data or simulate creating a PDF/Excel file.
+ * The report structure is designed for easy consumption by a UI.
  * @param investor_id The ID of the investor to report on.
- * @param start_date The start date of the report period.
- * @param end_date The end date of the report period.
+ * @param start_date The start date of the report period (YYYY-MM-DD).
+ * @param end_date The end date of the report period (YYYY-MM-DD).
  * @param export_type 'json' (default), 'pdf', or 'excel'.
- * @returns A report object or a simulated file object.
+ * @returns A structured report object.
  */
 export async function generateReport(
     investor_id: string,
@@ -367,33 +356,40 @@ export async function generateReport(
     throw new Error(`Investor with ID ${investor_id} not found.`);
   }
 
+  const daily_data = reports.map(report => {
+      const my_earning = report.investor_earnings[investor_id] || 0;
+      return {
+          date: report.date,
+          total_revenue: report.total_revenue,
+          investor_pool: report.distributions.investor_pool,
+          my_earning: my_earning,
+      };
+  });
+
+  const total_earnings = daily_data.reduce((sum, r) => sum + r.my_earning, 0);
+  const total_days = reports.length;
+  const average_daily = total_days > 0 ? total_earnings / total_days : 0;
+
   const report_data = {
     investor_info: investor_data,
-    daily_reports: reports.map(report => {
-        const my_earning = report.investor_earnings[investor_id] || 0;
-        return {
-            date: report.date,
-            total_revenue: report.total_revenue,
-            investor_pool: report.distributions.investor_pool,
-            my_earning: my_earning,
-        }
-    }),
+    report_period: {
+        start_date,
+        end_date,
+        total_days,
+    },
     summary: {
-      total_days: reports.length,
-      total_earnings: reports.reduce((sum, r) => {
-          const my_earning = r.investor_earnings[investor_id] || 0;
-          return sum + my_earning;
-      }, 0),
-      get avg_daily() {
-          return this.total_days > 0 ? this.total_earnings / this.total_days : 0;
-      }
-    }
+      total_earnings,
+      average_daily,
+      // Note: total_orders is not available in the current data model.
+    },
+    daily_data,
+    export_url: '' // Default empty
   };
   
   if (export_type === 'pdf') {
-    return generatePDFReport(report_data);
+    report_data.export_url = `/api/reports/investor/${investor_id}.pdf?start=${start_date}&end=${end_date}`;
   } else if (export_type === 'excel') {
-    return generateExcelReport(report_data);
+    report_data.export_url = `/api/reports/investor/${investor_id}.xlsx?start=${start_date}&end=${end_date}`;
   }
   
   return report_data;
