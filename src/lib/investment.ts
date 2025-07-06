@@ -25,13 +25,13 @@ interface Investor {
 interface DailyReport {
     date: string;
     total_revenue: number;
-    milestone_reached: boolean;
-    revenue_distribution: {
+    milestone_status: boolean;
+    distributions: {
         founder_share: number;
         investor_pool: number;
         development_fund: number;
     };
-    investor_earnings: { investorName: string; earnings: number }[];
+    investor_earnings: { [investorId: string]: number };
 }
 
 interface Withdrawal {
@@ -83,7 +83,7 @@ function processDailyRevenue(daily_revenue: number): DailyReport {
     let founder_share: number;
     let investor_pool: number;
     let development_fund: number;
-    const investor_earnings: { investorName: string; earnings: number }[] = [];
+    const investor_earnings: { [investorId: string]: number } = {};
 
     // Milestone logic is now based on the total investment pool.
     if (total_investment_pool <= FOUNDER_MILESTONE) {
@@ -103,7 +103,7 @@ function processDailyRevenue(daily_revenue: number): DailyReport {
                 const earnings = investor_pool * investment_share;
                 investor.total_earnings += earnings;
                 investor.current_balance += earnings;
-                investor_earnings.push({ investorName: investor.name, earnings });
+                investor_earnings[investor.id] = earnings;
             });
         }
     }
@@ -111,8 +111,8 @@ function processDailyRevenue(daily_revenue: number): DailyReport {
     const newReport: DailyReport = {
         date: new Date().toISOString().split('T')[0],
         total_revenue: daily_revenue,
-        milestone_reached: total_investment_pool > FOUNDER_MILESTONE,
-        revenue_distribution: {
+        milestone_status: total_investment_pool > FOUNDER_MILESTONE,
+        distributions: {
             founder_share,
             investor_pool,
             development_fund,
@@ -209,7 +209,7 @@ export async function addInvestor(
 export async function getInvestmentData() {
     const totalInvestment = investors.reduce((sum, inv) => sum + inv.total_investment, 0);
     const totalRevenue = dailyReports.reduce((sum, rep) => sum + rep.total_revenue, 0);
-    const totalFounderEarnings = dailyReports.reduce((sum, rep) => sum + rep.revenue_distribution.founder_share, 0);
+    const totalFounderEarnings = dailyReports.reduce((sum, rep) => sum + rep.distributions.founder_share, 0);
 
     const overview = {
         totalInvestment,
@@ -355,19 +355,19 @@ export async function generateReport(
   const report_data = {
     investor_info: investor_data,
     daily_reports: reports.map(report => {
-        const earning_entry = report.investor_earnings.find(e => e.investorName === investor_data.name);
+        const my_earning = report.investor_earnings[investor_id] || 0;
         return {
             date: report.date,
             total_revenue: report.total_revenue,
-            investor_pool: report.revenue_distribution.investor_pool,
-            my_earning: earning_entry ? earning_entry.earnings : 0,
+            investor_pool: report.distributions.investor_pool,
+            my_earning: my_earning,
         }
     }),
     summary: {
       total_days: reports.length,
       total_earnings: reports.reduce((sum, r) => {
-          const earning_entry = r.investor_earnings.find(e => e.investorName === investor_data.name);
-          return sum + (earning_entry ? earning_entry.earnings : 0);
+          const my_earning = r.investor_earnings[investor_id] || 0;
+          return sum + my_earning;
       }, 0),
       get avg_daily() {
           return this.total_days > 0 ? this.total_earnings / this.total_days : 0;

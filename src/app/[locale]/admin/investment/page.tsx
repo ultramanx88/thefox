@@ -111,7 +111,13 @@ export default async function AdminInvestmentPage({
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-            {dailyReports.map((report, index) => (
+            {dailyReports.map((report, index) => {
+              const chartData = Object.entries(report.investor_earnings).map(([investorId, earnings]) => {
+                const investor = investors.find(inv => inv.id === investorId);
+                return { investorName: investor ? investor.name : 'Unknown', earnings };
+              });
+
+              return (
               <div key={report.date}>
                 {index > 0 && <Separator className="my-6" />}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm mb-4">
@@ -125,16 +131,16 @@ export default async function AdminInvestmentPage({
                     </div>
                      <div className="rounded-md border p-3">
                         <div className="text-muted-foreground">{t('reports.investorPool')}</div>
-                        <div className="font-bold text-lg text-primary">{formatCurrency(report.revenue_distribution.investor_pool)}</div>
+                        <div className="font-bold text-lg text-primary">{formatCurrency(report.distributions.investor_pool)}</div>
                     </div>
                     <div className="rounded-md border p-3">
                         <div className="text-muted-foreground">{t('reports.founderShare')}</div>
-                        <div className="font-bold text-lg text-accent">{formatCurrency(report.revenue_distribution.founder_share)}</div>
+                        <div className="font-bold text-lg text-accent">{formatCurrency(report.distributions.founder_share)}</div>
                     </div>
                 </div>
-                 <InvestmentChart data={report.investor_earnings} />
+                 <InvestmentChart data={chartData} />
               </div>
-            ))}
+            )})}
         </CardContent>
       </Card>
     </div>
