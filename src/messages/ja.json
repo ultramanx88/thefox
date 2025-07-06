@@ -10,6 +10,7 @@
     "myOrders": "注文履歴",
     "vendorDashboard": "販売者ダッシュボード",
     "driverDashboard": "ドライバーダッシュボード",
+    "driverAcademy": "ドライバーアカデミー",
     "adminDashboard": "管理者ダッシュボード",
     "logout": "ログアウト",
     "communicationLanguage": "連絡用言語"
@@ -141,7 +142,8 @@
     "statusCompleted": "完了",
     "statusInProgress": "進行中",
     "statusPending": "保留中",
-    "driverProfileTitle": "担当ドライバー"
+    "driverProfileTitle": "担当ドライバー",
+    "driverLanguages": "話せる言語"
   },
   "VendorProfile": {
     "bannerAlt": "販売者のストアバナー",
@@ -257,6 +259,22 @@
       "title": "配車ルール",
       "description": "ジョブは半径3km以内に表示されます。ジョブがすぐに受注されない場合は5kmに拡大されます。"
     }
+  },
+  "DriverAcademy": {
+    "title": "ドライバーアカデミー",
+    "description": "スキルを向上させ、言語能力バッジを獲得して、より多くの仕事を得ましょう。",
+    "languages": {
+      "zh": "中国語能力試験",
+      "ja": "日本語能力試験",
+      "ko": "韓国語能力試験"
+    },
+    "descriptions": {
+      "zh": "基本的な中国語での配送コミュニケーション能力をテストします。",
+      "ja": "基本的な日本語での配送コミュニケーション能力をテストします。",
+      "ko": "基本的な韓国語での配送コミュニケーション能力をテストします。"
+    },
+    "passingRequirement": "50点満点中38点以上で合格し、バッジを獲得できます。",
+    "startTestButton": "テストを開始"
   },
   "VendorDashboard": {
     "sidebar": {
@@ -380,5 +398,10 @@
     "printButton": "印刷",
     "downloadPdfButton": "PDFをダウンロード",
     "downloadExcelButton": "Excelをダウンロード"
+  },
+  "Languages": {
+    "chinese": "中国語",
+    "japanese": "日本語",
+    "korean": "韓国語"
   }
 }

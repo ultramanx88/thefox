@@ -29,6 +29,12 @@ import { Link } from '@/navigation';
 import { getStaffMembers } from '@/lib/staff';
 import { RevenueChart } from '@/components/RevenueChart';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { LanguageBadge } from '@/components/LanguageBadge';
+
+type Driver = {
+  name: string;
+  languageBadges?: ('ja' | 'ko' | 'zh')[];
+}
 
 export default async function VendorDashboardPage({
   params: { locale },
@@ -46,12 +52,20 @@ export default async function VendorDashboardPage({
     { title: t('stats.activeProducts'), value: '25', icon: Package },
   ];
 
-  const recentOrders = [
+  const recentOrders: {
+    id: string;
+    customer: string;
+    amount: string;
+    status: 'new' | 'preparing' | 'ready' | 'delivering';
+    assignedTo: string | null;
+    driver: Driver | null;
+    language: string;
+  }[] = [
     { id: 'ORD-001', customer: 'ร้านอาหารเจริญสุข', amount: '฿2,500.00', status: 'new', assignedTo: null, driver: null, language: 'th' },
     { id: 'ORD-002', customer: 'ครัวคุณหน่อย', amount: '฿1,200.50', status: 'preparing', assignedTo: 'มานะ ใจดี', driver: null, language: 'th' },
     { id: 'ORD-003', customer: 'โรงแรมแกรนด์พาเลซ', amount: '฿8,750.00', status: 'new', assignedTo: null, driver: null, language: 'en' },
     { id: 'ORD-004', customer: 'ร้านก๋วยเตี๋ยวลุงชัย', amount: '฿850.00', status: 'ready', assignedTo: 'ปิติ ชูใจ', driver: null, language: 'zh' },
-    { id: 'ORD-005', customer: 'คาเฟ่ The Nest', amount: '฿1,500.00', status: 'delivering', assignedTo: 'มานะ ใจดี', driver: { name: 'สมชาย ใจดี' }, language: 'en' },
+    { id: 'ORD-005', customer: 'คาเฟ่ The Nest', amount: '฿1,500.00', status: 'delivering', assignedTo: 'มานะ ใจดี', driver: { name: 'สมชาย ใจดี', languageBadges: ['ja', 'ko'] }, language: 'en' },
   ];
 
   const scheduledOrders = [
@@ -247,7 +261,16 @@ export default async function VendorDashboardPage({
                                   <AvatarImage src="https://placehold.co/100x100.png" alt={order.driver.name} data-ai-hint="driver portrait" />
                                   <AvatarFallback>{order.driver.name.slice(0,2)}</AvatarFallback>
                               </Avatar>
-                              <span className="text-sm font-medium">{order.driver.name}</span>
+                              <div>
+                                  <span className="text-sm font-medium">{order.driver.name}</span>
+                                  {order.driver.languageBadges && order.driver.languageBadges.length > 0 && (
+                                    <div className="flex items-center gap-1 mt-1">
+                                      {order.driver.languageBadges.map((lang) => (
+                                          <LanguageBadge key={lang} lang={lang} className="h-5 px-1.5" />
+                                      ))}
+                                    </div>
+                                  )}
+                              </div>
                           </div>
                       ) : (
                           <span className="text-sm text-muted-foreground">{t('noDriverAssigned')}</span>

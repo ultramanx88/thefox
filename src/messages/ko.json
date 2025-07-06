@@ -10,6 +10,7 @@
     "myOrders": "내 주문",
     "vendorDashboard": "판매자 대시보드",
     "driverDashboard": "드라이버 대시보드",
+    "driverAcademy": "드라이버 아카데미",
     "adminDashboard": "관리자 대시보드",
     "logout": "로그아웃",
     "communicationLanguage": "소통 언어"
@@ -141,7 +142,8 @@
     "statusCompleted": "완료",
     "statusInProgress": "진행 중",
     "statusPending": "대기 중",
-    "driverProfileTitle": "담당 드라이버"
+    "driverProfileTitle": "담당 드라이버",
+    "driverLanguages": "구사 가능 언어"
   },
   "VendorProfile": {
     "bannerAlt": "판매자 상점 배너",
@@ -257,6 +259,22 @@
       "title": "배차 규칙",
       "description": "작업은 3km 반경 내에 표시됩니다. 작업이 빨리 수락되지 않으면 5km로 확장됩니다."
     }
+  },
+   "DriverAcademy": {
+    "title": "드라이버 아카데미",
+    "description": "기술을 향상시키고 언어 능력 배지를 획득하여 더 많은 일자리를 얻으세요.",
+    "languages": {
+      "zh": "중국어 능력 시험",
+      "ja": "일본어 능력 시험",
+      "ko": "한국어 능력 시험"
+    },
+    "descriptions": {
+      "zh": "배송을 위한 기본 중국어 의사소통 능력을 테스트합니다.",
+      "ja": "배송을 위한 기본 일본어 의사소통 능력을 테스트합니다.",
+      "ko": "배송을 위한 기본 한국어 의사소통 능력을 테스트합니다."
+    },
+    "passingRequirement": "50점 만점에 38점 이상을 받아 배지를 획득하세요.",
+    "startTestButton": "테스트 시작"
   },
   "VendorDashboard": {
     "sidebar": {
@@ -380,5 +398,10 @@
     "printButton": "인쇄",
     "downloadPdfButton": "PDF 다운로드",
     "downloadExcelButton": "Excel 다운로드"
+  },
+  "Languages": {
+    "chinese": "중국어",
+    "japanese": "일본어",
+    "korean": "한국어"
   }
 }

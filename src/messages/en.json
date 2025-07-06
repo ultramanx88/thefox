@@ -10,6 +10,7 @@
     "myOrders": "My Orders",
     "vendorDashboard": "Vendor Dashboard",
     "driverDashboard": "Driver Dashboard",
+    "driverAcademy": "Driver Academy",
     "adminDashboard": "Admin Dashboard",
     "logout": "Log out",
     "communicationLanguage": "Communication Language"
@@ -141,7 +142,8 @@
     "statusCompleted": "Completed",
     "statusInProgress": "In Progress",
     "statusPending": "Pending",
-    "driverProfileTitle": "Your Driver"
+    "driverProfileTitle": "Your Driver",
+    "driverLanguages": "Languages"
   },
   "VendorProfile": {
     "bannerAlt": "Vendor's store banner",
@@ -257,6 +259,22 @@
       "title": "Dispatching Rules",
       "description": "Jobs are shown within a 3km radius. This expands to 5km if the job isn't accepted quickly."
     }
+  },
+  "DriverAcademy": {
+    "title": "Driver Academy",
+    "description": "Improve your skills and earn language proficiency badges to get more jobs.",
+    "languages": {
+      "zh": "Chinese Proficiency Test",
+      "ja": "Japanese Proficiency Test",
+      "ko": "Korean Proficiency Test"
+    },
+    "descriptions": {
+      "zh": "Test your ability to communicate in basic Chinese for deliveries.",
+      "ja": "Test your ability to communicate in basic Japanese for deliveries.",
+      "ko": "Test your ability to communicate in basic Korean for deliveries."
+    },
+    "passingRequirement": "Pass with a score of 38/50 or higher to earn the badge.",
+    "startTestButton": "Start Test"
   },
   "VendorDashboard": {
     "sidebar": {
@@ -380,5 +398,10 @@
     "printButton": "Print",
     "downloadPdfButton": "Download PDF",
     "downloadExcelButton": "Download Excel"
+  },
+  "Languages": {
+    "chinese": "Chinese",
+    "japanese": "Japanese",
+    "korean": "Korean"
   }
 }

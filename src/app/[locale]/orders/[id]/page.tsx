@@ -5,6 +5,7 @@ import Image from "next/image";
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Rating } from "@/components/Rating";
+import { LanguageBadge } from "@/components/LanguageBadge";
 
 export default async function OrderTrackingPage({ params }: { params: { id: string, locale: string } }) {
   unstable_setRequestLocale(params.locale);
@@ -25,6 +26,7 @@ export default async function OrderTrackingPage({ params }: { params: { id: stri
     rating: 4.9,
     reviewCount: 89,
     vehicle: 'มอเตอร์ไซค์',
+    languageBadges: ['ja', 'ko'] as ('ja' | 'ko' | 'zh')[],
   };
 
   return (
@@ -63,6 +65,14 @@ export default async function OrderTrackingPage({ params }: { params: { id: stri
                                       <CardTitle className="text-lg">{t('driverProfileTitle')}</CardTitle>
                                       <p className="font-semibold mt-1">{driver.name}</p>
                                       <Rating rating={driver.rating} reviewCount={driver.reviewCount} className="mt-1" />
+                                      {driver.languageBadges.length > 0 && (
+                                        <div className="flex items-center gap-2 mt-2">
+                                          <span className="text-xs text-muted-foreground">{t('driverLanguages')}:</span>
+                                          {driver.languageBadges.map((lang) => (
+                                              <LanguageBadge key={lang} lang={lang} />
+                                          ))}
+                                        </div>
+                                      )}
                                   </div>
                               </CardHeader>
                           </Card>

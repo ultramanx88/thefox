@@ -10,6 +10,7 @@
     "myOrders": "我的订单",
     "vendorDashboard": "摊主仪表板",
     "driverDashboard": "司机仪表板",
+    "driverAcademy": "司机学院",
     "adminDashboard": "管理员仪表板",
     "logout": "登出",
     "communicationLanguage": "沟通语言"
@@ -141,7 +142,8 @@
     "statusCompleted": "已完成",
     "statusInProgress": "进行中",
     "statusPending": "待处理",
-    "driverProfileTitle": "您的司机"
+    "driverProfileTitle": "您的司机",
+    "driverLanguages": "沟通语言"
   },
   "VendorProfile": {
     "bannerAlt": "摊主店铺横幅",
@@ -257,6 +259,22 @@
       "title": "派单规则",
       "description": "任务显示在3公里半径内。如果任务未被快速接受，范围将扩大到5公里。"
     }
+  },
+  "DriverAcademy": {
+    "title": "司机学院",
+    "description": "提升您的技能并获得语言能力徽章以获得更多工作机会。",
+    "languages": {
+      "zh": "中文能力测试",
+      "ja": "日文能力测试",
+      "ko": "韩文能力测试"
+    },
+    "descriptions": {
+      "zh": "测试您在配送中使用基本中文进行沟通的能力。",
+      "ja": "测试您在配送中使用基本日语进行沟通的能力。",
+      "ko": "测试您在配送中使用基本韩语进行沟通的能力。"
+    },
+    "passingRequirement": "考试成绩达到38/50分或更高即可获得徽章。",
+    "startTestButton": "开始测试"
   },
   "VendorDashboard": {
     "sidebar": {
@@ -380,5 +398,10 @@
     "printButton": "打印",
     "downloadPdfButton": "下载PDF",
     "downloadExcelButton": "下载Excel"
+  },
+  "Languages": {
+    "chinese": "中文",
+    "japanese": "日语",
+    "korean": "韩语"
   }
 }
