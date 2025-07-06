@@ -13,7 +13,8 @@
     "driverAcademy": "ドライバーアカデミー",
     "adminDashboard": "管理者ダッシュボード",
     "logout": "ログアウト",
-    "communicationLanguage": "連絡用言語"
+    "communicationLanguage": "連絡用言語",
+    "payoutSettings": "支払設定"
   },
   "HomePage": {
     "title": "あなたの市場、お届けします",
@@ -334,6 +335,19 @@
     "passingRequirement": "50点満点中38点以上で合格し、バッジを獲得できます。",
     "startTestButton": "テストを開始"
   },
+  "DriverSettings": {
+    "title": "支払設定",
+    "description": "収益を受け取るための銀行口座情報を管理します。",
+    "payoutAccountCardTitle": "支払い受け取り用銀行口座",
+    "payoutAccountCardDescription": "配送料金を受け取る銀行口座です。",
+    "bankNameLabel": "銀行名",
+    "selectBankPlaceholder": "銀行を選択...",
+    "accountNameLabel": "口座名義",
+    "accountNamePlaceholder": "例：山田 太郎",
+    "accountNumberLabel": "口座番号",
+    "accountNumberPlaceholder": "例：123-4-56789-0",
+    "saveButton": "設定を保存"
+  },
   "VendorDashboard": {
     "sidebar": {
       "vendor": "販売者",
@@ -477,5 +491,3 @@
     "korean": "韓国語"
   }
 }
-
-    

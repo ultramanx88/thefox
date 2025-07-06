@@ -13,7 +13,8 @@
     "driverAcademy": "ศูนย์การเรียนรู้คนขับ",
     "adminDashboard": "แดชบอร์ดผู้ดูแล",
     "logout": "ออกจากระบบ",
-    "communicationLanguage": "ภาษาที่ใช้สื่อสาร"
+    "communicationLanguage": "ภาษาที่ใช้สื่อสาร",
+    "payoutSettings": "ตั้งค่าการรับเงิน"
   },
   "HomePage": {
     "title": "จ่ายตลาดแทนคุณ",
@@ -334,6 +335,19 @@
     "passingRequirement": "ต้องผ่านด้วยคะแนน 38/50 ขึ้นไปเพื่อรับใบรับรอง",
     "startTestButton": "เริ่มทำแบบทดสอบ"
   },
+  "DriverSettings": {
+    "title": "ตั้งค่าการรับเงิน",
+    "description": "จัดการข้อมูลบัญชีธนาคารของคุณเพื่อรับรายได้จากการจัดส่ง",
+    "payoutAccountCardTitle": "บัญชีธนาคารสำหรับรับเงิน",
+    "payoutAccountCardDescription": "นี่คือบัญชีธนาคารที่คุณจะได้รับค่าจัดส่งของคุณ",
+    "bankNameLabel": "ชื่อธนาคาร",
+    "selectBankPlaceholder": "เลือกธนาคาร...",
+    "accountNameLabel": "ชื่อบัญชี",
+    "accountNamePlaceholder": "เช่น สมชาย ใจดี",
+    "accountNumberLabel": "เลขที่บัญชี",
+    "accountNumberPlaceholder": "เช่น 123-4-56789-0",
+    "saveButton": "บันทึกการตั้งค่า"
+  },
   "VendorDashboard": {
     "sidebar": {
       "vendor": "ร้านค้า",
@@ -477,5 +491,3 @@
     "korean": "ภาษาเกาหลี"
   }
 }
-
-    

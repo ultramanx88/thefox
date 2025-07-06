@@ -13,7 +13,8 @@
     "driverAcademy": "Driver Academy",
     "adminDashboard": "Admin Dashboard",
     "logout": "Log out",
-    "communicationLanguage": "Communication Language"
+    "communicationLanguage": "Communication Language",
+    "payoutSettings": "Payout Settings"
   },
   "HomePage": {
     "title": "Your Market, Delivered",
@@ -334,6 +335,19 @@
     "passingRequirement": "Pass with a score of 38/50 or higher to earn the badge.",
     "startTestButton": "Start Test"
   },
+  "DriverSettings": {
+    "title": "Payout Settings",
+    "description": "Manage your bank account information to receive your earnings.",
+    "payoutAccountCardTitle": "Payout Bank Account",
+    "payoutAccountCardDescription": "This is the bank account where you will receive your delivery fees.",
+    "bankNameLabel": "Bank Name",
+    "selectBankPlaceholder": "Select a bank...",
+    "accountNameLabel": "Account Name",
+    "accountNamePlaceholder": "e.g., Somchai Jaidee",
+    "accountNumberLabel": "Account Number",
+    "accountNumberPlaceholder": "e.g., 123-4-56789-0",
+    "saveButton": "Save Settings"
+  },
   "VendorDashboard": {
     "sidebar": {
       "vendor": "Vendor",
@@ -477,5 +491,3 @@
     "korean": "Korean"
   }
 }
-
-    

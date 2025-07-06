@@ -13,7 +13,8 @@
     "driverAcademy": "드라이버 아카데미",
     "adminDashboard": "관리자 대시보드",
     "logout": "로그아웃",
-    "communicationLanguage": "소통 언어"
+    "communicationLanguage": "소통 언어",
+    "payoutSettings": "수익금 설정"
   },
   "HomePage": {
     "title": "당신의 마켓, 배달해드립니다",
@@ -334,6 +335,19 @@
     "passingRequirement": "50점 만점에 38점 이상을 받아 배지를 획득하세요.",
     "startTestButton": "테스트 시작"
   },
+  "DriverSettings": {
+    "title": "수익금 설정",
+    "description": "수입을 수령할 은행 계좌 정보를 관리합니다.",
+    "payoutAccountCardTitle": "수익금 수령 은행 계좌",
+    "payoutAccountCardDescription": "배송비를 수령할 은행 계좌입니다.",
+    "bankNameLabel": "은행명",
+    "selectBankPlaceholder": "은행 선택...",
+    "accountNameLabel": "계좌 소유주 이름",
+    "accountNamePlaceholder": "예: 홍길동",
+    "accountNumberLabel": "계좌 번호",
+    "accountNumberPlaceholder": "예: 123-4-56789-0",
+    "saveButton": "설정 저장"
+  },
   "VendorDashboard": {
     "sidebar": {
       "vendor": "판매자",
@@ -477,5 +491,3 @@
     "korean": "한국어"
   }
 }
-
-    

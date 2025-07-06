@@ -13,7 +13,8 @@
     "driverAcademy": "司机学院",
     "adminDashboard": "管理员仪表板",
     "logout": "登出",
-    "communicationLanguage": "沟通语言"
+    "communicationLanguage": "沟通语言",
+    "payoutSettings": "收款设置"
   },
   "HomePage": {
     "title": "您的专属市场，即刻送达",
@@ -334,6 +335,19 @@
     "passingRequirement": "考试成绩达到38/50分或更高即可获得徽章。",
     "startTestButton": "开始测试"
   },
+  "DriverSettings": {
+    "title": "收款设置",
+    "description": "管理您的银行账户信息以接收您的收入。",
+    "payoutAccountCardTitle": "收款银行账户",
+    "payoutAccountCardDescription": "这是您将接收配送费用的银行账户。",
+    "bankNameLabel": "银行名称",
+    "selectBankPlaceholder": "选择银行...",
+    "accountNameLabel": "账户名称",
+    "accountNamePlaceholder": "例如，Somchai Jaidee",
+    "accountNumberLabel": "账号",
+    "accountNumberPlaceholder": "例如，123-4-56789-0",
+    "saveButton": "保存设置"
+  },
   "VendorDashboard": {
     "sidebar": {
       "vendor": "摊主",
@@ -477,5 +491,3 @@
     "korean": "韩语"
   }
 }
-
-    
