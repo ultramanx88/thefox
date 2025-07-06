@@ -141,7 +141,8 @@
       "vendor": "Vendor",
       "dashboard": "Dashboard",
       "products": "Products",
-      "orders": "Orders"
+      "orders": "Orders",
+      "hours": "Store Hours"
     },
     "main": {
       "title": "Vendor Dashboard",
@@ -174,5 +175,25 @@
       "allProductsDescription": "A list of all your products.",
       "productsPlaceholder": "Product management functionality will be built here."
     }
+  },
+  "VendorHours": {
+    "title": "Manage Store Hours",
+    "description": "Set your regular business hours and add any special closures or exceptions.",
+    "regularHoursTitle": "Regular Business Hours",
+    "editButton": "Edit",
+    "specialHoursTitle": "Upcoming Closures & Special Hours",
+    "addSpecialHoursButton": "Add Special Hours",
+    "noSpecialHours": "No special hours or closures have been added.",
+    "statusOpen": "Open",
+    "statusClosed": "Closed"
+  },
+  "Days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
   }
 }

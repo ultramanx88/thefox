@@ -141,7 +141,8 @@
       "vendor": "摊主",
       "dashboard": "仪表板",
       "products": "产品",
-      "orders": "订单"
+      "orders": "订单",
+      "hours": "营业时间"
     },
     "main": {
       "title": "摊主仪表板",
@@ -174,5 +175,25 @@
       "allProductsDescription": "您的所有产品列表。",
       "productsPlaceholder": "产品管理功能将在此处构建。"
     }
+  },
+  "VendorHours": {
+    "title": "管理营业时间",
+    "description": "设置您的常规营业时间并添加任何特殊的歇业或例外情况。",
+    "regularHoursTitle": "常规营业时间",
+    "editButton": "编辑",
+    "specialHoursTitle": "即将到来的歇业和特殊时间",
+    "addSpecialHoursButton": "添加特殊时间",
+    "noSpecialHours": "尚未添加特殊营业时间或歇业。",
+    "statusOpen": "营业",
+    "statusClosed": "歇业"
+  },
+  "Days": {
+    "monday": "星期一",
+    "tuesday": "星期二",
+    "wednesday": "星期三",
+    "thursday": "星期四",
+    "friday": "星期五",
+    "saturday": "星期六",
+    "sunday": "星期日"
   }
 }

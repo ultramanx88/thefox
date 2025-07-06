@@ -141,7 +141,8 @@
       "vendor": "ร้านค้า",
       "dashboard": "แดชบอร์ด",
       "products": "สินค้า",
-      "orders": "ออเดอร์"
+      "orders": "ออเดอร์",
+      "hours": "เวลาทำการ"
     },
     "main": {
       "title": "แดชบอร์ดร้านค้า",
@@ -174,5 +175,25 @@
       "allProductsDescription": "รายการสินค้าทั้งหมดของคุณ",
       "productsPlaceholder": "ฟังก์ชันจัดการสินค้าจะถูกสร้างที่นี่"
     }
+  },
+  "VendorHours": {
+    "title": "จัดการเวลาทำการ",
+    "description": "ตั้งค่าเวลาทำการปกติและเพิ่มวันหยุดหรือเวลาทำการพิเศษ",
+    "regularHoursTitle": "เวลาทำการปกติ",
+    "editButton": "แก้ไข",
+    "specialHoursTitle": "วันหยุดและเวลาทำการพิเศษ",
+    "addSpecialHoursButton": "เพิ่มเวลาทำการพิเศษ",
+    "noSpecialHours": "ยังไม่มีการเพิ่มชั่วโมงพิเศษหรือวันหยุด",
+    "statusOpen": "เปิด",
+    "statusClosed": "ปิด"
+  },
+  "Days": {
+    "monday": "วันจันทร์",
+    "tuesday": "วันอังคาร",
+    "wednesday": "วันพุธ",
+    "thursday": "วันพฤหัสบดี",
+    "friday": "วันศุกร์",
+    "saturday": "วันเสาร์",
+    "sunday": "วันอาทิตย์"
   }
 }
