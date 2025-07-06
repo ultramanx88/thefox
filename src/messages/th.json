@@ -142,7 +142,8 @@
       "dashboard": "แดชบอร์ด",
       "products": "สินค้า",
       "orders": "ออเดอร์",
-      "hours": "เวลาทำการ"
+      "hours": "เวลาทำการ",
+      "staff": "พนักงาน"
     },
     "main": {
       "title": "แดชบอร์ดร้านค้า",
@@ -186,6 +187,23 @@
     "noSpecialHours": "ยังไม่มีการเพิ่มชั่วโมงพิเศษหรือวันหยุด",
     "statusOpen": "เปิด",
     "statusClosed": "ปิด"
+  },
+  "VendorStaff": {
+    "title": "จัดการพนักงาน",
+    "description": "เพิ่ม แก้ไข หรือลบพนักงานที่ช่วยจัดการร้านค้าของคุณ",
+    "currentStaffTitle": "พนักงานปัจจุบัน",
+    "addStaffButton": "เพิ่มพนักงานใหม่",
+    "tableHeaders": {
+      "name": "ชื่อ",
+      "role": "ตำแหน่ง",
+      "actions": "การกระทำ"
+    },
+    "roles": {
+      "manager": "ผู้จัดการ",
+      "packer": "พนักงานจัดของ"
+    },
+    "editAction": "แก้ไข",
+    "removeAction": "ลบ"
   },
   "Days": {
     "monday": "วันจันทร์",

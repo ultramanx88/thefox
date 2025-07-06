@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Boxes, LayoutDashboard, ShoppingCart, Clock } from 'lucide-react';
+import { Boxes, LayoutDashboard, ShoppingCart, Clock, Users } from 'lucide-react';
 
 export function VendorSidebar({
   vendorName,
@@ -25,6 +25,7 @@ export function VendorSidebar({
     { href: '/vendor/products', label: t('products'), icon: Boxes },
     { href: '/vendor/orders', label: t('orders'), icon: ShoppingCart },
     { href: '/vendor/hours', label: t('hours'), icon: Clock },
+    { href: '/vendor/staff', label: t('staff'), icon: Users },
   ];
 
   return (

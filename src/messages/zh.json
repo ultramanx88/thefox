@@ -142,7 +142,8 @@
       "dashboard": "仪表板",
       "products": "产品",
       "orders": "订单",
-      "hours": "营业时间"
+      "hours": "营业时间",
+      "staff": "员工"
     },
     "main": {
       "title": "摊主仪表板",
@@ -186,6 +187,23 @@
     "noSpecialHours": "尚未添加特殊营业时间或歇业。",
     "statusOpen": "营业",
     "statusClosed": "歇业"
+  },
+  "VendorStaff": {
+    "title": "管理员工",
+    "description": "添加、编辑或删除帮助管理您店铺的员工。",
+    "currentStaffTitle": "当前员工",
+    "addStaffButton": "添加新员工",
+    "tableHeaders": {
+      "name": "姓名",
+      "role": "角色",
+      "actions": "操作"
+    },
+    "roles": {
+      "manager": "经理",
+      "packer": "包装员"
+    },
+    "editAction": "编辑",
+    "removeAction": "删除"
   },
   "Days": {
     "monday": "星期一",

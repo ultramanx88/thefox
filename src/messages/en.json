@@ -142,7 +142,8 @@
       "dashboard": "Dashboard",
       "products": "Products",
       "orders": "Orders",
-      "hours": "Store Hours"
+      "hours": "Store Hours",
+      "staff": "Staff"
     },
     "main": {
       "title": "Vendor Dashboard",
@@ -186,6 +187,23 @@
     "noSpecialHours": "No special hours or closures have been added.",
     "statusOpen": "Open",
     "statusClosed": "Closed"
+  },
+  "VendorStaff": {
+    "title": "Manage Staff",
+    "description": "Add, edit, or remove staff members who help manage your store.",
+    "currentStaffTitle": "Current Staff Members",
+    "addStaffButton": "Add New Staff Member",
+    "tableHeaders": {
+      "name": "Name",
+      "role": "Role",
+      "actions": "Actions"
+    },
+    "roles": {
+      "manager": "Manager",
+      "packer": "Packer"
+    },
+    "editAction": "Edit",
+    "removeAction": "Remove"
   },
   "Days": {
     "monday": "Monday",
