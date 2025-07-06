@@ -9,6 +9,7 @@
     "profile": "Profile",
     "myOrders": "My Orders",
     "vendorDashboard": "Vendor Dashboard",
+    "driverDashboard": "Driver Dashboard",
     "adminDashboard": "Admin Dashboard",
     "logout": "Log out"
   },
@@ -158,6 +159,29 @@
     "getDirectionsButton": "Get Directions (GPS)",
     "confirmDeliveryButton": "Confirm Delivery",
     "mapAlt": "Map showing pickup and delivery route"
+  },
+  "DriverJobs": {
+    "title": "Delivery Jobs",
+    "description": "View and accept available delivery jobs.",
+    "availableJobs": "Available Jobs",
+    "mySchedule": "My Schedule",
+    "tableHeaders": {
+      "orderId": "Order ID",
+      "route": "Route",
+      "payout": "Payout",
+      "timeWindow": "Time Window",
+      "action": "Action",
+      "time": "Time",
+      "status": "Status"
+    },
+    "pickup": "Pickup",
+    "delivery": "Delivery",
+    "acceptJob": "Accept Job",
+    "viewDetails": "View Details",
+    "statusScheduled": "Scheduled",
+    "statusInProgress": "In Progress",
+    "noAvailableJobs": "No available jobs at the moment. Check back soon!",
+    "noScheduledJobs": "You have no scheduled jobs."
   },
   "VendorDashboard": {
     "sidebar": {

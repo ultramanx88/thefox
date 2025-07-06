@@ -9,6 +9,7 @@
     "profile": "โปรไฟล์",
     "myOrders": "รายการสั่งซื้อของฉัน",
     "vendorDashboard": "แดชบอร์ดร้านค้า",
+    "driverDashboard": "แดชบอร์ดคนขับ",
     "adminDashboard": "แดชบอร์ดผู้ดูแล",
     "logout": "ออกจากระบบ"
   },
@@ -158,6 +159,29 @@
     "getDirectionsButton": "นำทางด้วย GPS",
     "confirmDeliveryButton": "ยืนยันการจัดส่งสำเร็จ",
     "mapAlt": "แผนที่แสดงเส้นทางรับและส่งสินค้า"
+  },
+  "DriverJobs": {
+    "title": "งานจัดส่ง",
+    "description": "ดูและรับงานจัดส่งที่มีอยู่",
+    "availableJobs": "งานที่ว่าง",
+    "mySchedule": "ตารางงานของฉัน",
+    "tableHeaders": {
+        "orderId": "รหัสออเดอร์",
+        "route": "เส้นทาง",
+        "payout": "ค่าตอบแทน",
+        "timeWindow": "ช่วงเวลา",
+        "action": "ดำเนินการ",
+        "time": "เวลา",
+        "status": "สถานะ"
+    },
+    "pickup": "รับของ",
+    "delivery": "จัดส่ง",
+    "acceptJob": "รับงาน",
+    "viewDetails": "ดูรายละเอียด",
+    "statusScheduled": "มีกำหนดการแล้ว",
+    "statusInProgress": "กำลังดำเนินการ",
+    "noAvailableJobs": "ยังไม่มีงานว่างในขณะนี้ ลองเข้ามาดูใหม่ภายหลัง",
+    "noScheduledJobs": "คุณยังไม่มีงานในตาราง"
   },
   "VendorDashboard": {
     "sidebar": {

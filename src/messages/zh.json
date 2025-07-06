@@ -9,6 +9,7 @@
     "profile": "个人资料",
     "myOrders": "我的订单",
     "vendorDashboard": "摊主仪表板",
+    "driverDashboard": "司机仪表板",
     "adminDashboard": "管理员仪表板",
     "logout": "登出"
   },
@@ -158,6 +159,29 @@
     "getDirectionsButton": "获取路线 (GPS)",
     "confirmDeliveryButton": "确认送达",
     "mapAlt": "显示取货和配送路线的地图"
+  },
+  "DriverJobs": {
+    "title": "配送任务",
+    "description": "查看并接受可用的配送任务。",
+    "availableJobs": "可用任务",
+    "mySchedule": "我的日程",
+    "tableHeaders": {
+        "orderId": "订单号",
+        "route": "路线",
+        "payout": "报酬",
+        "timeWindow": "时间窗口",
+        "action": "操作",
+        "time": "时间",
+        "status": "状态"
+    },
+    "pickup": "取货",
+    "delivery": "配送",
+    "acceptJob": "接受任务",
+    "viewDetails": "查看详情",
+    "statusScheduled": "已安排",
+    "statusInProgress": "进行中",
+    "noAvailableJobs": "目前没有可用的任务。请稍后再来查看！",
+    "noScheduledJobs": "您的日程中没有任务。"
   },
   "VendorDashboard": {
     "sidebar": {
