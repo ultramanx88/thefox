@@ -13,6 +13,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function AdminSettingsPage() {
   const t = useTranslations('AdminSettings');
@@ -115,6 +122,43 @@ export default function AdminSettingsPage() {
               )}
               
               <Button type="submit">{t('saveButton')}</Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('payoutAccountCardTitle')}</CardTitle>
+            <CardDescription>{t('payoutAccountCardDescription')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-4 max-w-lg">
+                <div className="space-y-2">
+                    <Label htmlFor="bank-name">{t('bankNameLabel')}</Label>
+                    <Select>
+                        <SelectTrigger id="bank-name">
+                            <SelectValue placeholder={t('selectBankPlaceholder')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="kbank">{t('banks.kbank')}</SelectItem>
+                            <SelectItem value="scb">{t('banks.scb')}</SelectItem>
+                            <SelectItem value="bbl">{t('banks.bbl')}</SelectItem>
+                            <SelectItem value="krungsri">{t('banks.krungsri')}</SelectItem>
+                            <SelectItem value="ktb">{t('banks.ktb')}</SelectItem>
+                            <SelectItem value="ttb">{t('banks.ttb')}</SelectItem>
+                            <SelectItem value="gsb">{t('banks.gsb')}</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="account-name">{t('accountNameLabel')}</Label>
+                    <Input id="account-name" placeholder={t('accountNamePlaceholder')} />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="account-number">{t('accountNumberLabel')}</Label>
+                    <Input id="account-number" placeholder={t('accountNumberPlaceholder')} />
+                </div>
+                <Button type="submit">{t('saveButton')}</Button>
             </form>
           </CardContent>
         </Card>

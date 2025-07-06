@@ -186,7 +186,24 @@
     "publishableKeyLabel": "可发布密钥",
     "secretKeyLabel": "秘密密钥",
     "publishableKeyPlaceholder": "输入您的可发布密钥",
-    "secretKeyPlaceholder": "输入您的秘密密钥"
+    "secretKeyPlaceholder": "输入您的秘密密钥",
+    "payoutAccountCardTitle": "收款银行账户",
+    "payoutAccountCardDescription": "配置用于接收平台收入和创始人份额的银行账户。",
+    "bankNameLabel": "银行名称",
+    "selectBankPlaceholder": "选择银行...",
+    "accountNameLabel": "账户名称",
+    "accountNamePlaceholder": "例如，TaladMan有限公司",
+    "accountNumberLabel": "账号",
+    "accountNumberPlaceholder": "例如，123-4-56789-0",
+    "banks": {
+      "kbank": "开泰银行 (K-Bank)",
+      "scb": "暹罗商业银行 (SCB)",
+      "bbl": "盘谷银行 (BBL)",
+      "krungsri": "大城银行 (Krungsri)",
+      "ktb": "泰京银行 (KTB)",
+      "ttb": "TMBThanachart银行 (TTB)",
+      "gsb": "政府储蓄银行 (GSB)"
+    }
   },
   "AdminFeeSimulator": {
     "title": "费用模拟器",

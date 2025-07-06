@@ -186,7 +186,24 @@
     "publishableKeyLabel": "Publishable Key",
     "secretKeyLabel": "Secret Key",
     "publishableKeyPlaceholder": "Enter your Publishable Key",
-    "secretKeyPlaceholder": "Enter your Secret Key"
+    "secretKeyPlaceholder": "Enter your Secret Key",
+    "payoutAccountCardTitle": "Payout Bank Account",
+    "payoutAccountCardDescription": "Configure the bank account for receiving platform revenue and founder shares.",
+    "bankNameLabel": "Bank Name",
+    "selectBankPlaceholder": "Select a bank...",
+    "accountNameLabel": "Account Name",
+    "accountNamePlaceholder": "e.g., TaladMan Co., Ltd.",
+    "accountNumberLabel": "Account Number",
+    "accountNumberPlaceholder": "e.g., 123-4-56789-0",
+    "banks": {
+      "kbank": "Kasikorn Bank (K-Bank)",
+      "scb": "Siam Commercial Bank (SCB)",
+      "bbl": "Bangkok Bank (BBL)",
+      "krungsri": "Bank of Ayudhya (Krungsri)",
+      "ktb": "Krungthai Bank (KTB)",
+      "ttb": "TMBThanachart Bank (TTB)",
+      "gsb": "Government Savings Bank (GSB)"
+    }
   },
   "AdminFeeSimulator": {
     "title": "Fee Simulator",

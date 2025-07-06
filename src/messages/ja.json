@@ -186,7 +186,24 @@
     "publishableKeyLabel": "公開可能キー",
     "secretKeyLabel": "シークレットキー",
     "publishableKeyPlaceholder": "公開可能キーを入力してください",
-    "secretKeyPlaceholder": "シークレットキーを入力してください"
+    "secretKeyPlaceholder": "シークレットキーを入力してください",
+    "payoutAccountCardTitle": "支払い受け取り用銀行口座",
+    "payoutAccountCardDescription": "プラットフォームの収益と創設者の分け前を受け取るための銀行口座を設定します。",
+    "bankNameLabel": "銀行名",
+    "selectBankPlaceholder": "銀行を選択...",
+    "accountNameLabel": "口座名義",
+    "accountNamePlaceholder": "例：TaladMan株式会社",
+    "accountNumberLabel": "口座番号",
+    "accountNumberPlaceholder": "例：123-4-56789-0",
+    "banks": {
+      "kbank": "カシコン銀行 (K-Bank)",
+      "scb": "サイアム商業銀行 (SCB)",
+      "bbl": "バンコク銀行 (BBL)",
+      "krungsri": "アユタヤ銀行 (Krungsri)",
+      "ktb": "クルンタイ銀行 (KTB)",
+      "ttb": "TMBタナチャート銀行 (TTB)",
+      "gsb": "政府貯蓄銀行 (GSB)"
+    }
   },
   "AdminFeeSimulator": {
     "title": "料金シミュレーター",

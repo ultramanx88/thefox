@@ -186,7 +186,24 @@
     "publishableKeyLabel": "공개 가능 키",
     "secretKeyLabel": "비밀 키",
     "publishableKeyPlaceholder": "공개 가능 키를 입력하세요",
-    "secretKeyPlaceholder": "비밀 키를 입력하세요"
+    "secretKeyPlaceholder": "비밀 키를 입력하세요",
+    "payoutAccountCardTitle": "수익금 수령 은행 계좌",
+    "payoutAccountCardDescription": "플랫폼 수익 및 설립자 지분을 수령할 은행 계좌를 설정합니다.",
+    "bankNameLabel": "은행명",
+    "selectBankPlaceholder": "은행 선택...",
+    "accountNameLabel": "계좌 소유주 이름",
+    "accountNamePlaceholder": "예: TaladMan 주식회사",
+    "accountNumberLabel": "계좌 번호",
+    "accountNumberPlaceholder": "예: 123-4-56789-0",
+    "banks": {
+      "kbank": "카시콘 은행 (K-Bank)",
+      "scb": "시암 상업 은행 (SCB)",
+      "bbl": "방콕 은행 (BBL)",
+      "krungsri": "아유타야 은행 (Krungsri)",
+      "ktb": "끄룽타이 은행 (KTB)",
+      "ttb": "TMB타나찻 은행 (TTB)",
+      "gsb": "정부 저축 은행 (GSB)"
+    }
   },
   "AdminFeeSimulator": {
     "title": "수수료 시뮬레이터",
