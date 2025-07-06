@@ -172,16 +172,23 @@
         "timeWindow": "ช่วงเวลา",
         "action": "ดำเนินการ",
         "time": "เวลา",
-        "status": "สถานะ"
+        "status": "สถานะ",
+        "distance": "ระยะทาง"
     },
     "pickup": "รับของ",
     "delivery": "จัดส่ง",
     "acceptJob": "รับงาน",
     "viewDetails": "ดูรายละเอียด",
+    "cancelJob": "ยกเลิกงาน",
     "statusScheduled": "มีกำหนดการแล้ว",
     "statusInProgress": "กำลังดำเนินการ",
+    "statusAccepted": "รับงานแล้ว",
     "noAvailableJobs": "ยังไม่มีงานว่างในขณะนี้ ลองเข้ามาดูใหม่ภายหลัง",
-    "noScheduledJobs": "คุณยังไม่มีงานในตาราง"
+    "noScheduledJobs": "คุณยังไม่มีงานในตาราง",
+    "dispatchRules": {
+      "title": "กฎการจ่ายงาน",
+      "description": "ระบบจะแสดงงานในรัศมี 3 กม. และจะขยายเป็น 5 กม. หากยังไม่มีคนรับงาน"
+    }
   },
   "VendorDashboard": {
     "sidebar": {

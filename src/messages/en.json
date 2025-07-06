@@ -172,16 +172,23 @@
       "timeWindow": "Time Window",
       "action": "Action",
       "time": "Time",
-      "status": "Status"
+      "status": "Status",
+      "distance": "Distance"
     },
     "pickup": "Pickup",
     "delivery": "Delivery",
     "acceptJob": "Accept Job",
     "viewDetails": "View Details",
+    "cancelJob": "Cancel Job",
     "statusScheduled": "Scheduled",
     "statusInProgress": "In Progress",
+    "statusAccepted": "Accepted",
     "noAvailableJobs": "No available jobs at the moment. Check back soon!",
-    "noScheduledJobs": "You have no scheduled jobs."
+    "noScheduledJobs": "You have no scheduled jobs.",
+    "dispatchRules": {
+      "title": "Dispatching Rules",
+      "description": "Jobs are shown within a 3km radius. This expands to 5km if the job isn't accepted quickly."
+    }
   },
   "VendorDashboard": {
     "sidebar": {

@@ -172,16 +172,23 @@
         "timeWindow": "时间窗口",
         "action": "操作",
         "time": "时间",
-        "status": "状态"
+        "status": "状态",
+        "distance": "距离"
     },
     "pickup": "取货",
     "delivery": "配送",
     "acceptJob": "接受任务",
     "viewDetails": "查看详情",
+    "cancelJob": "取消任务",
     "statusScheduled": "已安排",
     "statusInProgress": "进行中",
+    "statusAccepted": "已接受",
     "noAvailableJobs": "目前没有可用的任务。请稍后再来查看！",
-    "noScheduledJobs": "您的日程中没有任务。"
+    "noScheduledJobs": "您的日程中没有任务。",
+    "dispatchRules": {
+      "title": "派单规则",
+      "description": "任务显示在3公里半径内。如果任务未被快速接受，范围将扩大到5公里。"
+    }
   },
   "VendorDashboard": {
     "sidebar": {
