@@ -8,17 +8,14 @@
     "guestUser": "ผู้ใช้ทั่วไป",
     "profile": "โปรไฟล์",
     "vendorDashboard": "แดชบอร์ดร้านค้า",
-    "logout": "ออกจากระบบ"
+    "logout": "ออกจากระบบ",
+    "adminDashboardLink": "จัดการหมวดหมู่"
   },
   "HomePage": {
     "title": "จ่ายตลาดแทนคุณ",
     "subtitle": "ค้นพบวัตถุดิบสดใหม่จากตลาดใกล้บ้านคุณ ส่งตรงถึงร้านอาหารของคุณ",
     "categoryLabel": "หมวดหมู่",
     "allCategories": "ทุกหมวดหมู่",
-    "vegetablesCategory": "ผัก",
-    "fruitsCategory": "ผลไม้",
-    "meatCategory": "เนื้อสัตว์",
-    "seafoodCategory": "อาหารทะเล",
     "locationLabel": "ตลาดใกล้เคียง",
     "locationPlaceholder": "เช่น ตลาดคลองเตย, กรุงเทพฯ",
     "searchButton": "ค้นหา"
@@ -94,5 +91,19 @@
       "bannerAlt": "แบนเนอร์ร้านค้า",
       "marketStall": "ร้านค้าในตลาด",
       "productsFrom": "สินค้าจาก {vendorName}"
+  },
+  "CategoryAdmin": {
+    "pageTitle": "จัดการหมวดหมู่",
+    "addNewCategoryTitle": "เพิ่มหมวดหมู่ใหม่",
+    "addNewCategoryDescription": "สร้างหมวดหมู่สินค้าใหม่สำหรับตลาด",
+    "categoryNameLabel": "ชื่อหมวดหมู่",
+    "categoryNamePlaceholder": "เช่น, ผักออร์แกนิก",
+    "addCategoryButton": "เพิ่มหมวดหมู่",
+    "existingCategoriesTitle": "หมวดหมู่ที่มีอยู่",
+    "nameHeader": "ชื่อ",
+    "slugHeader": "Slug",
+    "toastSuccessTitle": "สำเร็จ",
+    "toastSuccessDescription": "เพิ่มหมวดหมู่เรียบร้อยแล้ว",
+    "toastErrorTitle": "ข้อผิดพลาด"
   }
 }

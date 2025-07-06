@@ -8,17 +8,14 @@
     "guestUser": "访客用户",
     "profile": "个人资料",
     "vendorDashboard": "摊主仪表板",
-    "logout": "登出"
+    "logout": "登出",
+    "adminDashboardLink": "分类管理"
   },
   "HomePage": {
     "title": "您的专属市场，即刻送达",
     "subtitle": "从本地市场发现新鲜食材，直接送到您的餐厅。",
     "categoryLabel": "类别",
     "allCategories": "所有类别",
-    "vegetablesCategory": "蔬菜",
-    "fruitsCategory": "水果",
-    "meatCategory": "肉类",
-    "seafoodCategory": "海鲜",
     "locationLabel": "附近市场",
     "locationPlaceholder": "例如，曼谷空堤市场",
     "searchButton": "搜索"
@@ -94,5 +91,19 @@
     "bannerAlt": "市场摊位横幅",
     "marketStall": "市场摊位",
     "productsFrom": "来自 {vendorName} 的产品"
+  },
+  "CategoryAdmin": {
+    "pageTitle": "管理分类",
+    "addNewCategoryTitle": "添加新分类",
+    "addNewCategoryDescription": "为市场创建新的产品分类。",
+    "categoryNameLabel": "分类名称",
+    "categoryNamePlaceholder": "例如，有机产品",
+    "addCategoryButton": "添加分类",
+    "existingCategoriesTitle": "现有分类",
+    "nameHeader": "名称",
+    "slugHeader": "别名",
+    "toastSuccessTitle": "成功",
+    "toastSuccessDescription": "分类添加成功。",
+    "toastErrorTitle": "错误"
   }
 }

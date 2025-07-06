@@ -8,17 +8,14 @@
     "guestUser": "Guest User",
     "profile": "Profile",
     "vendorDashboard": "Vendor Dashboard",
-    "logout": "Log out"
+    "logout": "Log out",
+    "adminDashboardLink": "Category Management"
   },
   "HomePage": {
     "title": "Your Market, Delivered",
     "subtitle": "Discover fresh ingredients from local markets, delivered directly to your restaurant.",
     "categoryLabel": "Category",
     "allCategories": "All Categories",
-    "vegetablesCategory": "Vegetables",
-    "fruitsCategory": "Fruits",
-    "meatCategory": "Meat",
-    "seafoodCategory": "Seafood",
     "locationLabel": "Nearby Market",
     "locationPlaceholder": "e.g., Klong Toey Market, Bangkok",
     "searchButton": "Search"
@@ -94,5 +91,19 @@
       "bannerAlt": "Market stall banner",
       "marketStall": "Market Stall",
       "productsFrom": "Products from {vendorName}"
+  },
+  "CategoryAdmin": {
+    "pageTitle": "Manage Categories",
+    "addNewCategoryTitle": "Add New Category",
+    "addNewCategoryDescription": "Create a new product category for the marketplace.",
+    "categoryNameLabel": "Category Name",
+    "categoryNamePlaceholder": "e.g., Organic Produce",
+    "addCategoryButton": "Add Category",
+    "existingCategoriesTitle": "Existing Categories",
+    "nameHeader": "Name",
+    "slugHeader": "Slug",
+    "toastSuccessTitle": "Success",
+    "toastSuccessDescription": "Category added successfully.",
+    "toastErrorTitle": "Error"
   }
 }

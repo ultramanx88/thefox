@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MapPin, Search } from 'lucide-react';
 import {getTranslations, unstable_setRequestLocale} from 'next-intl/server';
+import { getCategories } from '@/lib/categories';
 
 const mockProducts: Product[] = [
   {
@@ -94,6 +95,7 @@ const mockProducts: Product[] = [
 export default async function Home({params: {locale}}: {params: {locale: string}}) {
   unstable_setRequestLocale(locale);
   const t = await getTranslations('HomePage');
+  const categories = await getCategories();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -116,10 +118,11 @@ export default async function Home({params: {locale}}: {params: {locale: string}
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('allCategories')}</SelectItem>
-                <SelectItem value="vegetables">{t('vegetablesCategory')}</SelectItem>
-                <SelectItem value="fruits">{t('fruitsCategory')}</SelectItem>
-                <SelectItem value="meat">{t('meatCategory')}</SelectItem>
-                <SelectItem value="seafood">{t('seafoodCategory')}</SelectItem>
+                {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.slug}>
+                        {category.name}
+                    </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, Link } from '@/navigation';
-import { ShoppingCart, Store, Leaf, User, Menu, Globe } from 'lucide-react';
+import { ShoppingCart, Store, Leaf, User, Menu, Globe, Settings } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -151,6 +151,10 @@ export function Header() {
               <DropdownMenuItem>
                 <Store className="mr-2 h-4 w-4" />
                 <Link href="/register/vendor">{t('vendorDashboard')}</Link>
+              </DropdownMenuItem>
+               <DropdownMenuItem>
+                <Settings className="mr-2 h-4 w-4" />
+                <Link href="/admin/categories">{t('adminDashboardLink')}</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
