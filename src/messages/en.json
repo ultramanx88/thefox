@@ -75,7 +75,16 @@
     "allowedVehiclesDescription": "Select which vehicle types can be used to deliver this product.",
     "motorcycle": "Motorcycle",
     "car": "Car",
-    "truck": "Pickup Truck"
+    "truck": "Pickup Truck",
+    "multilingualTitle": "Product Information (Multilingual)",
+    "multilingualDescription": "Provide product details in all supported languages to reach more customers.",
+    "languages": {
+      "th": "Thai",
+      "en": "English",
+      "zh": "Chinese",
+      "ja": "Japanese",
+      "ko": "Korean"
+    }
   },
   "VendorRegistration": {
     "title": "Become a Vendor",

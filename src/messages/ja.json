@@ -75,7 +75,16 @@
     "allowedVehiclesDescription": "この商品を配送できる車両タイプを選択してください。",
     "motorcycle": "バイク",
     "car": "自動車",
-    "truck": "ピックアップトラック"
+    "truck": "ピックアップトラック",
+    "multilingualTitle": "製品情報（多言語）",
+    "multilingualDescription": "より多くのお客様にリーチするために、サポートされているすべての言語で製品の詳細を提供してください。",
+    "languages": {
+      "th": "タイ語",
+      "en": "英語",
+      "zh": "中国語",
+      "ja": "日本語",
+      "ko": "韓国語"
+    }
   },
   "VendorRegistration": {
     "title": "販売者になる",

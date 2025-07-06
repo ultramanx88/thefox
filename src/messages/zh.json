@@ -75,7 +75,16 @@
     "allowedVehiclesDescription": "选择可用于运送此产品的车辆类型。",
     "motorcycle": "摩托车",
     "car": "汽车",
-    "truck": "皮卡车"
+    "truck": "皮卡车",
+    "multilingualTitle": "产品信息（多语言）",
+    "multilingualDescription": "以所有支持的语言提供产品详细信息，以吸引更多客户。",
+    "languages": {
+      "th": "泰语",
+      "en": "英语",
+      "zh": "中文",
+      "ja": "日语",
+      "ko": "韩语"
+    }
   },
   "VendorRegistration": {
     "title": "成为摊主",

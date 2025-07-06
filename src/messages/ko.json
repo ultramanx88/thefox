@@ -75,7 +75,16 @@
     "allowedVehiclesDescription": "이 상품을 배송하는 데 사용할 수 있는 차량 유형을 선택하세요.",
     "motorcycle": "오토바이",
     "car": "자동차",
-    "truck": "픽업 트럭"
+    "truck": "픽업 트럭",
+    "multilingualTitle": "제품 정보(다국어)",
+    "multilingualDescription": "더 많은 고객에게 다가가기 위해 지원되는 모든 언어로 제품 세부 정보를 제공하십시오.",
+    "languages": {
+      "th": "태국어",
+      "en": "영어",
+      "zh": "중국어",
+      "ja": "일본어",
+      "ko": "한국어"
+    }
   },
   "VendorRegistration": {
     "title": "판매자 되기",

@@ -6,10 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default async function NewProductPage({params: {locale}}: {params: {locale: string}}) {
   unstable_setRequestLocale(locale);
   const t = await getTranslations('NewProduct');
+  const languages = ['th', 'en', 'zh', 'ja', 'ko'];
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -22,14 +24,33 @@ export default async function NewProductPage({params: {locale}}: {params: {local
         </CardHeader>
         <CardContent>
           <form className="space-y-8">
-            <div className="space-y-2">
-              <Label htmlFor="productName">{t('nameLabel')}</Label>
-              <Input id="productName" placeholder={t('namePlaceholder')} />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">{t('descriptionLabel')}</Label>
-              <Textarea id="description" placeholder={t('descriptionPlaceholder')} />
+            
+            <div className="space-y-4 rounded-lg border bg-background/50 p-4">
+                <div className="space-y-1">
+                    <h3 className="text-lg font-semibold">{t('multilingualTitle')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('multilingualDescription')}</p>
+                </div>
+                <Tabs defaultValue={locale} className="w-full">
+                    <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5">
+                        {languages.map((lang) => (
+                        <TabsTrigger key={lang} value={lang}>
+                            {t(`languages.${lang}`)}
+                        </TabsTrigger>
+                        ))}
+                    </TabsList>
+                    {languages.map((lang) => (
+                        <TabsContent key={lang} value={lang} className="space-y-4 pt-4">
+                        <div className="space-y-2">
+                            <Label htmlFor={`productName-${lang}`}>{t('nameLabel')}</Label>
+                            <Input id={`productName-${lang}`} placeholder={t('namePlaceholder')} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor={`description-${lang}`}>{t('descriptionLabel')}</Label>
+                            <Textarea id={`description-${lang}`} placeholder={t('descriptionPlaceholder')} />
+                        </div>
+                        </TabsContent>
+                    ))}
+                </Tabs>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
