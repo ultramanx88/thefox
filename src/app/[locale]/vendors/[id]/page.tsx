@@ -1,11 +1,16 @@
+'use client';
+
 import { ProductCard } from '@/components/ProductCard';
 import { Rating } from '@/components/Rating';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { type Product } from '@/lib/types';
-import { MapPin } from 'lucide-react';
+import { MapPin, Clock } from 'lucide-react';
 import Image from 'next/image';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
+import { useState, useEffect } from 'react';
+import { getRegularHours } from '@/lib/hours';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const mockVendorProducts: Product[] = [
     {
@@ -30,9 +35,68 @@ const mockVendorProducts: Product[] = [
     },
 ];
 
-export default async function VendorProfilePage({ params }: { params: { id: string, locale: string } }) {
-  unstable_setRequestLocale(params.locale);
-  const t = await getTranslations('VendorProfile');
+function ClosingSoonAlert() {
+  const t = useTranslations('VendorProfile');
+  const [isClosingSoon, setIsClosingSoon] = useState(false);
+  
+  useEffect(() => {
+    const checkClosingTime = async () => {
+      try {
+        const hoursData = await getRegularHours();
+        const now = new Date();
+        const dayMap = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const currentDayName = dayMap[now.getDay()];
+        
+        const todayHours = hoursData.find(h => h.day.toLowerCase() === currentDayName);
+
+        if (todayHours && todayHours.isOpen) {
+          const [closingHour, closingMinute] = todayHours.close.split(':').map(Number);
+          
+          const closingTime = new Date();
+          closingTime.setHours(closingHour, closingMinute, 0, 0);
+
+          const thirtyMinutesBeforeClosing = new Date(closingTime.getTime() - 30 * 60 * 1000);
+
+          if (now >= thirtyMinutesBeforeClosing && now < closingTime) {
+            setIsClosingSoon(true);
+          } else {
+            setIsClosingSoon(false);
+          }
+        } else {
+          setIsClosingSoon(false);
+        }
+      } catch (error) {
+        console.error("Failed to check closing time:", error);
+        setIsClosingSoon(false);
+      }
+    };
+
+    // Run once on mount, then every minute
+    checkClosingTime();
+    const intervalId = setInterval(checkClosingTime, 60000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  if (!isClosingSoon) {
+    return null;
+  }
+
+  return (
+    <Alert variant="destructive" className="mb-8 animate-pulse">
+      <Clock className="h-4 w-4" />
+      <AlertTitle>{t('closingSoonTitle')}</AlertTitle>
+      <AlertDescription>
+        {t('closingSoonDescription')}
+      </AlertDescription>
+    </Alert>
+  );
+}
+
+
+export default function VendorProfilePage({ params }: { params: { id: string }}) {
+  const t = useTranslations('VendorProfile');
   const vendorName = "ร้านผักป้านี";
   
   return (
@@ -56,6 +120,8 @@ export default async function VendorProfilePage({ params }: { params: { id: stri
             </div>
             
             <Separator className="my-8"/>
+            
+            <ClosingSoonAlert />
 
             <h2 className="text-2xl font-bold font-headline mb-4">{t('productsFrom', {vendorName})}</h2>
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">

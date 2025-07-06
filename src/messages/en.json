@@ -108,7 +108,9 @@
   "VendorProfile": {
     "bannerAlt": "Vendor's store banner",
     "marketStall": "Market Stall",
-    "productsFrom": "Products from {vendorName}"
+    "productsFrom": "Products from {vendorName}",
+    "closingSoonTitle": "Store Closing Soon",
+    "closingSoonDescription": "This store will stop accepting new orders in less than 30 minutes."
   },
   "AdminDashboard": {
     "sidebar": {

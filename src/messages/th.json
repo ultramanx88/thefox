@@ -108,7 +108,9 @@
   "VendorProfile": {
     "bannerAlt": "แบนเนอร์หน้าร้านค้า",
     "marketStall": "แผงลอยในตลาด",
-    "productsFrom": "สินค้าจาก {vendorName}"
+    "productsFrom": "สินค้าจาก {vendorName}",
+    "closingSoonTitle": "ร้านใกล้จะปิดแล้ว",
+    "closingSoonDescription": "ร้านค้านี้จะหยุดรับออเดอร์ใหม่ในอีกไม่ถึง 30 นาที"
   },
   "AdminDashboard": {
     "sidebar": {

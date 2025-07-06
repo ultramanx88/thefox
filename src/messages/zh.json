@@ -108,7 +108,9 @@
   "VendorProfile": {
     "bannerAlt": "摊主店铺横幅",
     "marketStall": "市场摊位",
-    "productsFrom": "来自 {vendorName} 的产品"
+    "productsFrom": "来自 {vendorName} 的产品",
+    "closingSoonTitle": "店铺即将关闭",
+    "closingSoonDescription": "该店铺将在30分钟内停止接受新订单。"
   },
   "AdminDashboard": {
     "sidebar": {
