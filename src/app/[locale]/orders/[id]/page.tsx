@@ -3,6 +3,8 @@ import { Separator } from "@/components/ui/separator";
 import { CheckCircle, Package, Truck, Bike } from "lucide-react";
 import Image from "next/image";
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Rating } from "@/components/Rating";
 
 export default async function OrderTrackingPage({ params }: { params: { id: string, locale: string } }) {
   unstable_setRequestLocale(params.locale);
@@ -15,6 +17,15 @@ export default async function OrderTrackingPage({ params }: { params: { id: stri
     { name: t('stepOutForDelivery'), icon: Truck, status: 'pending' },
     { name: t('stepDelivered'), icon: CheckCircle, status: 'pending' },
   ];
+
+  const driver = {
+    name: 'สมชาย ใจดี',
+    avatarUrl: 'https://placehold.co/100x100.png',
+    dataAiHint: 'driver portrait',
+    rating: 4.9,
+    reviewCount: 89,
+    vehicle: 'มอเตอร์ไซค์',
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -33,13 +44,29 @@ export default async function OrderTrackingPage({ params }: { params: { id: stri
                     <div className={`z-10 flex h-6 w-6 items-center justify-center rounded-full ${step.status === 'completed' ? 'bg-primary' : step.status === 'active' ? 'bg-accent animate-pulse' : 'bg-muted'}`}>
                         <step.icon className={`h-4 w-4 ${step.status === 'pending' ? 'text-muted-foreground' : 'text-primary-foreground'}`} />
                     </div>
-                    <div className="ml-4">
+                    <div className="ml-4 w-full">
                         <h4 className="font-semibold">{step.name}</h4>
                         <p className="text-sm text-muted-foreground">
                         {step.status === 'completed' && t('statusCompleted')}
                         {step.status === 'active' && t('statusInProgress')}
                         {step.status === 'pending' && t('statusPending')}
                         </p>
+                        
+                        {(step.name === t('stepDriverPickup') || step.name === t('stepOutForDelivery')) && step.status !== 'pending' && (
+                          <Card className="mt-4 bg-background/70">
+                              <CardHeader className="p-4 flex flex-row items-center gap-4">
+                                  <Avatar className="h-16 w-16">
+                                      <AvatarImage src={driver.avatarUrl} alt={driver.name} data-ai-hint={driver.dataAiHint} />
+                                      <AvatarFallback>{driver.name.slice(0,2)}</AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                      <CardTitle className="text-lg">{t('driverProfileTitle')}</CardTitle>
+                                      <p className="font-semibold mt-1">{driver.name}</p>
+                                      <Rating rating={driver.rating} reviewCount={driver.reviewCount} className="mt-1" />
+                                  </div>
+                              </CardHeader>
+                          </Card>
+                        )}
                     </div>
                     </div>
                 ))}

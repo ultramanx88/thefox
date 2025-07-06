@@ -124,7 +124,8 @@
     "stepDelivered": "已送达",
     "statusCompleted": "已完成",
     "statusInProgress": "进行中",
-    "statusPending": "待处理"
+    "statusPending": "待处理",
+    "driverProfileTitle": "您的司机"
   },
   "VendorProfile": {
     "bannerAlt": "摊主店铺横幅",
@@ -217,14 +218,17 @@
         "status": "状态",
         "assignee": "分配给",
         "deliveryTime": "配送时间",
-        "type": "类型"
+        "type": "类型",
+        "driver": "司机"
       },
       "orderStatus": {
         "new": "新订单",
         "preparing": "准备中",
-        "ready": "可取货"
+        "ready": "可取货",
+        "delivering": "配送中"
       },
       "unassigned": "未分配",
+      "noDriverAssigned": "未分配司机",
       "ordersTitle": "管理订单",
       "allOrders": "所有订单",
       "allOrdersDescription": "来自您客户的所有订单列表。",

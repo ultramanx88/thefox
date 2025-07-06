@@ -28,6 +28,7 @@ import { ArrowUpRight, ShoppingCart, DollarSign, Package, Bell, Printer, FileTex
 import { Link } from '@/navigation';
 import { getStaffMembers } from '@/lib/staff';
 import { RevenueChart } from '@/components/RevenueChart';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default async function VendorDashboardPage({
   params: { locale },
@@ -46,11 +47,11 @@ export default async function VendorDashboardPage({
   ];
 
   const recentOrders = [
-    { id: 'ORD-001', customer: 'ร้านอาหารเจริญสุข', amount: '฿2,500.00', status: 'new', assignedTo: null },
-    { id: 'ORD-002', customer: 'ครัวคุณหน่อย', amount: '฿1,200.50', status: 'preparing', assignedTo: 'มานะ ใจดี' },
-    { id: 'ORD-003', customer: 'โรงแรมแกรนด์พาเลซ', amount: '฿8,750.00', status: 'new', assignedTo: null },
-    { id: 'ORD-004', customer: 'ร้านก๋วยเตี๋ยวลุงชัย', amount: '฿850.00', status: 'ready', assignedTo: 'ปิติ ชูใจ' },
-    { id: 'ORD-005', customer: 'คาเฟ่ The Nest', amount: '฿1,500.00', status: 'preparing', assignedTo: 'มานะ ใจดี' },
+    { id: 'ORD-001', customer: 'ร้านอาหารเจริญสุข', amount: '฿2,500.00', status: 'new', assignedTo: null, driver: null },
+    { id: 'ORD-002', customer: 'ครัวคุณหน่อย', amount: '฿1,200.50', status: 'preparing', assignedTo: 'มานะ ใจดี', driver: null },
+    { id: 'ORD-003', customer: 'โรงแรมแกรนด์พาเลซ', amount: '฿8,750.00', status: 'new', assignedTo: null, driver: null },
+    { id: 'ORD-004', customer: 'ร้านก๋วยเตี๋ยวลุงชัย', amount: '฿850.00', status: 'ready', assignedTo: 'ปิติ ชูใจ', driver: null },
+    { id: 'ORD-005', customer: 'คาเฟ่ The Nest', amount: '฿1,500.00', status: 'delivering', assignedTo: 'มานะ ใจดี', driver: { name: 'สมชาย ใจดี' } },
   ];
 
   const scheduledOrders = [
@@ -205,6 +206,7 @@ export default async function VendorDashboardPage({
                 <TableHead className="text-right">{t('tableHeaders.amount')}</TableHead>
                 <TableHead className="text-center">{t('tableHeaders.status')}</TableHead>
                 <TableHead>{t('tableHeaders.assignee')}</TableHead>
+                <TableHead>{t('tableHeaders.driver')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -214,8 +216,8 @@ export default async function VendorDashboardPage({
                   <TableCell>{order.customer}</TableCell>
                   <TableCell className="text-right">{order.amount}</TableCell>
                   <TableCell className="text-center">
-                    <Badge variant={order.status === 'new' ? 'default' : 'secondary'} className={order.status === 'new' ? "bg-accent text-accent-foreground animate-pulse" : ""}>
-                      {t(`orderStatus.${order.status}`)}
+                    <Badge variant={order.status === 'new' || order.status === 'delivering' ? 'default' : 'secondary'} className={order.status === 'new' ? "bg-accent text-accent-foreground animate-pulse" : ""}>
+                      {t(`orderStatus.${order.status}` as any)}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -232,6 +234,19 @@ export default async function VendorDashboardPage({
                             ))}
                         </SelectContent>
                     </Select>
+                  </TableCell>
+                  <TableCell>
+                      {order.driver ? (
+                          <div className="flex items-center gap-2">
+                              <Avatar className="h-8 w-8">
+                                  <AvatarImage src="https://placehold.co/100x100.png" alt={order.driver.name} data-ai-hint="driver portrait" />
+                                  <AvatarFallback>{order.driver.name.slice(0,2)}</AvatarFallback>
+                              </Avatar>
+                              <span className="text-sm font-medium">{order.driver.name}</span>
+                          </div>
+                      ) : (
+                          <span className="text-sm text-muted-foreground">{t('noDriverAssigned')}</span>
+                      )}
                   </TableCell>
                 </TableRow>
               ))}

@@ -124,7 +124,8 @@
     "stepDelivered": "Delivered",
     "statusCompleted": "Completed",
     "statusInProgress": "In Progress",
-    "statusPending": "Pending"
+    "statusPending": "Pending",
+    "driverProfileTitle": "Your Driver"
   },
   "VendorProfile": {
     "bannerAlt": "Vendor's store banner",
@@ -217,14 +218,17 @@
         "status": "Status",
         "assignee": "Assigned To",
         "deliveryTime": "Delivery Time",
-        "type": "Type"
+        "type": "Type",
+        "driver": "Driver"
       },
       "orderStatus": {
         "new": "New",
         "preparing": "Preparing",
-        "ready": "Ready for Pickup"
+        "ready": "Ready for Pickup",
+        "delivering": "Out for Delivery"
       },
       "unassigned": "Unassigned",
+      "noDriverAssigned": "No driver assigned",
       "ordersTitle": "Manage Orders",
       "allOrders": "All Orders",
       "allOrdersDescription": "A list of all orders from your customers.",

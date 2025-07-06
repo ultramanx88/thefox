@@ -124,7 +124,8 @@
     "stepDelivered": "จัดส่งสำเร็จ",
     "statusCompleted": "เสร็จสมบูรณ์",
     "statusInProgress": "กำลังดำเนินการ",
-    "statusPending": "รอดำเนินการ"
+    "statusPending": "รอดำเนินการ",
+    "driverProfileTitle": "คนขับของคุณ"
   },
   "VendorProfile": {
     "bannerAlt": "แบนเนอร์หน้าร้านค้า",
@@ -217,14 +218,17 @@
         "status": "สถานะ",
         "assignee": "มอบหมายให้",
         "deliveryTime": "เวลาส่ง",
-        "type": "ประเภท"
+        "type": "ประเภท",
+        "driver": "คนขับ"
       },
       "orderStatus": {
         "new": "ใหม่",
         "preparing": "กำลังเตรียม",
-        "ready": "พร้อมรับ"
+        "ready": "พร้อมรับ",
+        "delivering": "กำลังจัดส่ง"
       },
       "unassigned": "ยังไม่มอบหมาย",
+      "noDriverAssigned": "ยังไม่มีคนขับ",
       "ordersTitle": "จัดการออเดอร์",
       "allOrders": "ออเดอร์ทั้งหมด",
       "allOrdersDescription": "รายการออเดอร์ทั้งหมดจากลูกค้าของคุณ",
