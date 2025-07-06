@@ -109,7 +109,7 @@ export default function VendorRegistrationPage() {
                             <FormItem>
                             <FormLabel>{t('passwordLabel')}</FormLabel>
                             <FormControl>
-                                <Input type="password" placeholder={t('passwordPlaceholder')} />
+                                <Input type="password" placeholder={t('passwordPlaceholder')} {...field} />
                             </FormControl>
                             <FormMessage />
                             </FormItem>

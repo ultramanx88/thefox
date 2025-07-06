@@ -2,7 +2,7 @@
 {
   "Header": {
     "marketplace": "Marketplace",
-    "sellYourProducts": "Sell Your Products",
+    "sellYourProducts": "Sell Your Produce",
     "becomeADriver": "Become a Driver",
     "cart": "Cart",
     "guestUser": "Guest User",
@@ -11,21 +11,21 @@
     "logout": "Log out"
   },
   "HomePage": {
-    "title": "Explore Fresh Finds",
-    "subtitle": "Discover unique items from local vendors and personal shoppers near you.",
+    "title": "Your Market, Delivered",
+    "subtitle": "Discover fresh ingredients from local markets, delivered directly to your restaurant.",
     "categoryLabel": "Category",
     "allCategories": "All Categories",
-    "foodCategory": "Food",
-    "clothingCategory": "Clothing",
-    "householdCategory": "Household",
-    "electronicsCategory": "Electronics",
-    "locationLabel": "Nearby Area",
-    "locationPlaceholder": "e.g., Bang Sue, Bangkok",
+    "vegetablesCategory": "Vegetables",
+    "fruitsCategory": "Fruits",
+    "meatCategory": "Meat",
+    "seafoodCategory": "Seafood",
+    "locationLabel": "Nearby Market",
+    "locationPlaceholder": "e.g., Klong Toey Market, Bangkok",
     "searchButton": "Search"
   },
   "DriverRegistration": {
     "title": "Become a Delivery Driver",
-    "description": "Join our delivery network and start earning by delivering goods.",
+    "description": "Join our network and earn by delivering fresh ingredients from local markets.",
     "fullNameLabel": "Full Name",
     "fullNamePlaceholder": "e.g., John Appleseed",
     "emailLabel": "Email",
@@ -40,35 +40,35 @@
   },
   "VendorRegistration": {
     "title": "Become a Vendor",
-    "description": "Set up your shop and start selling on TaladMan today.",
-    "storeNameLabel": "Store Name",
-    "storeNamePlaceholder": "e.g., Green Farms",
+    "description": "Set up your stall and start selling fresh ingredients on TaladMan today.",
+    "storeNameLabel": "Stall Name",
+    "storeNamePlaceholder": "e.g., Auntie Nee's Veggies",
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
     "passwordLabel": "Password",
     "passwordPlaceholder": "Your secure password",
-    "submitButton": "Create My Store",
+    "submitButton": "Create My Stall",
     "registrationSuccessTitle": "Registration Successful",
-    "registrationSuccess": "Your store has been created! You can now list products.",
+    "registrationSuccess": "Your stall has been created! You can now list your products.",
     "registrationFailedTitle": "Registration Failed",
     "registrationFailed": "An error occurred. Please try again.",
     "registrationFailedGeneric": "Something went wrong. Please try again later.",
     "validation": {
-        "storeNameRequired": "Store name is required.",
+        "storeNameRequired": "Stall name is required.",
         "invalidEmail": "Please enter a valid email address.",
         "passwordLength": "Password must be at least 8 characters long."
     }
   },
   "NewProduct": {
-      "title": "Create a New Listing",
-      "description": "Fill out the details below to list your product on the marketplace.",
+      "title": "List a New Product",
+      "description": "Fill out the details below to list your fresh ingredients on the marketplace.",
       "nameLabel": "Product Name",
-      "namePlaceholder": "e.g., Handmade Ceramic Mug",
+      "namePlaceholder": "e.g., Organic Cabbage",
       "descriptionLabel": "Description",
-      "descriptionPlaceholder": "Describe your product's features, materials, and dimensions.",
-      "priceLabel": "Price",
+      "descriptionPlaceholder": "Describe the origin, freshness, and quality of your item.",
+      "priceLabel": "Price (per kg/unit)",
       "pricePlaceholder": "0.00",
-      "quantityLabel": "Quantity in Stock",
+      "quantityLabel": "Quantity in Stock (kg/units)",
       "quantityPlaceholder": "10",
       "listProductButton": "List Product"
   },
@@ -77,7 +77,7 @@
       "orderId": "Order ID",
       "statusTitle": "Order Status",
       "stepPlaced": "Order Placed",
-      "stepProcessing": "Processing",
+      "stepProcessing": "Sourcing Ingredients",
       "stepOutForDelivery": "Out for Delivery",
       "stepDelivered": "Delivered",
       "statusCompleted": "Completed",
@@ -87,12 +87,12 @@
   },
   "ProductDetail": {
       "addToCart": "Add to Cart",
-      "deliveryInfo": "Fast, local delivery available.",
+      "deliveryInfo": "Fresh, local delivery available.",
       "customerReviews": "Customer Reviews"
   },
   "VendorProfile": {
-      "bannerAlt": "Vendor banner",
-      "location": "Local Farmer",
+      "bannerAlt": "Market stall banner",
+      "marketStall": "Market Stall",
       "productsFrom": "Products from {vendorName}"
   }
 }

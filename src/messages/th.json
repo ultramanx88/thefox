@@ -1,31 +1,31 @@
 
 {
   "Header": {
-    "marketplace": "ตลาด",
+    "marketplace": "ตลาดสด",
     "sellYourProducts": "ขายสินค้าของคุณ",
-    "becomeADriver": "มาเป็นคนขับ",
+    "becomeADriver": "สมัครเป็นคนขับ",
     "cart": "ตะกร้าสินค้า",
     "guestUser": "ผู้ใช้ทั่วไป",
     "profile": "โปรไฟล์",
-    "vendorDashboard": "แดชบอร์ดผู้ขาย",
+    "vendorDashboard": "แดชบอร์ดร้านค้า",
     "logout": "ออกจากระบบ"
   },
   "HomePage": {
-    "title": "ค้นหาสินค้าใกล้บ้านคุณ",
-    "subtitle": "พบกับสินค้าหลากหลายจากผู้ขายในพื้นที่และนักช้อปส่วนตัวใกล้คุณ",
+    "title": "จ่ายตลาดแทนคุณ",
+    "subtitle": "ค้นพบวัตถุดิบสดใหม่จากตลาดใกล้บ้านคุณ ส่งตรงถึงร้านอาหารของคุณ",
     "categoryLabel": "หมวดหมู่",
     "allCategories": "ทุกหมวดหมู่",
-    "foodCategory": "อาหาร",
-    "clothingCategory": "เสื้อผ้า",
-    "householdCategory": "ของใช้ในบ้าน",
-    "electronicsCategory": "เครื่องใช้ไฟฟ้า",
-    "locationLabel": "พื้นที่ใกล้เคียง",
-    "locationPlaceholder": "เช่น บางซื่อ, กรุงเทพ",
+    "vegetablesCategory": "ผัก",
+    "fruitsCategory": "ผลไม้",
+    "meatCategory": "เนื้อสัตว์",
+    "seafoodCategory": "อาหารทะเล",
+    "locationLabel": "ตลาดใกล้เคียง",
+    "locationPlaceholder": "เช่น ตลาดคลองเตย, กรุงเทพฯ",
     "searchButton": "ค้นหา"
   },
   "DriverRegistration": {
-    "title": "มาเป็นคนขับรถส่งของ",
-    "description": "เข้าร่วมเครือข่ายการจัดส่งของเราและเริ่มสร้างรายได้จากการจัดส่งสินค้า",
+    "title": "สมัครเป็นคนขับส่งของ",
+    "description": "เข้าร่วมเครือข่ายของเราและสร้างรายได้จากการส่งวัตถุดิบสดใหม่จากตลาดในพื้นที่",
     "fullNameLabel": "ชื่อ-นามสกุล",
     "fullNamePlaceholder": "เช่น สมชาย ใจดี",
     "emailLabel": "อีเมล",
@@ -39,10 +39,10 @@
     "submitButton": "เริ่มการจัดส่ง"
   },
   "VendorRegistration": {
-    "title": "มาเป็นผู้ขาย",
-    "description": "ตั้งร้านของคุณและเริ่มขายสินค้าบน TaladMan วันนี้",
-    "storeNameLabel": "ชื่อร้านค้า",
-    "storeNamePlaceholder": "เช่น กรีนฟาร์ม",
+    "title": "สมัครเป็นร้านค้า",
+    "description": "ตั้งร้านค้าของคุณและเริ่มขายวัตถุดิบสดใหม่บน TaladMan วันนี้",
+    "storeNameLabel": "ชื่อร้านค้า/แผง",
+    "storeNamePlaceholder": "เช่น ร้านผักป้านี",
     "emailLabel": "อีเมล",
     "emailPlaceholder": "you@example.com",
     "passwordLabel": "รหัสผ่าน",
@@ -60,15 +60,15 @@
     }
   },
   "NewProduct": {
-      "title": "สร้างรายการสินค้าใหม่",
-      "description": "กรอกรายละเอียดด้านล่างเพื่อลงขายสินค้าของคุณบนตลาด",
+      "title": "ลงขายสินค้าใหม่",
+      "description": "กรอกรายละเอียดด้านล่างเพื่อลงขายวัตถุดิบสดใหม่ของคุณบนตลาดออนไลน์",
       "nameLabel": "ชื่อสินค้า",
-      "namePlaceholder": "เช่น แก้วเซรามิกทำมือ",
-      "descriptionLabel": "คำอธิบาย",
-      "descriptionPlaceholder": "อธิบายคุณสมบัติ, วัสดุ, และขนาดของสินค้าของคุณ",
-      "priceLabel": "ราคา",
+      "namePlaceholder": "เช่น กะหล่ำปลีออร์แกนิก",
+      "descriptionLabel": "คำอธิบายสินค้า",
+      "descriptionPlaceholder": "อธิบายเกี่ยวกับแหล่งที่มา ความสดใหม่ และคุณภาพของสินค้าของคุณ",
+      "priceLabel": "ราคา (ต่อ กก./หน่วย)",
       "pricePlaceholder": "0.00",
-      "quantityLabel": "จำนวนสินค้าในสต็อก",
+      "quantityLabel": "จำนวนในสต็อก (กก./หน่วย)",
       "quantityPlaceholder": "10",
       "listProductButton": "ลงขายสินค้า"
   },
@@ -77,7 +77,7 @@
       "orderId": "รหัสคำสั่งซื้อ",
       "statusTitle": "สถานะคำสั่งซื้อ",
       "stepPlaced": "สั่งซื้อแล้ว",
-      "stepProcessing": "กำลังดำเนินการ",
+      "stepProcessing": "กำลังจัดหาวัตถุดิบ",
       "stepOutForDelivery": "กำลังจัดส่ง",
       "stepDelivered": "จัดส่งสำเร็จ",
       "statusCompleted": "เสร็จสมบูรณ์",
@@ -87,12 +87,12 @@
   },
   "ProductDetail": {
       "addToCart": "เพิ่มลงตะกร้า",
-      "deliveryInfo": "มีการจัดส่งที่รวดเร็วในพื้นที่",
+      "deliveryInfo": "มีบริการจัดส่งสดใหม่ในพื้นที่",
       "customerReviews": "รีวิวจากลูกค้า"
   },
   "VendorProfile": {
-      "bannerAlt": "แบนเนอร์ผู้ขาย",
-      "location": "เกษตรกรในพื้นที่",
+      "bannerAlt": "แบนเนอร์ร้านค้า",
+      "marketStall": "ร้านค้าในตลาด",
       "productsFrom": "สินค้าจาก {vendorName}"
   }
 }

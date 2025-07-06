@@ -8,31 +8,49 @@ import Image from 'next/image';
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
 const mockVendorProducts: Product[] = [
-    { id: '1', name: 'Organic Avocados', price: 4.99, imageUrl: 'https://placehold.co/600x400.png', vendor: 'Green Farms', rating: 4.5, reviewCount: 120, dataAiHint: "avocado fruit" },
-    { id: '6', name: 'Fresh Sourdough Bread', price: 7.00, imageUrl: 'https://placehold.co/600x400.png', vendor: 'Green Farms', rating: 4.9, reviewCount: 95, dataAiHint: "sourdough bread" },
+    {
+      id: '1',
+      name: 'กะหล่ำปลีออร์แกนิก',
+      price: 35.0,
+      imageUrl: 'https://placehold.co/600x400.png',
+      vendor: 'ร้านผักป้านี',
+      rating: 4.8,
+      reviewCount: 75,
+      dataAiHint: 'cabbage vegetable',
+    },
+    {
+      id: '6',
+      name: 'มะนาวแป้น (ต่อ กก.)',
+      price: 40.0,
+      imageUrl: 'https://placehold.co/600x400.png',
+      vendor: 'ร้านผักป้านี',
+      rating: 4.9,
+      reviewCount: 180,
+      dataAiHint: 'lime fruit',
+    },
 ];
 
 export default async function VendorProfilePage({ params }: { params: { id: string, locale: string } }) {
   unstable_setRequestLocale(params.locale);
   const t = await getTranslations('VendorProfile');
-  const vendorName = "Green Farms";
+  const vendorName = "ร้านผักป้านี";
   
   return (
     <div>
         <div className="h-48 md:h-64 bg-muted relative">
-            <Image src="https://placehold.co/1600x400.png" data-ai-hint="farm landscape" alt={t('bannerAlt')} layout="fill" objectFit="cover" />
+            <Image src="https://placehold.co/1600x400.png" data-ai-hint="market stall fresh produce" alt={t('bannerAlt')} layout="fill" objectFit="cover" />
         </div>
         <div className="container mx-auto px-4 -mt-16">
             <div className="flex items-end space-x-4">
                 <Avatar className="h-32 w-32 border-4 border-background">
-                    <AvatarImage src="https://placehold.co/128x128.png" data-ai-hint="farmer portrait" />
-                    <AvatarFallback>GF</AvatarFallback>
+                    <AvatarImage src="https://placehold.co/128x128.png" data-ai-hint="market vendor portrait" />
+                    <AvatarFallback>PN</AvatarFallback>
                 </Avatar>
                 <div>
                     <h1 className="font-headline text-4xl font-bold">{vendorName}</h1>
                     <div className="flex items-center space-x-4 text-muted-foreground mt-1">
-                        <div className="flex items-center space-x-1"><MapPin className="w-4 h-4"/><span>{t('location')}</span></div>
-                        <Rating rating={4.7} reviewCount={215} />
+                        <div className="flex items-center space-x-1"><MapPin className="w-4 h-4"/><span>{t('marketStall')}</span></div>
+                        <Rating rating={4.7} reviewCount={255} />
                     </div>
                 </div>
             </div>

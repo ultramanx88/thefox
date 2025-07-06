@@ -11,23 +11,23 @@ import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 export default async function ProductDetailPage({ params }: { params: { id: string, locale: string } }) {
   unstable_setRequestLocale(params.locale);
   const t = await getTranslations('ProductDetail');
-  // Mock data for a single product
+  
   const product = {
-    id: '1',
-    name: 'Organic Avocados',
-    price: 4.99,
+    id: '2',
+    name: 'เนื้อสันในวัว',
+    price: 350.0,
     imageUrl: 'https://placehold.co/600x400.png',
-    dataAiHint: 'avocado fruit',
-    vendor: 'Green Farms',
+    dataAiHint: 'beef steak',
+    vendor: 'เขียงเนื้อลุงเดช',
     vendorId: '123',
-    rating: 4.5,
-    reviewCount: 120,
-    description: "Grown with care on our family farm, these organic avocados are creamy, delicious, and packed with nutrients. Perfect for toast, salads, or guacamole. Sold by the pound.",
+    rating: 5.0,
+    reviewCount: 42,
+    description: "เนื้อสันในวัวคุณภาพเยี่ยมจากฟาร์มท้องถิ่น นุ่มและเหมาะสำหรับทำสเต็กหรืออาหารมื้อพิเศษ ขายต่อกิโลกรัม",
   };
 
   const reviews = [
-    { id: 1, author: 'Alice', rating: 5, comment: 'So fresh and creamy! Best avocados I have ever had.' },
-    { id: 2, author: 'Bob', rating: 4, comment: 'Great quality, but took a bit long to ripen.' },
+    { id: 1, author: 'ร้านอาหารเจริญสุข', rating: 5, comment: 'เนื้อดีมากครับ สั่งประจำ' },
+    { id: 2, author: 'ครัวคุณหน่อย', rating: 4, comment: 'คุณภาพดี แต่บางครั้งก็หมดเร็ว' },
   ];
 
   return (
@@ -57,7 +57,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
                 <Rating rating={product.rating} reviewCount={product.reviewCount} />
             </div>
 
-            <p className="text-4xl font-bold text-primary my-4">${product.price.toFixed(2)}</p>
+            <p className="text-4xl font-bold text-primary my-4">฿{product.price.toFixed(2)}</p>
 
             <p className="text-foreground/80 leading-relaxed">{product.description}</p>
             
