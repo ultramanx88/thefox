@@ -85,6 +85,15 @@
       "zh": "中国語",
       "ja": "日本語",
       "ko": "韓国語"
+    },
+    "unitLabel": "単位",
+    "unitPlaceholder": "単位を選択",
+    "units": {
+      "piece": "個",
+      "kilogram": "キログラム",
+      "gram": "グラム",
+      "crate": "箱",
+      "bottle": "本"
     }
   },
   "VendorRegistration": {

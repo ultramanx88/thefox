@@ -7,11 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default async function NewProductPage({params: {locale}}: {params: {locale: string}}) {
   unstable_setRequestLocale(locale);
   const t = await getTranslations('NewProduct');
   const languages = ['th', 'en', 'zh', 'ja', 'ko'];
+  const units = ['piece', 'kilogram', 'gram', 'crate', 'bottle'];
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -53,14 +55,29 @@ export default async function NewProductPage({params: {locale}}: {params: {local
                 </Tabs>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2 md:col-span-1">
                     <Label htmlFor="price">{t('priceLabel')}</Label>
                     <Input id="price" type="number" placeholder={t('pricePlaceholder')} />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 md:col-span-1">
                     <Label htmlFor="stock">{t('quantityLabel')}</Label>
                     <Input id="stock" type="number" placeholder={t('quantityPlaceholder')} />
+                </div>
+                <div className="space-y-2 md:col-span-1">
+                    <Label htmlFor="unit">{t('unitLabel')}</Label>
+                    <Select>
+                        <SelectTrigger id="unit">
+                            <SelectValue placeholder={t('unitPlaceholder')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {units.map((unit) => (
+                                <SelectItem key={unit} value={unit}>
+                                    {t(`units.${unit}` as any)}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
 

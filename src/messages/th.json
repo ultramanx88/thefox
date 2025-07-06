@@ -85,6 +85,15 @@
       "zh": "ภาษาจีน",
       "ja": "ภาษาญี่ปุ่น",
       "ko": "ภาษาเกาหลี"
+    },
+    "unitLabel": "หน่วยนับ",
+    "unitPlaceholder": "เลือกหน่วย",
+    "units": {
+      "piece": "ชิ้น",
+      "kilogram": "กิโลกรัม",
+      "gram": "กรัม",
+      "crate": "ลัง",
+      "bottle": "ขวด"
     }
   },
   "VendorRegistration": {

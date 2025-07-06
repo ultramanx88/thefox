@@ -85,6 +85,15 @@
       "zh": "Chinese",
       "ja": "Japanese",
       "ko": "Korean"
+    },
+    "unitLabel": "Unit",
+    "unitPlaceholder": "Select a unit",
+    "units": {
+      "piece": "Piece",
+      "kilogram": "Kilogram",
+      "gram": "Gram",
+      "crate": "Crate",
+      "bottle": "Bottle"
     }
   },
   "VendorRegistration": {

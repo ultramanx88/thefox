@@ -85,6 +85,15 @@
       "zh": "중국어",
       "ja": "일본어",
       "ko": "한국어"
+    },
+    "unitLabel": "단위",
+    "unitPlaceholder": "단위를 선택하세요",
+    "units": {
+      "piece": "개",
+      "kilogram": "킬로그램",
+      "gram": "그램",
+      "crate": "상자",
+      "bottle": "병"
     }
   },
   "VendorRegistration": {

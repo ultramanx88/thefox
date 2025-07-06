@@ -85,6 +85,15 @@
       "zh": "中文",
       "ja": "日语",
       "ko": "韩语"
+    },
+    "unitLabel": "单位",
+    "unitPlaceholder": "选择一个单位",
+    "units": {
+      "piece": "件",
+      "kilogram": "公斤",
+      "gram": "克",
+      "crate": "箱",
+      "bottle": "瓶"
     }
   },
   "VendorRegistration": {
