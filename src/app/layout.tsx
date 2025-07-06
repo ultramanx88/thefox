@@ -1,26 +1,19 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { Header } from '@/components/Header';
-import { Toaster } from '@/components/ui/toaster';
-import {NextIntlClientProvider} from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
 
 export const metadata: Metadata = {
   title: 'TaladMan',
   description: 'Your local marketplace, connected.',
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
-  const messages = await getMessages();
-
   return (
-    <html lang={locale} className="h-full">
+    <html lang="en" className="h-full">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -35,17 +28,11 @@ export default async function RootLayout({
       </head>
       <body
         className={cn(
-          'font-body antialiased min-h-screen flex flex-col',
+          'font-body antialiased',
           'bg-background'
         )}
       >
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <Header />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Toaster />
-        </NextIntlClientProvider>
+        {children}
       </body>
     </html>
   );

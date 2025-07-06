@@ -1,12 +1,9 @@
-import type { Metadata } from 'next';
-import {unstable_setRequestLocale} from 'next-intl/server';
+import {NextIntlClientProvider} from 'next-intl';
+import {getMessages, unstable_setRequestLocale} from 'next-intl/server';
+import { Header } from '@/components/Header';
+import { Toaster } from '@/components/ui/toaster';
 
-export const metadata: Metadata = {
-  title: 'TaladMan',
-  description: 'Your local marketplace, connected.',
-};
-
-export default function LocaleLayout({
+export default async function LocaleLayout({
   children,
   params: {locale}
 }: Readonly<{
@@ -14,6 +11,17 @@ export default function LocaleLayout({
   params: {locale: string};
 }>) {
   unstable_setRequestLocale(locale);
-  // The main layout and provider are now in `src/app/layout.tsx`
-  return children;
+  const messages = await getMessages();
+ 
+  return (
+    <NextIntlClientProvider locale={locale} messages={messages}>
+        <div className="min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-1">
+                {children}
+            </main>
+            <Toaster />
+        </div>
+    </NextIntlClientProvider>
+  );
 }
