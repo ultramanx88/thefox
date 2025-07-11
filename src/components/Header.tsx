@@ -71,7 +71,7 @@ export function Header() {
           variant="ghost"
           asChild
           className={cn(
-            'text-sm font-medium transition-colors hover:text-primary',
+            'text-sm font-medium transition-colors hover:text-primary-foreground',
             pathname === link.href ? 'text-primary' : 'text-muted-foreground'
           )}
         >
