@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, Link } from '@/navigation';
-import { ShoppingCart, Store, User, Menu, Globe, Settings, Truck, Languages, BookOpen, Wallet, Fox } from 'lucide-react';
+import { ShoppingCart, Store, User, Menu, Globe, Settings, Truck, Languages, BookOpen, Wallet, Box } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -86,7 +86,7 @@ export function Header() {
       <div className="container flex h-16 max-w-screen-2xl items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Fox className="h-6 w-6 text-primary" />
+            <Box className="h-6 w-6 text-primary" />
             <span className="font-bold font-headline">theFOX</span>
           </Link>
           <NavLinks />
@@ -101,7 +101,7 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="left">
               <Link href="/" className="mr-6 flex items-center space-x-2 mb-4">
-                <Fox className="h-6 w-6 text-primary" />
+                <Box className="h-6 w-6 text-primary" />
                 <span className="font-bold font-headline">theFOX</span>
               </Link>
               <div className="flex flex-col space-y-2">
