@@ -32,6 +32,7 @@
     "existingCategoriesTitle": "หมวดหมู่ที่มีอยู่",
     "nameHeader": "ชื่อ",
     "slugHeader": "สลัก",
+    "translationKeyHeader": "คีย์สำหรับแปลภาษา",
     "addNewCategoryTitle": "เพิ่มหมวดหมู่ใหม่",
     "addNewCategoryDescription": "สร้างหมวดหมู่สินค้าใหม่สำหรับตลาดของคุณ",
     "categoryNameLabel": "ชื่อหมวดหมู่",
@@ -578,5 +579,12 @@
     "chinese": "ภาษาจีน",
     "japanese": "ภาษาญี่ปุ่น",
     "korean": "ภาษาเกาหลี"
+  },
+  "Categories": {
+    "vegetables": "ผัก",
+    "fruits": "ผลไม้",
+    "meat": "เนื้อสัตว์",
+    "seafood": "อาหารทะเล",
+    "bakery": "เบเกอรี่"
   }
 }

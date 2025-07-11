@@ -32,6 +32,7 @@
     "existingCategoriesTitle": "기존 카테고리",
     "nameHeader": "이름",
     "slugHeader": "슬러그",
+    "translationKeyHeader": "번역 키",
     "addNewCategoryTitle": "새 카테고리 추가",
     "addNewCategoryDescription": "마켓플레이스를 위한 새 상품 카테고리를 생성하세요.",
     "categoryNameLabel": "카테고리 이름",
@@ -578,5 +579,12 @@
     "chinese": "중국어",
     "japanese": "일본어",
     "korean": "한국어"
+  },
+  "Categories": {
+    "vegetables": "야채",
+    "fruits": "과일",
+    "meat": "고기",
+    "seafood": "해물",
+    "bakery": "빵집"
   }
 }

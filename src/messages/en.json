@@ -32,6 +32,7 @@
     "existingCategoriesTitle": "Existing Categories",
     "nameHeader": "Name",
     "slugHeader": "Slug",
+    "translationKeyHeader": "Translation Key",
     "addNewCategoryTitle": "Add New Category",
     "addNewCategoryDescription": "Create a new product category for your marketplace.",
     "categoryNameLabel": "Category Name",
@@ -578,5 +579,12 @@
     "chinese": "Chinese",
     "japanese": "Japanese",
     "korean": "Korean"
+  },
+  "Categories": {
+    "vegetables": "Vegetables",
+    "fruits": "Fruits",
+    "meat": "Meat",
+    "seafood": "Seafood",
+    "bakery": "Bakery"
   }
 }

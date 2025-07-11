@@ -23,6 +23,7 @@ export default async function AdminCategoriesPage({
 }) {
   unstable_setRequestLocale(locale);
   const t = await getTranslations('CategoryAdmin');
+  const tCategories = await getTranslations('Categories');
   const categories = await getCategories();
 
   return (
@@ -43,6 +44,7 @@ export default async function AdminCategoriesPage({
                   <TableRow>
                     <TableHead>ID</TableHead>
                     <TableHead>{t('nameHeader')}</TableHead>
+                    <TableHead>{t('translationKeyHeader')}</TableHead>
                     <TableHead>{t('slugHeader')}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -52,7 +54,10 @@ export default async function AdminCategoriesPage({
                       <TableCell className="font-mono text-xs">
                         {category.id}
                       </TableCell>
-                      <TableCell>{category.name}</TableCell>
+                      <TableCell>{tCategories(category.nameKey)}</TableCell>
+                       <TableCell className="font-mono text-xs text-muted-foreground">
+                        {category.nameKey}
+                      </TableCell>
                       <TableCell className="text-muted-foreground">
                         {category.slug}
                       </TableCell>

@@ -28,6 +28,7 @@ export async function generateMetadata({params: {locale}}: {params: {locale: str
 export default async function Home({params: {locale}}: {params: {locale: string}}) {
   unstable_setRequestLocale(locale);
   const t = await getTranslations('HomePage');
+  const tCategories = await getTranslations('Categories');
   const categories = await getCategories();
   const products = await getProducts();
 
@@ -62,7 +63,7 @@ export default async function Home({params: {locale}}: {params: {locale: string}
                 <SelectItem value="all">{t('allCategories')}</SelectItem>
                 {categories.map((category) => (
                     <SelectItem key={category.id} value={category.slug}>
-                        {category.name}
+                        {tCategories(category.nameKey)}
                     </SelectItem>
                 ))}
               </SelectContent>

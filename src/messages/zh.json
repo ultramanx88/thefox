@@ -32,6 +32,7 @@
     "existingCategoriesTitle": "现有分类",
     "nameHeader": "名称",
     "slugHeader": "别名",
+    "translationKeyHeader": "翻译键",
     "addNewCategoryTitle": "添加新分类",
     "addNewCategoryDescription": "为您的市场创建一个新的产品分类。",
     "categoryNameLabel": "分类名称",
@@ -578,5 +579,12 @@
     "chinese": "中文",
     "japanese": "日语",
     "korean": "韩语"
+  },
+  "Categories": {
+    "vegetables": "蔬菜",
+    "fruits": "水果",
+    "meat": "肉类",
+    "seafood": "海鲜",
+    "bakery": "烘焙"
   }
 }

@@ -32,6 +32,7 @@
     "existingCategoriesTitle": "既存のカテゴリー",
     "nameHeader": "名前",
     "slugHeader": "スラッグ",
+    "translationKeyHeader": "翻訳キー",
     "addNewCategoryTitle": "新しいカテゴリーを追加",
     "addNewCategoryDescription": "マーケットプレイスに新しい商品カテゴリーを作成します。",
     "categoryNameLabel": "カテゴリー名",
@@ -578,5 +579,12 @@
     "chinese": "中国語",
     "japanese": "日本語",
     "korean": "韓国語"
+  },
+  "Categories": {
+    "vegetables": "野菜",
+    "fruits": "果物",
+    "meat": "肉",
+    "seafood": "魚介類",
+    "bakery": "ベーカリー"
   }
 }
