@@ -215,7 +215,7 @@
     "bankNameLabel": "은행명",
     "selectBankPlaceholder": "은행 선택...",
     "accountNameLabel": "계좌 소유주 이름",
-    "accountNamePlaceholder": "예: TaladMan 주식회사",
+    "accountNamePlaceholder": "예: theFOX 주식회사",
     "accountNumberLabel": "계좌 번호",
     "accountNumberPlaceholder": "예: 123-4-56789-0",
     "banks": {

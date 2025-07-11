@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, Link } from '@/navigation';
-import { ShoppingCart, Store, Leaf, User, Menu, Globe, Settings, Truck, Languages, BookOpen, Wallet } from 'lucide-react';
+import { ShoppingCart, Store, User, Menu, Globe, Settings, Truck, Languages, BookOpen, Wallet, Fox } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -86,8 +86,8 @@ export function Header() {
       <div className="container flex h-16 max-w-screen-2xl items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Leaf className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline">TaladMan</span>
+            <Fox className="h-6 w-6 text-primary" />
+            <span className="font-bold font-headline">theFOX</span>
           </Link>
           <NavLinks />
         </div>
@@ -101,8 +101,8 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="left">
               <Link href="/" className="mr-6 flex items-center space-x-2 mb-4">
-                <Leaf className="h-6 w-6 text-primary" />
-                <span className="font-bold font-headline">TaladMan</span>
+                <Fox className="h-6 w-6 text-primary" />
+                <span className="font-bold font-headline">theFOX</span>
               </Link>
               <div className="flex flex-col space-y-2">
                 {navLinks.map((link) => (
@@ -137,7 +137,7 @@ export function Header() {
               <Button variant="secondary" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="https://placehold.co/100x100.png" alt="@shadcn" data-ai-hint="user avatar" />
-                  <AvatarFallback>TM</AvatarFallback>
+                  <AvatarFallback>FX</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
@@ -146,7 +146,7 @@ export function Header() {
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">{t('guestUser')}</p>
                   <p className="text-xs leading-none text-muted-foreground">
-                    guest@taladman.com
+                    guest@thefox.com
                   </p>
                 </div>
               </DropdownMenuLabel>

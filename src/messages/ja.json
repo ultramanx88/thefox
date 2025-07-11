@@ -215,7 +215,7 @@
     "bankNameLabel": "銀行名",
     "selectBankPlaceholder": "銀行を選択...",
     "accountNameLabel": "口座名義",
-    "accountNamePlaceholder": "例：TaladMan株式会社",
+    "accountNamePlaceholder": "例：theFOX株式会社",
     "accountNumberLabel": "口座番号",
     "accountNumberPlaceholder": "例：123-4-56789-0",
     "banks": {

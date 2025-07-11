@@ -4,7 +4,7 @@ import { locales } from '@/i18n';
 import { MetadataRoute } from 'next';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://www.taladman.com'; // Replace with your actual domain
+  const baseUrl = 'https://www.thefox.com'; // Replace with your actual domain
 
   // Static pages
   const staticRoutes = ['', '/register/vendor', '/register/shopper'];

@@ -3,17 +3,17 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.taladman.com'),
+  metadataBase: new URL('https://www.thefox.com'),
   title: {
-    default: 'TaladMan - Your Market, Delivered',
-    template: '%s | TaladMan',
+    default: 'theFOX - Your Market, Delivered',
+    template: '%s | theFOX',
   },
   description: 'Your local marketplace, connected. Discover fresh ingredients from local markets, delivered directly to your doorstep.',
   openGraph: {
-    title: 'TaladMan - Your Market, Delivered',
+    title: 'theFOX - Your Market, Delivered',
     description: 'Your local marketplace, connected.',
-    url: 'https://www.taladman.com',
-    siteName: 'TaladMan',
+    url: 'https://www.thefox.com',
+    siteName: 'theFOX',
     locale: 'th_TH',
     type: 'website',
   },

@@ -215,7 +215,7 @@
     "bankNameLabel": "银行名称",
     "selectBankPlaceholder": "选择银行...",
     "accountNameLabel": "账户名称",
-    "accountNamePlaceholder": "例如，TaladMan有限公司",
+    "accountNamePlaceholder": "例如，theFOX有限公司",
     "accountNumberLabel": "账号",
     "accountNumberPlaceholder": "例如，123-4-56789-0",
     "banks": {

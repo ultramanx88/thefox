@@ -215,7 +215,7 @@
     "bankNameLabel": "Bank Name",
     "selectBankPlaceholder": "Select a bank...",
     "accountNameLabel": "Account Name",
-    "accountNamePlaceholder": "e.g., TaladMan Co., Ltd.",
+    "accountNamePlaceholder": "e.g., theFOX Co., Ltd.",
     "accountNumberLabel": "Account Number",
     "accountNumberPlaceholder": "e.g., 123-4-56789-0",
     "banks": {

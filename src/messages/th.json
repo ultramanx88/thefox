@@ -215,7 +215,7 @@
     "bankNameLabel": "ชื่อธนาคาร",
     "selectBankPlaceholder": "เลือกธนาคาร...",
     "accountNameLabel": "ชื่อบัญชี",
-    "accountNamePlaceholder": "เช่น บริษัท ตลาดแมน จำกัด",
+    "accountNamePlaceholder": "เช่น บริษัท theFOX จำกัด",
     "accountNumberLabel": "เลขที่บัญชี",
     "accountNumberPlaceholder": "เช่น 123-4-56789-0",
     "banks": {
