@@ -1,9 +1,82 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      // อนุญาตให้อ่านและเขียนได้ ถ้าคำขอนั้นเกิดขึ้นก่อนวันที่กำหนด
-      allow read, write: if request.time < timestamp.date(2025, 8, 14);
+    // Users collection
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null;
+    }
+    
+    // Markets collection
+    match /markets/{marketId} {
+      allow read: if true; // Public read access
+      allow write: if request.auth != null && 
+        (request.auth.uid == resource.data.ownerId || 
+         hasRole('admin') || 
+         hasRole('market_owner'));
+    }
+    
+    // Products collection
+    match /products/{productId} {
+      allow read: if true; // Public read access
+      allow write: if request.auth != null && 
+        (isMarketOwner(resource.data.marketId) || 
+         hasRole('admin'));
+    }
+    
+    // Orders collection
+    match /orders/{orderId} {
+      allow read: if request.auth != null && 
+        (request.auth.uid == resource.data.userId || 
+         isMarketOwner(resource.data.marketId) ||
+         request.auth.uid == resource.data.driverId ||
+         hasRole('admin'));
+      allow create: if request.auth != null && 
+        request.auth.uid == request.resource.data.userId;
+      allow update: if request.auth != null && 
+        (request.auth.uid == resource.data.userId || 
+         isMarketOwner(resource.data.marketId) ||
+         request.auth.uid == resource.data.driverId ||
+         hasRole('admin'));
+    }
+    
+    // Categories collection
+    match /categories/{categoryId} {
+      allow read: if true; // Public read access
+      allow write: if request.auth != null && hasRole('admin');
+    }
+    
+    // Service areas collection
+    match /serviceAreas/{areaId} {
+      allow read: if true; // Public read access
+      allow write: if request.auth != null && hasRole('admin');
+    }
+    
+    // Notifications collection
+    match /notifications/{notificationId} {
+      allow read: if request.auth != null && 
+        request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null;
+    }
+    
+    // Helper functions
+    function hasRole(role) {
+      return request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+    
+    function isMarketOwner(marketId) {
+      return request.auth != null && 
+        get(/databases/$(database)/documents/markets/$(marketId)).data.ownerId == request.auth.uid;
+    }
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
     }
   }
 }

@@ -1,0 +1,91 @@
+# Deploy to Firebase on specific branches
+name: Deploy on Branch Push
+on:
+  push:
+    branches:
+      - 'deploy/staging'
+      - 'deploy/production'
+      - 'hotfix/*'
+
+jobs:
+  determine_environment:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.env.outputs.environment }}
+      deploy_functions: ${{ steps.env.outputs.deploy_functions }}
+      should_deploy: ${{ steps.env.outputs.should_deploy }}
+    steps:
+      - name: Determine deployment environment
+        id: env
+        run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          echo "Branch: $BRANCH_NAME"
+          
+          case $BRANCH_NAME in
+            deploy/production)
+              echo "environment=production" >> $GITHUB_OUTPUT
+              echo "deploy_functions=true" >> $GITHUB_OUTPUT
+              echo "should_deploy=true" >> $GITHUB_OUTPUT
+              echo "🚀 Production deployment from branch: $BRANCH_NAME"
+              ;;
+            deploy/staging)
+              echo "environment=staging" >> $GITHUB_OUTPUT
+              echo "deploy_functions=false" >> $GITHUB_OUTPUT
+              echo "should_deploy=true" >> $GITHUB_OUTPUT
+              echo "🧪 Staging deployment from branch: $BRANCH_NAME"
+              ;;
+            hotfix/*)
+              echo "environment=production" >> $GITHUB_OUTPUT
+              echo "deploy_functions=true" >> $GITHUB_OUTPUT
+              echo "should_deploy=true" >> $GITHUB_OUTPUT
+              echo "🔥 Hotfix deployment from branch: $BRANCH_NAME"
+              ;;
+            *)
+              echo "should_deploy=false" >> $GITHUB_OUTPUT
+              echo "⚠️ No deployment configured for branch: $BRANCH_NAME"
+              ;;
+          esac
+
+  deploy:
+    needs: determine_environment
+    if: ${{ needs.determine_environment.outputs.should_deploy == 'true' }}
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determine_environment.outputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run CI checks and build
+        run: npm run ci
+        
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_THEFOX_SP7ZZ }}
+          channelId: ${{ needs.determine_environment.outputs.environment == 'production' && 'live' || 'staging' }}
+          projectId: thefox-sp7zz
+          
+      - name: Deploy Functions
+        if: ${{ needs.determine_environment.outputs.deploy_functions == 'true' }}
+        run: |
+          npm install -g firebase-tools
+          firebase deploy --only functions --token ${{ secrets.FIREBASE_TOKEN }}
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          
+      - name: Notify deployment success
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "Environment: ${{ needs.determine_environment.outputs.environment }}"
+          echo "Branch: ${GITHUB_REF#refs/heads/}"
+          echo "Commit: ${{ github.sha }}"

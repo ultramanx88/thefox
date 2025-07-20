@@ -5,6 +5,23 @@
     "apps/*",
     "packages/*"
   ],
+  "scripts": {
+    "build": "npm run build:packages && npm run build:web",
+    "build:packages": "npm run build --workspace=packages/ui",
+    "build:web": "npm run build --workspace=apps/web",
+    "build:mobile": "npm run build --workspace=apps/mobile",
+    "build:functions": "npm run build --workspace=functions",
+    "build:all": "npm run build:packages && npm run build:web && npm run build:mobile && npm run build:functions",
+    "dev": "npm run dev --workspace=apps/web",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "dev:mobile": "npm run start --workspace=apps/mobile",
+    "lint": "npm run lint --workspace=apps/web && npm run lint --workspace=apps/mobile && npm run lint --workspace=functions",
+    "lint:all": "npm run lint",
+    "typecheck": "npm run typecheck --workspace=apps/web && npm run typecheck --workspace=apps/mobile",
+    "ci": "npm run lint:all && npm run typecheck && npm run build:all",
+    "mobile:android": "npm run android --workspace=apps/mobile",
+    "mobile:ios": "npm run ios --workspace=apps/mobile"
+  },
   "dependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "autoprefixer": "^10.4.21",

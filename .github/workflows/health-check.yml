@@ -1,0 +1,41 @@
+# Health check and monitoring workflow
+name: Health Check
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  health_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run health checks
+        run: |
+          echo "🔍 Running health checks..."
+          
+          # Check if the website is accessible
+          curl -f https://thefox-sp7zz.web.app || exit 1
+          
+          # Check build process
+          npm run build:all
+          
+          echo "✅ All health checks passed!"
+          
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Health check failed!"
+          echo "Please check the deployment and fix any issues."

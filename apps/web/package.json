@@ -6,7 +6,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "pwa:build": "next build && next export",
+    "pwa:analyze": "npx webpack-bundle-analyzer .next/static/chunks/*.js"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
@@ -23,6 +25,8 @@
     "lucide-react": "^0.525.0",
     "next": "^15.3.3",
     "next-intl": "^4.3.4",
+    "next-pwa": "^5.6.0",
+    "@repo/api": "file:../../packages/api",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwind-merge": "^3.3.1",
