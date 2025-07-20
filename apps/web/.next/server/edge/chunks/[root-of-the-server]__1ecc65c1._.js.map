@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 48, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/apps/web/src/i18n.ts"],"sourcesContent":["import {notFound} from 'next/navigation';\nimport {getRequestConfig} from 'next-intl/server';\n \nexport const locales = ['en', 'th', 'zh', 'ja', 'ko'];\n \nexport default getRequestConfig(async ({ locale }) => {\n  if (!locale || !locales.includes(locale as string)) notFound();\n  return {\n    locale: locale as string,\n    messages: (await import(`./messages/${locale}.json`)).default\n  };\n});\n"],"names":[],"mappings":";;;;AAAA;AAAA;AACA;;;AAEO,MAAM,UAAU;IAAC;IAAM;IAAM;IAAM;IAAM;CAAK;uCAEtC,CAAA,GAAA,kQAAA,CAAA,mBAAgB,AAAD,EAAE,OAAO,EAAE,MAAM,EAAE;IAC/C,IAAI,CAAC,UAAU,CAAC,QAAQ,QAAQ,CAAC,SAAmB,CAAA,GAAA,mLAAA,CAAA,WAAQ,AAAD;IAC3D,OAAO;QACL,QAAQ;QACR,UAAU,CAAC;;;;;;;;;;;;;;;;;;;;;kBAAa,CAAC,WAAW,EAAE,OAAO,KAAK,CAAC,CAAC,EAAE,OAAO;IAC/D;AACF"}},
+    {"offset": {"line": 98, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/apps/web/src/middleware.ts"],"sourcesContent":["import createMiddleware from 'next-intl/middleware';\nimport {locales} from './i18n';\n \nexport default createMiddleware({\n  locales,\n  defaultLocale: 'th'\n});\n \nexport const config = {\n  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']\n};\n"],"names":[],"mappings":";;;;AAAA;AACA;;;uCAEe,CAAA,GAAA,8LAAA,CAAA,UAAgB,AAAD,EAAE;IAC9B,SAAA,kIAAA,CAAA,UAAO;IACP,eAAe;AACjB;AAEO,MAAM,SAAS;IACpB,SAAS;QAAC;KAAoD;AAChE"}}]
+}
