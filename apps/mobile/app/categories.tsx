@@ -1,18 +1,23 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { CategoryList } from '../src/components/CategoryList';
+import { View, StyleSheet } from 'react-native';
+import { CategoryList } from '@mobile/components/CategoryList';
 import type { Category } from '@repo/api';
+import { Stack, useRouter } from 'expo-router';
+import { Colors } from '@mobile/constants/Colors';
 
 export default function CategoriesScreen() {
+  const router = useRouter();
+
   const handleCategorySelect = (category: Category) => {
     console.log('Selected category:', category);
-    // Navigate to products or markets for this category
+    // ตัวอย่าง: Navigate ไปยังหน้าสินค้าของ Category ที่เลือก
+    router.push(`/products?categoryId=${category.id}&categoryName=${category.name}`);
   };
 
   return (
     <View style={styles.container}>
-      <CategoryList 
+      <Stack.Screen options={{ title: 'Categories' }} />
+      <CategoryList
         onCategorySelect={handleCategorySelect}
-        showSubcategories={true}
       />
     </View>
   );
@@ -21,6 +26,6 @@ export default function CategoriesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: Colors.background,
   },
 });

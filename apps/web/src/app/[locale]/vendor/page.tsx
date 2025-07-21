@@ -1,4 +1,4 @@
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import {
   Card,
   CardContent,
@@ -41,7 +41,6 @@ export default async function VendorDashboardPage({
 }: {
   params: { locale: string };
 }) {
-  unstable_setRequestLocale(locale);
   const t = await getTranslations('VendorDashboard.main');
   const staffMembers = await getStaffMembers();
   const packers = staffMembers.filter(s => s.role === 'packer');

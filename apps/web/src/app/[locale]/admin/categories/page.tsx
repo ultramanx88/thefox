@@ -14,14 +14,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { CategoryAdmin } from '@/components/CategoryAdmin';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 export default async function AdminCategoriesPage({
   params: { locale },
 }: {
   params: { locale: string };
 }) {
-  unstable_setRequestLocale(locale);
   const t = await getTranslations('CategoryAdmin');
   const tCategories = await getTranslations('Categories');
   const categories = await getCategories();

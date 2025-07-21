@@ -134,3 +134,6 @@ export interface RegisterRequest {
   password: string;
   phone: string;
 }
+
+// Re-export settings types
+export * from './types/settings';

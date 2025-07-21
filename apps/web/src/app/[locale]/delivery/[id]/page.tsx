@@ -3,10 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { MapPin, Package, Home, CheckCircle } from "lucide-react";
 import Image from "next/image";
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 export default async function DeliveryJobPage({ params }: { params: { id: string, locale: string } }) {
-  unstable_setRequestLocale(params.locale);
   const t = await getTranslations('DeliveryJob');
 
   return (

@@ -1,4 +1,4 @@
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import {
   Card,
   CardContent,
@@ -31,7 +31,6 @@ export default async function CustomerOrdersPage({
 }: {
   params: { locale: string };
 }) {
-  unstable_setRequestLocale(locale);
   const t = await getTranslations('CustomerDashboard');
   const orders = await getOrders();
 

@@ -1,8 +1,7 @@
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 
 export default async function VendorOrdersPage({ params: { locale } }: { params: { locale: string }}) {
-  unstable_setRequestLocale(locale);
   const t = await getTranslations('VendorDashboard.main');
 
   return (

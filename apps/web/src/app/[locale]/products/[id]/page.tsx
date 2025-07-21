@@ -1,4 +1,4 @@
-import { unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getProduct, getProductsByVendorId } from '@/lib/products';
 import { ProductDetailClient } from '@/components/ProductDetailClient';
@@ -37,7 +37,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductDetailPage({ params }: Props) {
-  unstable_setRequestLocale(params.locale);
   const product = await getProduct(params.id);
 
   if (!product) {

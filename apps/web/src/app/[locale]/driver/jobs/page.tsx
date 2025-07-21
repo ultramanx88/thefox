@@ -1,5 +1,5 @@
 
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import {
   Card,
   CardContent,
@@ -26,7 +26,6 @@ export default async function DriverJobsPage({
 }: {
   params: { locale: string };
 }) {
-  unstable_setRequestLocale(locale);
   const t = await getTranslations('DriverJobs');
   const availableJobs = await getAvailableJobs();
   const scheduledJobs = await getScheduledJobs();

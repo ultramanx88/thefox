@@ -1,4 +1,4 @@
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getRegularHours, getSpecialHours } from '@/lib/hours';
@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import { Pencil, PlusCircle } from 'lucide-react';
 
 export default async function VendorHoursPage({ params: { locale } }: { params: { locale: string }}) {
-  unstable_setRequestLocale(locale);
   const t = await getTranslations('VendorHours');
   const tDays = await getTranslations('Days');
 

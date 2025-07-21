@@ -3,7 +3,15 @@ module.exports = function (api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
-      // Required for expo-router
+      [
+        'module-resolver',
+        {
+          alias: {
+            // This needs to be mirrored in tsconfig.json
+            '@mobile': './src',
+          },
+        },
+      ],
       'expo-router/babel',
       // Reanimated plugin has to be listed last
       'react-native-reanimated/plugin',

@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Colors } from '@mobile/constants/Colors';
 
 export default function RootLayout() {
   return (
@@ -10,29 +11,29 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             headerStyle: {
-              backgroundColor: '#ff6b35',
+              backgroundColor: Colors.primary,
             },
-            headerTintColor: '#fff',
+            headerTintColor: Colors.white,
             headerTitleStyle: {
               fontWeight: 'bold',
             },
           }}
         >
-          <Stack.Screen 
-            name="index" 
-            options={{ 
+          <Stack.Screen
+            name="index"
+            options={{
               title: 'theFOX',
-              headerShown: false 
-            }} 
+              headerShown: false
+            }}
           />
-          <Stack.Screen 
-            name="(tabs)" 
-            options={{ 
-              headerShown: false 
-            }} 
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false
+            }}
           />
         </Stack>
-        <StatusBar style="auto" />
+        <StatusBar style="light" />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

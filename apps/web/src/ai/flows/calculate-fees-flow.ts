@@ -8,8 +8,9 @@
  * - CalculateFeesOutput - The return type for the calculateFees function.
  */
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+// Temporarily disabled for build
+// import { ai } from '@/ai/genkit';
+import { z } from 'zod';
 
 const FeeConfigSchema = z.object({
   base_delivery_fee: z.number().describe('The base fee for any delivery in THB.'),
@@ -59,16 +60,6 @@ export type CalculateFeesOutput = z.infer<typeof CalculateFeesOutputSchema>;
 export async function calculateFees(
   input: CalculateFeesInput
 ): Promise<CalculateFeesOutput> {
-  return calculateFeesFlow(input);
-}
-
-const calculateFeesFlow = ai.defineFlow(
-  {
-    name: 'calculateFeesFlow',
-    inputSchema: CalculateFeesInputSchema,
-    outputSchema: CalculateFeesOutputSchema,
-  },
-  async (input) => {
     const { order_value, delivery_distance, service_type, store_category, config } = input;
 
     // 1. Calculate Delivery Fee
@@ -120,5 +111,4 @@ const calculateFeesFlow = ai.defineFlow(
       customer_total,
       platform_profit_percentage,
     };
-  }
-);
+}

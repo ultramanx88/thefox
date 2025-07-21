@@ -1,14 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Package, Truck, Bike } from "lucide-react";
 import Image from "next/image";
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Rating } from "@/components/Rating";
 import { LanguageBadge } from "@/components/LanguageBadge";
 import { OrderChat } from "@/components/OrderChat";
 
 export default async function OrderTrackingPage({ params }: { params: { id: string, locale: string } }) {
-  unstable_setRequestLocale(params.locale);
   const t = await getTranslations('OrderTracking');
 
   const steps = [

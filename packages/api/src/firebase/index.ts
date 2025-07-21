@@ -5,6 +5,7 @@ export { FirestoreService } from './firestore';
 export { FirebaseStorageService } from './storage';
 export { FirebaseFunctionsService } from './functions';
 export { CategoryService } from './categories';
+export { SettingsService } from './settings';
 
 // Re-export Firebase types for convenience
 export type {

@@ -1,6 +1,6 @@
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { VendorSidebar } from '@/components/VendorSidebar';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 export default async function VendorLayout({
   children,
@@ -9,7 +9,6 @@ export default async function VendorLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  unstable_setRequestLocale(locale);
   const t = await getTranslations('VendorDashboard.sidebar');
 
   return (

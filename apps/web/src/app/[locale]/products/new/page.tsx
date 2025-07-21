@@ -5,12 +5,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default async function NewProductPage({params: {locale}}: {params: {locale: string}}) {
-  unstable_setRequestLocale(locale);
   const t = await getTranslations('NewProduct');
   const languages = ['th', 'en', 'zh', 'ja', 'ko'];
   const units = ['piece', 'kilogram', 'gram', 'crate', 'bottle'];

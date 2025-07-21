@@ -1,4 +1,4 @@
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getStaffMembers } from '@/lib/staff';
@@ -15,7 +15,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 
 export default async function VendorStaffPage({ params: { locale } }: { params: { locale: string }}) {
-  unstable_setRequestLocale(locale);
   const t = await getTranslations('VendorStaff');
   const staffMembers = await getStaffMembers();
 

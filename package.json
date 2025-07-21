@@ -6,8 +6,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build:packages && npm run build:web",
-    "build:packages": "npm run build --workspace=packages/ui",
+    "build": "npm run build:web",
+    "build:packages": "echo 'No packages need building'",
     "build:web": "npm run build --workspace=apps/web",
     "build:mobile": "npm run build --workspace=apps/mobile",
     "build:functions": "npm run build --workspace=functions",
