@@ -6,25 +6,38 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build:web",
-    "build:packages": "echo 'No packages need building'",
+    "build": "npm run build:web && npm run build:mobile",
     "build:web": "npm run build --workspace=apps/web",
     "build:mobile": "npm run build --workspace=apps/mobile",
-    "build:functions": "npm run build --workspace=functions",
-    "build:all": "npm run build:packages && npm run build:web && npm run build:mobile && npm run build:functions",
-    "dev": "npm run dev --workspace=apps/web",
+    "dev": "npm run dev:web",
     "dev:web": "npm run dev --workspace=apps/web",
-    "dev:mobile": "npm run start --workspace=apps/mobile",
-    "lint": "npm run lint --workspace=apps/web && npm run lint --workspace=apps/mobile && npm run lint --workspace=functions",
-    "lint:all": "npm run lint",
-    "typecheck": "npm run typecheck --workspace=apps/web && npm run typecheck --workspace=apps/mobile",
-    "ci": "npm run lint:all && npm run typecheck && npm run build:all",
-    "mobile:android": "npm run android --workspace=apps/mobile",
-    "mobile:ios": "npm run ios --workspace=apps/mobile"
+    "dev:mobile": "npm run dev --workspace=apps/mobile",
+    "start": "npm run start:web",
+    "start:web": "npm run start --workspace=apps/web",
+    "start:mobile": "npm run start --workspace=apps/mobile",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "firebase:setup": "node scripts/firebase-setup.js",
+    "firebase:test": "node scripts/test-firebase.js",
+    "firebase:test:firestore": "node scripts/test-firestore.js",
+    "firebase:test:storage": "node scripts/test-storage.js",
+    "firebase:emulators": "firebase emulators:start",
+    "firebase:deploy": "firebase deploy",
+    "firebase:deploy:functions": "firebase deploy --only functions",
+    "firebase:deploy:firestore": "firebase deploy --only firestore",
+    "firebase:deploy:firestore:rules": "firebase deploy --only firestore:rules",
+    "firebase:deploy:firestore:indexes": "firebase deploy --only firestore:indexes",
+    "firebase:deploy:storage": "firebase deploy --only storage",
+    "firebase:deploy:storage:rules": "firebase deploy --only storage:rules",
+    "firebase:deploy:hosting": "firebase deploy --only hosting"
   },
   "dependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "autoprefixer": "^10.4.21",
-    "recharts": "^3.1.0"
+    "recharts": "^3.1.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "firebase-tools": "^13.0.0"
   }
 }

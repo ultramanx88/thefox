@@ -1,0 +1,9 @@
+{
+  "status": 307,
+  "headers": {
+    "location": "/th/driver/jobs",
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/driver/layout,_N_T_/driver/jobs/layout,_N_T_/driver/jobs/page,_N_T_/driver/jobs/"
+  }
+}

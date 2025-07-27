@@ -8,6 +8,10 @@ type Props = {
   params: { id: string, locale: string };
 };
 
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await getProduct(params.id);
 

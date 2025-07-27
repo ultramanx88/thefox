@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "theFOX",
-    "slug": "thefox-mobile",
+    "slug": "thefox",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -75,7 +75,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "your-project-id-here"
+        "projectId": "b87322ef-46fe-4aa6-845e-d16f7c55ce90"
       }
     }
   }

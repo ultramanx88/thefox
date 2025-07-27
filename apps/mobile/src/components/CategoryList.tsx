@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { getCategories, type Category } from '@repo/api';
-import { Colors } from '@mobile/constants/Colors';
+import { Colors } from '@/constants/Colors';
 
 interface CategoryListProps {
   onCategorySelect: (category: Category) => void;

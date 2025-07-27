@@ -22,6 +22,7 @@ import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { cn } from '@/lib/utils';
 import { useTranslations, useLocale } from 'next-intl';
 import React, { useTransition } from 'react';
+import { InstallButton } from './pwa/InstallButton';
 
 export function Header() {
   const t = useTranslations('Header');
@@ -130,6 +131,7 @@ export function Header() {
         </div>
 
         <div className="flex flex-1 items-center justify-end space-x-2">
+          <InstallButton variant="secondary" size="sm" />
           <LanguageSwitcher />
           <Button variant="ghost" size="icon">
             <ShoppingCart className="h-5 w-5" />

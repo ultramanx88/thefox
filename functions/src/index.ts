@@ -1,32 +1,96 @@
 /**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
+ * Firebase Cloud Functions for theFOX Application
+ * 
+ * This file exports all Cloud Functions organized by category:
+ * - Authentication functions
+ * - Order processing functions
+ * - Payment functions
+ * - Notification functions
+ * - Analytics functions
  */
 
-import {setGlobalOptions} from "firebase-functions";
-// import {onRequest} from "firebase-functions/https";
-// import * as logger from "firebase-functions/logger";
+import { setGlobalOptions } from "firebase-functions";
+import { initializeApp } from "firebase-admin/app";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+// Initialize Firebase Admin
+initializeApp();
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+// Set global options for cost control and performance
+setGlobalOptions({ 
+  maxInstances: 10,
+  region: "asia-southeast1", // Closer to Thailand
+  memory: "256MiB",
+  timeoutSeconds: 60,
+});
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+// ===========================================
+// AUTHENTICATION FUNCTIONS
+// ===========================================
+export { 
+  onUserCreate,
+  onUserDelete,
+  setCustomClaims,
+  verifyUserRole
+} from "./auth";
+
+// ===========================================
+// ORDER PROCESSING FUNCTIONS
+// ===========================================
+export {
+  createOrder,
+  updateOrderStatus,
+  calculateDeliveryFee,
+  cancelOrder,
+  onOrderCreated
+} from "./orders";
+
+// ===========================================
+// PAYMENT FUNCTIONS
+// ===========================================
+export {
+  processPayment,
+  handlePaymentWebhook,
+  refundPayment,
+  validatePayment
+} from "./payments";
+
+// ===========================================
+// NOTIFICATION FUNCTIONS
+// ===========================================
+export {
+  sendNotification,
+  sendBulkNotification,
+  sendOrderNotification,
+  sendDeliveryNotification,
+  onNotificationCreated
+} from "./notifications";
+
+// ===========================================
+// ANALYTICS FUNCTIONS
+// ===========================================
+export {
+  trackEvent,
+  generateDailyReport,
+  generateWeeklyReport,
+  generateMonthlyReport,
+  calculateMetrics
+} from "./analytics";
+
+// ===========================================
+// UTILITY FUNCTIONS
+// ===========================================
+export {
+  cleanupTempFiles,
+  optimizeImages,
+  generateThumbnails,
+  backupData
+} from "./utilities";
+
+// ===========================================
+// SCHEDULED FUNCTIONS
+// ===========================================
+export {
+  dailyCleanup,
+  weeklyReports,
+  monthlyAnalytics
+} from "./scheduled";

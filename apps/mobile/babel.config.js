@@ -8,11 +8,11 @@ module.exports = function (api) {
         {
           alias: {
             // This needs to be mirrored in tsconfig.json
-            '@mobile': './src',
+            '@': './src',
           },
         },
       ],
-      'expo-router/babel',
+
       // Reanimated plugin has to be listed last
       'react-native-reanimated/plugin',
     ],

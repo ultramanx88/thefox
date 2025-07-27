@@ -1,8 +1,8 @@
 import { View, StyleSheet } from 'react-native';
-import { CategoryList } from '@mobile/components/CategoryList';
+import { CategoryList } from '@/components/CategoryList';
 import type { Category } from '@repo/api';
 import { Stack, useRouter } from 'expo-router';
-import { Colors } from '@mobile/constants/Colors';
+import { Colors } from '@/constants/Colors';
 
 export default function CategoriesScreen() {
   const router = useRouter();

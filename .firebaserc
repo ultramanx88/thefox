@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "thefox-sp7zz"
-  }
+  },
+  "targets": {
+    "thefox-sp7zz": {
+      "hosting": {
+        "production": [
+          "thefox-sp7zz"
+        ],
+        "staging": [
+          "thefox-staging"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

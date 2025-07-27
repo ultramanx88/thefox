@@ -1,4 +1,6 @@
-// PWA utility functions
+// Enhanced PWA utility functions with scalability features
+import { PWACacheUtils } from './pwa/cache-utils';
+import { PerformanceMonitor } from './pwa/performance-monitor';
 
 export const isPWAInstalled = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -92,23 +94,31 @@ export const activateWaitingSW = async (): Promise<void> => {
   }
 };
 
-// Cache management utilities
+// Enhanced cache management utilities
 export const clearAppCache = async (): Promise<void> => {
-  if ('caches' in window) {
-    const cacheNames = await caches.keys();
-    await Promise.all(
-      cacheNames.map(cacheName => caches.delete(cacheName))
-    );
-  }
+  await PWACacheUtils.clearAllCaches();
 };
 
 export const getCacheSize = async (): Promise<number> => {
-  if ('caches' in window && 'storage' in navigator && 'estimate' in navigator.storage) {
-    const estimate = await navigator.storage.estimate();
-    return estimate.usage || 0;
-  }
+  return await PWACacheUtils.getTotalCacheSize();
+};
+
+export const getCacheInfo = async () => {
+  return await PWACacheUtils.getAllCacheInfo();
+};
+
+export const optimizeCache = async (): Promise<void> => {
+  // Clean up expired entries
+  await PWACacheUtils.cleanupExpiredEntries();
   
-  return 0;
+  // Notify service worker to optimize
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({ type: 'OPTIMIZE_MEMORY' });
+  }
+};
+
+export const prefetchCriticalResources = async (urls: string[]): Promise<void> => {
+  await PWACacheUtils.preloadCriticalResources(urls);
 };
 
 // Network status utilities
@@ -126,6 +136,47 @@ export const getNetworkStatus = (): {
     downlink: connection?.downlink,
     rtt: connection?.rtt,
   };
+};
+
+// Enhanced network monitoring
+export const getDetailedNetworkInfo = () => {
+  const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+  
+  return {
+    online: navigator.onLine,
+    type: connection?.type || 'unknown',
+    effectiveType: connection?.effectiveType || 'unknown',
+    downlink: connection?.downlink || 0,
+    downlinkMax: connection?.downlinkMax || 0,
+    rtt: connection?.rtt || 0,
+    saveData: connection?.saveData || false,
+  };
+};
+
+// Performance monitoring utilities
+export const getPerformanceMetrics = () => {
+  const monitor = PerformanceMonitor.getInstance();
+  return monitor.getLatestMetrics();
+};
+
+export const getCoreWebVitals = () => {
+  const monitor = PerformanceMonitor.getInstance();
+  return monitor.getCoreWebVitals();
+};
+
+export const generatePerformanceReport = () => {
+  const monitor = PerformanceMonitor.getInstance();
+  return monitor.generatePerformanceReport();
+};
+
+// Storage quota utilities
+export const getStorageQuota = async () => {
+  return await PWACacheUtils.getStorageQuota();
+};
+
+export const isStorageQuotaExceeded = async (threshold: number = 0.8): Promise<boolean> => {
+  const quota = await getStorageQuota();
+  return quota.percentage > threshold * 100;
 };
 
 // Share API utilities
@@ -149,4 +200,81 @@ export const shareContent = async (data: {
   }
   
   return false;
+};
+
+// Device capabilities detection
+export const getDeviceCapabilities = () => {
+  return {
+    memory: (navigator as any).deviceMemory || 0,
+    cores: navigator.hardwareConcurrency || 0,
+    connection: getDetailedNetworkInfo(),
+    storage: 'storage' in navigator,
+    serviceWorker: 'serviceWorker' in navigator,
+    pushManager: 'PushManager' in window,
+    notifications: 'Notification' in window,
+    geolocation: 'geolocation' in navigator,
+    camera: 'mediaDevices' in navigator,
+    webShare: canUseWebShare(),
+  };
+};
+
+// PWA health check
+export const performPWAHealthCheck = async () => {
+  const isInstalled = isPWAInstalled();
+  const isServiceWorkerActive = PWACacheUtils.isServiceWorkerActive();
+  const cacheInfo = await getCacheInfo();
+  const storageQuota = await getStorageQuota();
+  const performanceMetrics = getPerformanceMetrics();
+  const networkStatus = getDetailedNetworkInfo();
+  const deviceCapabilities = getDeviceCapabilities();
+
+  return {
+    timestamp: new Date().toISOString(),
+    status: {
+      installed: isInstalled,
+      serviceWorkerActive: isServiceWorkerActive,
+      online: networkStatus.online,
+    },
+    cache: {
+      totalCaches: cacheInfo.length,
+      totalSize: cacheInfo.reduce((sum, cache) => sum + cache.size, 0),
+      totalEntries: cacheInfo.reduce((sum, cache) => sum + cache.entries, 0),
+    },
+    storage: storageQuota,
+    performance: performanceMetrics,
+    network: networkStatus,
+    device: deviceCapabilities,
+  };
+};
+
+// Export cache data for debugging
+export const exportPWAData = async () => {
+  return await PWACacheUtils.exportCacheData();
+};
+
+// Format utilities
+export const formatBytes = PWACacheUtils.formatBytes;
+
+// Background sync utilities
+export const queueBackgroundSync = (tag: string, data?: any) => {
+  if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
+    navigator.serviceWorker.ready.then((registration) => {
+      return registration.sync.register(tag);
+    });
+  }
+};
+
+// Notification utilities
+export const requestNotificationPermission = async (): Promise<NotificationPermission> => {
+  if ('Notification' in window) {
+    return await Notification.requestPermission();
+  }
+  return 'denied';
+};
+
+export const showNotification = (title: string, options?: NotificationOptions) => {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    return new Notification(title, options);
+  }
+  return null;
 };

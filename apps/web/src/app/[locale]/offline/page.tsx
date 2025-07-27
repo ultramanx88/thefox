@@ -1,83 +1,58 @@
-import { WifiOff, RefreshCw, Home } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { WifiOff, RefreshCw, Home } from 'lucide-react';
 import Link from 'next/link';
 
 export default function OfflinePage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="text-center">
-          <WifiOff className="mx-auto h-16 w-16 text-gray-400" />
-          <h1 className="mt-6 text-3xl font-bold text-gray-900">
-            You're Offline
-          </h1>
-          <p className="mt-2 text-sm text-gray-600">
-            It looks like you've lost your internet connection. Don't worry, you can still browse some content that's been cached.
-          </p>
-        </div>
-
-        <div className="mt-8 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">
-                What you can do:
-              </h2>
-              
-              <div className="space-y-4 text-left">
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    Check your internet connection and try again
-                  </p>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    Browse previously visited pages that are cached
-                  </p>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    Your cart and preferences are saved locally
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <Button
-                onClick={() => window.location.reload()}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-              >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Try Again
-              </Button>
-              
-              <Link href="/" className="block">
-                <Button variant="outline" className="w-full">
-                  <Home className="h-4 w-4 mr-2" />
-                  Go to Home
-                </Button>
-              </Link>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md text-center">
+        <CardHeader>
+          <div className="mx-auto bg-orange-100 text-orange-600 rounded-full h-16 w-16 flex items-center justify-center mb-4">
+            <WifiOff className="h-8 w-8" />
           </div>
-        </div>
-
-        <div className="mt-6 text-center">
-          <p className="text-xs text-gray-500">
-            theFOX works offline with cached content
-          </p>
-        </div>
-      </div>
+          <CardTitle className="text-2xl font-bold text-gray-900">
+            You're Offline
+          </CardTitle>
+          <CardDescription className="text-gray-600">
+            No internet connection detected. Don't worry, you can still browse cached content!
+          </CardDescription>
+        </CardHeader>
+        
+        <CardContent className="space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 className="font-semibold text-blue-900 mb-2">Available Offline:</h3>
+            <ul className="text-sm text-blue-800 space-y-1">
+              <li>• Previously viewed markets</li>
+              <li>• Cached product listings</li>
+              <li>• Your saved favorites</li>
+              <li>• Order history</li>
+            </ul>
+          </div>
+          
+          <div className="space-y-3">
+            <Button 
+              onClick={() => window.location.reload()} 
+              className="w-full bg-orange-500 hover:bg-orange-600"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Try Again
+            </Button>
+            
+            <Link href="/" className="block">
+              <Button variant="outline" className="w-full">
+                <Home className="w-4 h-4 mr-2" />
+                Go to Homepage
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="text-xs text-gray-500 mt-6">
+            <p>This page works offline thanks to PWA technology.</p>
+            <p>You'll automatically reconnect when internet is restored.</p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

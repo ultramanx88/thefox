@@ -7,6 +7,10 @@ import { Rating } from "@/components/Rating";
 import { LanguageBadge } from "@/components/LanguageBadge";
 import { OrderChat } from "@/components/OrderChat";
 
+export async function generateStaticParams() {
+  return [];
+}
+
 export default async function OrderTrackingPage({ params }: { params: { id: string, locale: string } }) {
   const t = await getTranslations('OrderTracking');
 

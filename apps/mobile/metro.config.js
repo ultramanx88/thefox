@@ -18,4 +18,9 @@ config.resolver.nodeModulesPaths = [
 // 3. Force Metro to resolve (sub)dependencies only from the `nodeModulesPaths`
 config.resolver.disableHierarchicalLookup = true;
 
+// 4. Add alias support
+config.resolver.alias = {
+  '@': path.resolve(projectRoot, 'src'),
+};
+
 module.exports = config;

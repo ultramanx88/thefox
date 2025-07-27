@@ -53,7 +53,7 @@ export function AdminSidebar({
         <SidebarMenu>
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.href}>
-              <Link href={item.href} className="w-full">
+              <Link href={item.href as any} className="w-full">
                 <SidebarMenuButton
                   isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/admin')}
                 >

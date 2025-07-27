@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors } from '@mobile/constants/Colors';
+import { Colors } from '@/constants/Colors';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();

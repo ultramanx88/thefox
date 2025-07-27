@@ -5,6 +5,10 @@ import { MapPin, Package, Home, CheckCircle } from "lucide-react";
 import Image from "next/image";
 import { getTranslations } from 'next-intl/server';
 
+export async function generateStaticParams() {
+  return [];
+}
+
 export default async function DeliveryJobPage({ params }: { params: { id: string, locale: string } }) {
   const t = await getTranslations('DeliveryJob');
 

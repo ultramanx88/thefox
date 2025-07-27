@@ -1,0 +1,141 @@
+{
+  "deployment": {
+    "environment": "staging",
+    "timestamp": "2025-07-27T09:03:55.141Z",
+    "duration": 182927,
+    "status": "completed"
+  },
+  "steps": [
+    {
+      "timestamp": "2025-07-27T09:00:52.214Z",
+      "type": "info",
+      "message": "🚀 Starting staging deployment for theFOX...",
+      "step": 1
+    },
+    {
+      "timestamp": "2025-07-27T09:00:52.257Z",
+      "type": "info",
+      "message": "============================================================",
+      "step": 2
+    },
+    {
+      "timestamp": "2025-07-27T09:00:52.257Z",
+      "type": "info",
+      "message": "🔍 Checking deployment prerequisites...",
+      "step": 3
+    },
+    {
+      "timestamp": "2025-07-27T09:00:52.257Z",
+      "type": "info",
+      "message": "Executing: Firebase CLI version check...",
+      "step": 4
+    },
+    {
+      "timestamp": "2025-07-27T09:01:00.159Z",
+      "type": "success",
+      "message": "✅ Firebase CLI version check completed in 7902ms",
+      "step": 5
+    },
+    {
+      "timestamp": "2025-07-27T09:01:00.159Z",
+      "type": "info",
+      "message": "Executing: Firebase authentication check...",
+      "step": 6
+    },
+    {
+      "timestamp": "2025-07-27T09:01:04.778Z",
+      "type": "success",
+      "message": "✅ Firebase authentication check completed in 4619ms",
+      "step": 7
+    },
+    {
+      "timestamp": "2025-07-27T09:01:04.778Z",
+      "type": "info",
+      "message": "Executing: Firebase project check...",
+      "step": 8
+    },
+    {
+      "timestamp": "2025-07-27T09:01:09.108Z",
+      "type": "error",
+      "message": "❌ Firebase project check failed: Command failed: firebase use --add",
+      "step": 9
+    },
+    {
+      "timestamp": "2025-07-27T09:01:09.109Z",
+      "type": "success",
+      "message": "✅ All prerequisites met",
+      "step": 10
+    },
+    {
+      "timestamp": "2025-07-27T09:01:09.110Z",
+      "type": "info",
+      "message": "🏗️ Building project for staging deployment...",
+      "step": 11
+    },
+    {
+      "timestamp": "2025-07-27T09:01:09.110Z",
+      "type": "info",
+      "message": "Executing: Installing dependencies...",
+      "step": 12
+    },
+    {
+      "timestamp": "2025-07-27T09:03:35.607Z",
+      "type": "success",
+      "message": "✅ Installing dependencies completed in 146497ms",
+      "step": 13
+    },
+    {
+      "timestamp": "2025-07-27T09:03:35.607Z",
+      "type": "info",
+      "message": "🔍 Running code quality checks...",
+      "step": 14
+    },
+    {
+      "timestamp": "2025-07-27T09:03:35.607Z",
+      "type": "info",
+      "message": "Executing: Code linting...",
+      "step": 15
+    },
+    {
+      "timestamp": "2025-07-27T09:03:46.298Z",
+      "type": "error",
+      "message": "❌ Code linting failed: Command failed: npm run lint\nnode:internal/modules/cjs/loader:1369\n  const err = new Error(message);\n              ^\n\nError: Cannot find module 'next-pwa'\nRequire stack:\n- /Users/macbookpro/Desktop/thefox/apps/web/next.config.compiled.js\n- /Users/macbookpro/Desktop/thefox/node_modules/next/dist/build/next-config-ts/transpile-config.js\n- /Users/macbookpro/Desktop/thefox/node_modules/next/dist/server/config.js\n- /Users/macbookpro/Desktop/thefox/node_modules/next/dist/cli/next-test.js\n- /Users/macbookpro/Desktop/thefox/node_modules/next/dist/bin/next\n    at Module.<anonymous> (node:internal/modules/cjs/loader:1369:15)\n    at /Users/macbookpro/Desktop/thefox/node_modules/next/dist/server/require-hook.js:55:36\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)\n    at Module._load (node:internal/modules/cjs/loader:1179:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)\n    at Module.<anonymous> (node:internal/modules/cjs/loader:1449:12)\n    at mod.require (/Users/macbookpro/Desktop/thefox/node_modules/next/dist/server/require-hook.js:65:28)\n    at require (node:internal/modules/helpers:135:16) {\n  code: 'MODULE_NOT_FOUND',\n  requireStack: [\n    '/Users/macbookpro/Desktop/thefox/apps/web/next.config.compiled.js',\n    '/Users/macbookpro/Desktop/thefox/node_modules/next/dist/build/next-config-ts/transpile-config.js',\n    '/Users/macbookpro/Desktop/thefox/node_modules/next/dist/server/config.js',\n    '/Users/macbookpro/Desktop/thefox/node_modules/next/dist/cli/next-test.js',\n    '/Users/macbookpro/Desktop/thefox/node_modules/next/dist/bin/next'\n  ]\n}\n\nNode.js v24.4.0\nnpm error Lifecycle script `lint` failed with error:\nnpm error code 1\nnpm error path /Users/macbookpro/Desktop/thefox/apps/web\nnpm error workspace web\nnpm error location /Users/macbookpro/Desktop/thefox/apps/web\nnpm error command failed\nnpm error command sh -c next lint\n\n\nOops! Something went wrong! :(\n\nESLint: 8.57.1\n\nESLint couldn't find a configuration file. To set up a configuration file for this project, please run:\n\n    npm init @eslint/config\n\nESLint looked for configuration files in /Users/macbookpro/Desktop/thefox/packages/api/src and its ancestors. If it found none, it then looked in your home directory.\n\nIf you think you already have a configuration file or if you need more help, please stop by the ESLint Discord server: https://eslint.org/chat\n\nnpm error Lifecycle script `lint` failed with error:\nnpm error code 2\nnpm error path /Users/macbookpro/Desktop/thefox/packages/api\nnpm error workspace @repo/api@1.0.0\nnpm error location /Users/macbookpro/Desktop/thefox/packages/api\nnpm error command failed\nnpm error command sh -c eslint . --ext .ts,.tsx\n\nnpm error Lifecycle script `lint` failed with error:\nnpm error workspace ui\nnpm error location /Users/macbookpro/Desktop/thefox/packages/ui\nnpm error Missing script: \"lint\"\nnpm error\nnpm error Did you mean this?\nnpm error   npm link # Symlink a package folder\nnpm error\nnpm error To see a list of scripts, run:\nnpm error   npm run --workspace=ui\n",
+      "step": 16
+    },
+    {
+      "timestamp": "2025-07-27T09:03:46.302Z",
+      "type": "info",
+      "message": "Executing: Building API package...",
+      "step": 17
+    },
+    {
+      "timestamp": "2025-07-27T09:03:55.140Z",
+      "type": "error",
+      "message": "❌ Building API package failed: Command failed: npm run build --workspace=packages/api\nnpm error Lifecycle script `build` failed with error:\nnpm error code 2\nnpm error path /Users/macbookpro/Desktop/thefox/packages/api\nnpm error workspace @repo/api@1.0.0\nnpm error location /Users/macbookpro/Desktop/thefox/packages/api\nnpm error command failed\nnpm error command sh -c tsc\n",
+      "step": 18
+    },
+    {
+      "timestamp": "2025-07-27T09:03:55.140Z",
+      "type": "error",
+      "message": "💥 DEPLOYMENT FAILED: Failed to build packages",
+      "step": 19
+    },
+    {
+      "timestamp": "2025-07-27T09:03:55.140Z",
+      "type": "error",
+      "message": "============================================================",
+      "step": 20
+    }
+  ],
+  "summary": {
+    "totalSteps": 20,
+    "successfulSteps": 4,
+    "warnings": 0,
+    "errors": 5
+  },
+  "urls": {
+    "staging": "https://thefox-sp7zz--staging-<channel-id>.web.app",
+    "console": "https://console.firebase.google.com/project/thefox-sp7zz",
+    "functions": "https://us-central1-thefox-sp7zz.cloudfunctions.net"
+  }
+}

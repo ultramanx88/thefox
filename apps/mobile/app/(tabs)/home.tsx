@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { CategoryGrid } from '../src/components/CategoryList';
+import { CategoryList } from '@/components/CategoryList';
 
 export default function HomeTab() {
   const handleCategorySelect = (category: any) => {
@@ -40,7 +40,7 @@ export default function HomeTab() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Categories</Text>
         <View style={styles.categoriesContainer}>
-          <CategoryGrid onCategorySelect={handleCategorySelect} />
+          <CategoryList onCategorySelect={handleCategorySelect} />
         </View>
       </View>
 

@@ -1,0 +1,9 @@
+{
+  "status": 307,
+  "headers": {
+    "location": "/th/admin/investment",
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/admin/layout,_N_T_/admin/investment/layout,_N_T_/admin/investment/page,_N_T_/admin/investment/"
+  }
+}

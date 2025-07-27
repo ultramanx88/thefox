@@ -2,45 +2,229 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // User profile images
-    match /users/{userId}/profile/{allPaths=**} {
+    
+    // ===========================================
+    // USER PROFILE FILES
+    // ===========================================
+    
+    // User profile images (avatars)
+    match /users/{userId}/profile/avatar/{fileName} {
       allow read: if true; // Public read access for profile images
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow write: if isAuthenticated() && 
+        isOwner(userId) && 
+        isValidImageFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && 
+        (isOwner(userId) || hasRole('admin'));
     }
     
-    // Market images
-    match /markets/{marketId}/images/{allPaths=**} {
+    // User documents (ID, licenses, etc.)
+    match /users/{userId}/documents/{fileName} {
+      allow read: if isAuthenticated() && 
+        (isOwner(userId) || hasRole('admin'));
+      allow write: if isAuthenticated() && 
+        isOwner(userId) && 
+        isValidDocumentFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && 
+        (isOwner(userId) || hasRole('admin'));
+    }
+    
+    // Driver specific documents
+    match /users/{userId}/driver/{docType}/{fileName} {
+      allow read: if isAuthenticated() && 
+        (isOwner(userId) || hasRole('admin'));
+      allow write: if isAuthenticated() && 
+        isOwner(userId) && 
+        hasRole('driver') &&
+        docType in ['license', 'vehicle', 'insurance'] &&
+        isValidDocumentFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && 
+        (isOwner(userId) || hasRole('admin'));
+    }
+    
+    // ===========================================
+    // MARKET FILES
+    // ===========================================
+    
+    // Market profile images
+    match /markets/{marketId}/profile/{fileName} {
       allow read: if true; // Public read access
-      allow write: if request.auth != null && 
+      allow write: if isAuthenticated() && 
+        (isMarketOwner(marketId) || hasRole('admin')) &&
+        isValidImageFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && 
         (isMarketOwner(marketId) || hasRole('admin'));
     }
     
-    // Product images
-    match /products/{productId}/images/{allPaths=**} {
+    // Market gallery images
+    match /markets/{marketId}/gallery/{fileName} {
       allow read: if true; // Public read access
-      allow write: if request.auth != null && 
+      allow write: if isAuthenticated() && 
+        (isMarketOwner(marketId) || hasRole('admin')) &&
+        isValidImageFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && 
+        (isMarketOwner(marketId) || hasRole('admin'));
+    }
+    
+    // Market business documents
+    match /markets/{marketId}/documents/{docType}/{fileName} {
+      allow read: if isAuthenticated() && 
+        (isMarketOwner(marketId) || hasRole('admin'));
+      allow write: if isAuthenticated() && 
+        (isMarketOwner(marketId) || hasRole('admin')) &&
+        docType in ['license', 'permit', 'certificate', 'tax'] &&
+        isValidDocumentFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && 
+        (isMarketOwner(marketId) || hasRole('admin'));
+    }
+    
+    // ===========================================
+    // PRODUCT FILES
+    // ===========================================
+    
+    // Product images
+    match /products/{productId}/images/{fileName} {
+      allow read: if true; // Public read access
+      allow write: if isAuthenticated() && 
+        (isProductOwner(productId) || hasRole('admin')) &&
+        isValidImageFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && 
         (isProductOwner(productId) || hasRole('admin'));
     }
     
-    // Order related files
-    match /orders/{orderId}/{allPaths=**} {
-      allow read, write: if request.auth != null && 
+    // Product thumbnails (auto-generated)
+    match /products/{productId}/thumbnails/{fileName} {
+      allow read: if true; // Public read access
+      allow write: if isAuthenticated() && 
+        (isProductOwner(productId) || hasRole('admin')) &&
+        isValidImageFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && 
+        (isProductOwner(productId) || hasRole('admin'));
+    }
+    
+    // ===========================================
+    // ORDER FILES
+    // ===========================================
+    
+    // Order receipts and invoices
+    match /orders/{orderId}/receipts/{fileName} {
+      allow read: if isAuthenticated() && 
         (isOrderOwner(orderId) || 
          isOrderMarketOwner(orderId) ||
+         isOrderDriver(orderId) ||
          hasRole('admin'));
+      allow write: if isAuthenticated() && 
+        (isOrderMarketOwner(orderId) || hasRole('admin')) &&
+        isValidDocumentFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && hasRole('admin');
     }
     
-    // Temporary uploads
-    match /temp/{userId}/{allPaths=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    // Order delivery photos
+    match /orders/{orderId}/delivery/{fileName} {
+      allow read: if isAuthenticated() && 
+        (isOrderOwner(orderId) || 
+         isOrderMarketOwner(orderId) ||
+         isOrderDriver(orderId) ||
+         hasRole('admin'));
+      allow write: if isAuthenticated() && 
+        isOrderDriver(orderId) &&
+        isValidImageFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && 
+        (isOrderDriver(orderId) || hasRole('admin'));
     }
     
-    // Helper functions
+    // ===========================================
+    // CATEGORY FILES
+    // ===========================================
+    
+    // Category icons and images
+    match /categories/{categoryId}/images/{fileName} {
+      allow read: if true; // Public read access
+      allow write: if isAuthenticated() && 
+        hasRole('admin') &&
+        isValidImageFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && hasRole('admin');
+    }
+    
+    // ===========================================
+    // SYSTEM FILES
+    // ===========================================
+    
+    // App branding and assets (admin only)
+    match /system/branding/{fileName} {
+      allow read: if true; // Public read access
+      allow write: if isAuthenticated() && 
+        hasRole('admin') &&
+        isValidImageFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && hasRole('admin');
+    }
+    
+    // System templates and documents
+    match /system/templates/{fileName} {
+      allow read: if isAuthenticated() && hasRole('admin');
+      allow write: if isAuthenticated() && 
+        hasRole('admin') &&
+        isValidDocumentFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && hasRole('admin');
+    }
+    
+    // ===========================================
+    // TEMPORARY UPLOADS
+    // ===========================================
+    
+    // Temporary upload area (24-hour TTL)
+    match /temp/{userId}/{uploadId}/{fileName} {
+      allow read, write: if isAuthenticated() && 
+        isOwner(userId) &&
+        isValidTempFile() &&
+        isValidFileName(fileName);
+      allow delete: if isAuthenticated() && 
+        (isOwner(userId) || hasRole('admin'));
+    }
+    
+    // ===========================================
+    // BACKUP AND EXPORTS (Admin only)
+    // ===========================================
+    
+    match /backups/{fileName} {
+      allow read, write: if isAuthenticated() && hasRole('admin');
+    }
+    
+    match /exports/{fileName} {
+      allow read, write: if isAuthenticated() && hasRole('admin');
+    }
+    
+    // ===========================================
+    // HELPER FUNCTIONS
+    // ===========================================
+    
+    // Authentication helpers
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+    
     function hasRole(role) {
       return request.auth != null && 
         firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == role;
     }
     
+    // Ownership verification functions
     function isMarketOwner(marketId) {
       return request.auth != null && 
         firestore.get(/databases/(default)/documents/markets/$(marketId)).data.ownerId == request.auth.uid;
@@ -63,15 +247,48 @@ service firebase.storage {
         firestore.get(/databases/(default)/documents/markets/$(order.data.marketId)).data.ownerId == request.auth.uid;
     }
     
-    // File validation
+    function isOrderDriver(orderId) {
+      let order = firestore.get(/databases/(default)/documents/orders/$(orderId));
+      return request.auth != null && 
+        order.data.driverId != null &&
+        order.data.driverId == request.auth.uid;
+    }
+    
+    // File validation functions
     function isValidImageFile() {
-      return request.resource.contentType.matches('image/.*') &&
-        request.resource.size < 5 * 1024 * 1024; // 5MB limit
+      return request.resource != null &&
+        request.resource.contentType.matches('image/(jpeg|jpg|png|gif|webp)') &&
+        request.resource.size < 5 * 1024 * 1024 && // 5MB limit
+        request.resource.size > 0;
     }
     
     function isValidDocumentFile() {
-      return request.resource.contentType.matches('application/pdf') &&
-        request.resource.size < 10 * 1024 * 1024; // 10MB limit
+      return request.resource != null &&
+        request.resource.contentType.matches('application/(pdf|msword|vnd.openxmlformats-officedocument.wordprocessingml.document)') &&
+        request.resource.size < 10 * 1024 * 1024 && // 10MB limit
+        request.resource.size > 0;
+    }
+    
+    function isValidTempFile() {
+      return request.resource != null &&
+        (isValidImageFile() || isValidDocumentFile()) &&
+        request.resource.size < 20 * 1024 * 1024; // 20MB limit for temp files
+    }
+    
+    function isValidFileName(fileName) {
+      return fileName.matches('[a-zA-Z0-9._-]+') && // Alphanumeric, dots, underscores, hyphens only
+        fileName.size() > 0 &&
+        fileName.size() < 100 && // Max 100 characters
+        !fileName.matches('.*\\.\\..*') && // No double dots
+        !fileName.matches('^\\..*') && // No leading dot
+        !fileName.matches('.*\\.$'); // No trailing dot
+    }
+    
+    // Rate limiting helper (basic implementation)
+    function isWithinRateLimit() {
+      // This is a simplified rate limiting check
+      // In production, you might want to implement more sophisticated rate limiting
+      return request.time > resource.timeCreated + duration.value(1, 's');
     }
   }
 }
