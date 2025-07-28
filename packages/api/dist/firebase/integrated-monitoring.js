@@ -1,14 +1,17 @@
+"use strict";
 /**
  * Integrated Firebase Monitoring Service
  * Combines error handling, performance monitoring, and logging into a unified system
  */
-import { firebaseErrorHandler } from './error-handler';
-import { firebaseMonitoringService } from './monitoring';
-import { firebaseLogger, LogCategory } from './logger';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.integratedFirebaseMonitoring = exports.IntegratedFirebaseMonitoring = void 0;
+const error_handler_1 = require("./error-handler");
+const monitoring_1 = require("./monitoring");
+const logger_1 = require("./logger");
 // ===========================================
 // INTEGRATED MONITORING SERVICE
 // ===========================================
-export class IntegratedFirebaseMonitoring {
+class IntegratedFirebaseMonitoring {
     constructor() {
         this.alerts = new Map();
         this.isInitialized = false;
@@ -54,7 +57,7 @@ export class IntegratedFirebaseMonitoring {
                 console.log('Performance monitoring enabled');
             }
             if (this.config.enableLogging) {
-                firebaseLogger.info(LogCategory.SYSTEM, 'initialization', 'Integrated monitoring system initialized');
+                logger_1.firebaseLogger.info(logger_1.LogCategory.SYSTEM, 'initialization', 'Integrated monitoring system initialized');
             }
             // Start periodic health checks
             this.startPeriodicChecks();
@@ -77,7 +80,7 @@ export class IntegratedFirebaseMonitoring {
         const traceId = `${context.service}_${context.operation}_${Date.now()}`;
         // Start performance trace
         if (this.config.enablePerformanceMonitoring) {
-            firebaseMonitoringService.startTrace(traceId, {
+            monitoring_1.firebaseMonitoringService.startTrace(traceId, {
                 service: context.service,
                 operation: context.operation,
                 userId: context.userId || 'anonymous',
@@ -85,7 +88,7 @@ export class IntegratedFirebaseMonitoring {
         }
         // Log operation start
         if (this.config.enableLogging) {
-            firebaseLogger.info(this.getLogCategory(context.service), context.operation, `Starting ${context.service} operation: ${context.operation}`, {
+            logger_1.firebaseLogger.info(this.getLogCategory(context.service), context.operation, `Starting ${context.service} operation: ${context.operation}`, {
                 userId: context.userId,
                 ...context.metadata,
             });
@@ -100,8 +103,8 @@ export class IntegratedFirebaseMonitoring {
             }
             // Stop performance trace
             if (this.config.enablePerformanceMonitoring) {
-                firebaseMonitoringService.stopTrace(traceId, { duration, success: 1 });
-                firebaseMonitoringService.trackFirebaseOperation(context.service, context.operation, true, duration, context.metadata);
+                monitoring_1.firebaseMonitoringService.stopTrace(traceId, { duration, success: 1 });
+                monitoring_1.firebaseMonitoringService.trackFirebaseOperation(context.service, context.operation, true, duration, context.metadata);
             }
             return result;
         }
@@ -111,12 +114,12 @@ export class IntegratedFirebaseMonitoring {
             await this.handleOperationError(context, error, duration);
             // Stop performance trace with error
             if (this.config.enablePerformanceMonitoring) {
-                firebaseMonitoringService.stopTrace(traceId, {
+                monitoring_1.firebaseMonitoringService.stopTrace(traceId, {
                     duration,
                     success: 0,
                     error: 1
                 });
-                firebaseMonitoringService.trackFirebaseOperation(context.service, context.operation, false, duration, { error: error.message, ...context.metadata });
+                monitoring_1.firebaseMonitoringService.trackFirebaseOperation(context.service, context.operation, false, duration, { error: error.message, ...context.metadata });
             }
             throw error;
         }
@@ -185,7 +188,7 @@ export class IntegratedFirebaseMonitoring {
     async handleOperationError(context, error, duration) {
         // Log the error
         if (this.config.enableLogging) {
-            firebaseLogger.error(this.getLogCategory(context.service), context.operation, `${context.service} operation failed: ${error.message}`, error, {
+            logger_1.firebaseLogger.error(this.getLogCategory(context.service), context.operation, `${context.service} operation failed: ${error.message}`, error, {
                 userId: context.userId,
                 duration,
                 errorCode: error.code,
@@ -203,16 +206,16 @@ export class IntegratedFirebaseMonitoring {
             };
             switch (context.service) {
                 case 'firestore':
-                    await firebaseErrorHandler.handleFirestoreError(error, errorContext);
+                    await error_handler_1.firebaseErrorHandler.handleFirestoreError(error, errorContext);
                     break;
                 case 'storage':
-                    await firebaseErrorHandler.handleStorageError(error, errorContext);
+                    await error_handler_1.firebaseErrorHandler.handleStorageError(error, errorContext);
                     break;
                 case 'functions':
-                    await firebaseErrorHandler.handleFunctionError(error, errorContext);
+                    await error_handler_1.firebaseErrorHandler.handleFunctionError(error, errorContext);
                     break;
                 case 'auth':
-                    await firebaseErrorHandler.handleAuthError(error, errorContext);
+                    await error_handler_1.firebaseErrorHandler.handleAuthError(error, errorContext);
                     break;
             }
         }
@@ -229,13 +232,13 @@ export class IntegratedFirebaseMonitoring {
      */
     logSuccessfulOperation(context, duration) {
         const category = this.getLogCategory(context.service);
-        firebaseLogger.info(category, context.operation, `${context.service} operation completed successfully in ${duration}ms`, {
+        logger_1.firebaseLogger.info(category, context.operation, `${context.service} operation completed successfully in ${duration}ms`, {
             userId: context.userId,
             duration,
             ...context.metadata,
         });
         // Log performance metric
-        firebaseLogger.logPerformance(`${context.service}_${context.operation}`, duration, context.metadata);
+        logger_1.firebaseLogger.logPerformance(`${context.service}_${context.operation}`, duration, context.metadata);
     }
     /**
      * Get log category for service
@@ -243,15 +246,15 @@ export class IntegratedFirebaseMonitoring {
     getLogCategory(service) {
         switch (service) {
             case 'firestore':
-                return LogCategory.FIRESTORE;
+                return logger_1.LogCategory.FIRESTORE;
             case 'storage':
-                return LogCategory.STORAGE;
+                return logger_1.LogCategory.STORAGE;
             case 'functions':
-                return LogCategory.FUNCTIONS;
+                return logger_1.LogCategory.FUNCTIONS;
             case 'auth':
-                return LogCategory.AUTH;
+                return logger_1.LogCategory.AUTH;
             default:
-                return LogCategory.SYSTEM;
+                return logger_1.LogCategory.SYSTEM;
         }
     }
     // ===========================================
@@ -261,7 +264,7 @@ export class IntegratedFirebaseMonitoring {
      * Check error rate and create alert if threshold exceeded
      */
     async checkErrorRateAlert() {
-        const errorStats = firebaseErrorHandler.getErrorStats();
+        const errorStats = error_handler_1.firebaseErrorHandler.getErrorStats();
         const recentErrors = errorStats.recentErrors;
         if (recentErrors.length === 0)
             return;
@@ -288,7 +291,7 @@ export class IntegratedFirebaseMonitoring {
      * Check performance and create alert if threshold exceeded
      */
     async checkPerformanceAlert() {
-        const performanceReport = firebaseMonitoringService.generatePerformanceReport();
+        const performanceReport = monitoring_1.firebaseMonitoringService.generatePerformanceReport();
         const avgResponseTime = performanceReport.summary.averageResponseTime;
         if (avgResponseTime > this.config.alertThresholds.responseTime) {
             await this.createAlert({
@@ -306,7 +309,7 @@ export class IntegratedFirebaseMonitoring {
      * Check quota usage and create alert if threshold exceeded
      */
     async checkQuotaAlert() {
-        const quotaUsage = firebaseMonitoringService.getQuotaUsage();
+        const quotaUsage = monitoring_1.firebaseMonitoringService.getQuotaUsage();
         for (const quota of quotaUsage) {
             if (quota.percentage > this.config.alertThresholds.quotaUsage) {
                 await this.createAlert({
@@ -335,10 +338,10 @@ export class IntegratedFirebaseMonitoring {
         };
         this.alerts.set(alert.id, alert);
         // Log the alert
-        firebaseLogger.warn(LogCategory.SYSTEM, 'alert', `Alert created: ${alert.message}`, alert.metadata);
+        logger_1.firebaseLogger.warn(logger_1.LogCategory.SYSTEM, 'alert', `Alert created: ${alert.message}`, alert.metadata);
         // Log security event for critical alerts
         if (alert.severity === 'critical') {
-            firebaseLogger.logSecurityEvent('suspicious_activity', 'critical', `Critical alert: ${alert.type}`, alert.metadata || {}, undefined, undefined, false);
+            logger_1.firebaseLogger.logSecurityEvent('suspicious_activity', 'critical', `Critical alert: ${alert.type}`, alert.metadata || {}, undefined, undefined, false);
         }
         console.warn(`[ALERT] ${alert.severity.toUpperCase()}: ${alert.message}`);
     }
@@ -381,11 +384,11 @@ export class IntegratedFirebaseMonitoring {
      * Generate comprehensive monitoring report
      */
     generateMonitoringReport() {
-        const systemHealth = firebaseMonitoringService.getSystemHealth();
-        const errorStats = firebaseErrorHandler.getErrorStats();
-        const performanceReport = firebaseMonitoringService.generatePerformanceReport();
-        const recentLogs = firebaseLogger.getRecentLogs(50);
-        const quotaUsage = firebaseMonitoringService.getQuotaUsage();
+        const systemHealth = monitoring_1.firebaseMonitoringService.getSystemHealth();
+        const errorStats = error_handler_1.firebaseErrorHandler.getErrorStats();
+        const performanceReport = monitoring_1.firebaseMonitoringService.generatePerformanceReport();
+        const recentLogs = logger_1.firebaseLogger.getRecentLogs(50);
+        const quotaUsage = monitoring_1.firebaseMonitoringService.getQuotaUsage();
         const alerts = Array.from(this.alerts.values())
             .filter(alert => !alert.resolved)
             .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
@@ -403,10 +406,10 @@ export class IntegratedFirebaseMonitoring {
      * Get system status summary
      */
     getSystemStatus() {
-        const systemHealth = firebaseMonitoringService.getSystemHealth();
-        const errorStats = firebaseErrorHandler.getErrorStats();
-        const performanceReport = firebaseMonitoringService.generatePerformanceReport();
-        const quotaUsage = firebaseMonitoringService.getQuotaUsage();
+        const systemHealth = monitoring_1.firebaseMonitoringService.getSystemHealth();
+        const errorStats = error_handler_1.firebaseErrorHandler.getErrorStats();
+        const performanceReport = monitoring_1.firebaseMonitoringService.generatePerformanceReport();
+        const quotaUsage = monitoring_1.firebaseMonitoringService.getQuotaUsage();
         const activeAlerts = Array.from(this.alerts.values()).filter(a => !a.resolved).length;
         const maxQuotaUsage = Math.max(...quotaUsage.map(q => q.percentage), 0);
         return {
@@ -433,7 +436,7 @@ export class IntegratedFirebaseMonitoring {
         const alert = this.alerts.get(alertId);
         if (alert) {
             alert.resolved = true;
-            firebaseLogger.info(LogCategory.SYSTEM, 'alert_resolved', `Alert resolved: ${alert.message}`, { alertId });
+            logger_1.firebaseLogger.info(logger_1.LogCategory.SYSTEM, 'alert_resolved', `Alert resolved: ${alert.message}`, { alertId });
         }
     }
     /**
@@ -449,7 +452,7 @@ export class IntegratedFirebaseMonitoring {
      */
     updateConfig(config) {
         this.config = { ...this.config, ...config };
-        firebaseLogger.info(LogCategory.SYSTEM, 'config_update', 'Monitoring configuration updated', config);
+        logger_1.firebaseLogger.info(logger_1.LogCategory.SYSTEM, 'config_update', 'Monitoring configuration updated', config);
     }
     /**
      * Get monitoring configuration
@@ -458,5 +461,6 @@ export class IntegratedFirebaseMonitoring {
         return { ...this.config };
     }
 }
+exports.IntegratedFirebaseMonitoring = IntegratedFirebaseMonitoring;
 // Export singleton instance
-export const integratedFirebaseMonitoring = IntegratedFirebaseMonitoring.getInstance();
+exports.integratedFirebaseMonitoring = IntegratedFirebaseMonitoring.getInstance();

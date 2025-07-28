@@ -1,3 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.currentConfig = void 0;
+exports.getCurrentEnvironment = getCurrentEnvironment;
+exports.getEnvironmentConfig = getEnvironmentConfig;
 // Environment configurations
 const environments = {
     development: {
@@ -47,11 +52,11 @@ const environments = {
     },
 };
 // Get current environment
-export function getCurrentEnvironment() {
+function getCurrentEnvironment() {
     return process.env.NODE_ENV || process.env.EXPO_PUBLIC_NODE_ENV || 'development';
 }
 // Get environment configuration
-export function getEnvironmentConfig() {
+function getEnvironmentConfig() {
     const env = getCurrentEnvironment();
     const config = environments[env] || environments.development;
     // Validate required configuration
@@ -61,4 +66,4 @@ export function getEnvironmentConfig() {
     return config;
 }
 // Export current config
-export const currentConfig = getEnvironmentConfig();
+exports.currentConfig = getEnvironmentConfig();

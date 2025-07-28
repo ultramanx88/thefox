@@ -1,11 +1,47 @@
+"use strict";
 /**
  * Centralized Error Handling Service for Firebase Operations
  * Handles all Firebase-related errors with proper logging, retry logic, and monitoring
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.firebaseErrorHandler = exports.FirebaseErrorHandler = exports.ErrorSeverity = exports.ErrorCategory = void 0;
 // ===========================================
 // ERROR CATEGORIES
 // ===========================================
-export var ErrorCategory;
+var ErrorCategory;
 (function (ErrorCategory) {
     ErrorCategory["AUTHENTICATION"] = "authentication";
     ErrorCategory["AUTHORIZATION"] = "authorization";
@@ -15,18 +51,18 @@ export var ErrorCategory;
     ErrorCategory["STORAGE"] = "storage";
     ErrorCategory["FUNCTIONS"] = "functions";
     ErrorCategory["UNKNOWN"] = "unknown";
-})(ErrorCategory || (ErrorCategory = {}));
-export var ErrorSeverity;
+})(ErrorCategory || (exports.ErrorCategory = ErrorCategory = {}));
+var ErrorSeverity;
 (function (ErrorSeverity) {
     ErrorSeverity["LOW"] = "low";
     ErrorSeverity["MEDIUM"] = "medium";
     ErrorSeverity["HIGH"] = "high";
     ErrorSeverity["CRITICAL"] = "critical";
-})(ErrorSeverity || (ErrorSeverity = {}));
+})(ErrorSeverity || (exports.ErrorSeverity = ErrorSeverity = {}));
 // ===========================================
 // FIREBASE ERROR HANDLER
 // ===========================================
-export class FirebaseErrorHandler {
+class FirebaseErrorHandler {
     constructor() {
         this.errorLogs = new Map();
         this.errorCounts = new Map();
@@ -351,7 +387,7 @@ export class FirebaseErrorHandler {
      */
     async persistErrorLog(errorLog) {
         try {
-            const { FirestoreService } = await import('./firestore');
+            const { FirestoreService } = await Promise.resolve().then(() => __importStar(require('./firestore')));
             await FirestoreService.create('errorLogs', {
                 id: errorLog.id,
                 errorCode: errorLog.error.code,
@@ -542,5 +578,6 @@ export class FirebaseErrorHandler {
         this.alertConfig = { ...this.alertConfig, ...config };
     }
 }
+exports.FirebaseErrorHandler = FirebaseErrorHandler;
 // Export singleton instance
-export const firebaseErrorHandler = FirebaseErrorHandler.getInstance();
+exports.firebaseErrorHandler = FirebaseErrorHandler.getInstance();

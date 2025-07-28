@@ -1,14 +1,17 @@
+"use strict";
 /**
  * Comprehensive Real-time Data Synchronization Service
  * Integrates order tracking, connection management, and real-time updates
  */
-import { orderTrackingService } from './order-tracking';
-import { connectionManager } from './connection-manager';
-import { realtimeSyncService } from './realtime';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getRealtimeSyncHealth = exports.getRealtimeSyncMetrics = exports.initializeRealtimeSync = exports.realtimeDataSyncService = exports.RealtimeDataSyncService = void 0;
+const order_tracking_1 = require("./order-tracking");
+const connection_manager_1 = require("./connection-manager");
+const realtime_1 = require("./realtime");
 // ===========================================
 // REAL-TIME SYNC SERVICE
 // ===========================================
-export class RealtimeDataSyncService {
+class RealtimeDataSyncService {
     constructor(config = {}) {
         this.isInitialized = false;
         this.syncTimer = null;
@@ -44,7 +47,7 @@ export class RealtimeDataSyncService {
         try {
             console.log('Initializing Real-time Data Sync Service...');
             // Initialize connection manager
-            const connManager = connectionManager;
+            const connManager = connection_manager_1.connectionManager;
             // Set up connection event listeners
             connManager.addEventListener('connection:restored', (data) => {
                 this.handleConnectionRestored(data);
@@ -75,7 +78,7 @@ export class RealtimeDataSyncService {
         if (!this.config.enableOrderTracking) {
             throw new Error('Order tracking is disabled');
         }
-        return orderTrackingService.subscribeToUserOrders(userId, (orders) => {
+        return order_tracking_1.orderTrackingService.subscribeToUserOrders(userId, (orders) => {
             // Emit update event
             this.emitDataUpdate({
                 type: 'order',
@@ -95,7 +98,7 @@ export class RealtimeDataSyncService {
         if (!this.config.enableOrderTracking) {
             throw new Error('Order tracking is disabled');
         }
-        return orderTrackingService.subscribeToOrderStatus(orderId, (order) => {
+        return order_tracking_1.orderTrackingService.subscribeToOrderStatus(orderId, (order) => {
             // Emit update event
             this.emitDataUpdate({
                 type: 'order',
@@ -115,7 +118,7 @@ export class RealtimeDataSyncService {
             throw new Error('Order tracking is disabled');
         }
         try {
-            await orderTrackingService.updateOrderStatus(update);
+            await order_tracking_1.orderTrackingService.updateOrderStatus(update);
             // Emit update event
             this.emitDataUpdate({
                 type: 'order',
@@ -129,7 +132,7 @@ export class RealtimeDataSyncService {
             console.error('Failed to update order status:', error);
             // Queue for offline sync if enabled
             if (this.config.enableOfflineSupport) {
-                realtimeSyncService.queueOfflineAction({
+                realtime_1.realtimeSyncService.queueOfflineAction({
                     type: 'update',
                     collection: 'orders',
                     documentId: update.orderId,
@@ -150,7 +153,7 @@ export class RealtimeDataSyncService {
         if (!this.config.enableDeliveryTracking) {
             throw new Error('Delivery tracking is disabled');
         }
-        return orderTrackingService.subscribeToDeliveryTracking(orderId, (locations) => {
+        return order_tracking_1.orderTrackingService.subscribeToDeliveryTracking(orderId, (locations) => {
             // Emit update event
             this.emitDataUpdate({
                 type: 'delivery',
@@ -170,7 +173,7 @@ export class RealtimeDataSyncService {
             throw new Error('Delivery tracking is disabled');
         }
         try {
-            await orderTrackingService.updateDeliveryLocation(location);
+            await order_tracking_1.orderTrackingService.updateDeliveryLocation(location);
             // Emit update event
             this.emitDataUpdate({
                 type: 'delivery',
@@ -184,7 +187,7 @@ export class RealtimeDataSyncService {
             console.error('Failed to update delivery location:', error);
             // Queue for offline sync if enabled
             if (this.config.enableOfflineSupport) {
-                realtimeSyncService.queueOfflineAction({
+                realtime_1.realtimeSyncService.queueOfflineAction({
                     type: 'create',
                     collection: 'deliveryTracking',
                     data: location,
@@ -201,7 +204,7 @@ export class RealtimeDataSyncService {
      * Subscribe to real-time market updates
      */
     async subscribeToMarketUpdates(marketId, callback, errorCallback) {
-        return realtimeSyncService.subscribeToDocument(`markets/${marketId}`, (market) => {
+        return realtime_1.realtimeSyncService.subscribeToDocument(`markets/${marketId}`, (market) => {
             // Emit update event
             this.emitDataUpdate({
                 type: 'market',
@@ -217,7 +220,7 @@ export class RealtimeDataSyncService {
      * Subscribe to real-time product updates
      */
     async subscribeToProductUpdates(marketId, callback, errorCallback) {
-        return realtimeSyncService.subscribeToCollection('products', [
+        return realtime_1.realtimeSyncService.subscribeToCollection('products', [
             { field: 'marketId', operator: '==', value: marketId }
         ], (products) => {
             // Emit update event
@@ -241,7 +244,7 @@ export class RealtimeDataSyncService {
         console.log('Connection restored, syncing data...', data);
         try {
             // Sync offline actions
-            await realtimeSyncService.syncOfflineActions();
+            await realtime_1.realtimeSyncService.syncOfflineActions();
             // Emit connection restored event
             this.emitEvent('sync:connection-restored', data);
         }
@@ -286,13 +289,13 @@ export class RealtimeDataSyncService {
     async performPeriodicSync() {
         try {
             // Check connection state
-            const connectionState = connectionManager.getConnectionState();
+            const connectionState = connection_manager_1.connectionManager.getConnectionState();
             if (!connectionState.isOnline || !connectionState.isFirestoreConnected) {
                 console.log('Skipping periodic sync - offline');
                 return;
             }
             // Sync offline actions
-            await realtimeSyncService.syncOfflineActions();
+            await realtime_1.realtimeSyncService.syncOfflineActions();
             // Emit sync completed event
             this.emitEvent('sync:periodic-completed', {
                 timestamp: new Date(),
@@ -321,15 +324,15 @@ export class RealtimeDataSyncService {
      * Get comprehensive sync metrics
      */
     getSyncMetrics() {
-        const realtimeStatus = realtimeSyncService.getSyncStatus();
-        const connectionState = connectionManager.getConnectionState();
-        const networkQuality = connectionManager.getNetworkQuality();
-        const pendingConflicts = connectionManager.getPendingConflicts();
+        const realtimeStatus = realtime_1.realtimeSyncService.getSyncStatus();
+        const connectionState = connection_manager_1.connectionManager.getConnectionState();
+        const networkQuality = connection_manager_1.connectionManager.getNetworkQuality();
+        const pendingConflicts = connection_manager_1.connectionManager.getPendingConflicts();
         return {
             totalSubscriptions: realtimeStatus.activeSubscriptions,
-            activeOrderTracking: orderTrackingService.getActiveSubscriptionsCount(),
+            activeOrderTracking: order_tracking_1.orderTrackingService.getActiveSubscriptionsCount(),
             activeDeliveryTracking: 0, // Would need to track this separately
-            pendingOfflineActions: realtimeSyncService.getPendingOfflineActions().length,
+            pendingOfflineActions: realtime_1.realtimeSyncService.getPendingOfflineActions().length,
             pendingConflicts: pendingConflicts.length,
             lastSyncTime: realtimeStatus.lastSyncTime,
             syncErrors: [...realtimeStatus.syncErrors, ...connectionState.syncErrors],
@@ -423,8 +426,8 @@ export class RealtimeDataSyncService {
      * Unsubscribe from all real-time updates
      */
     unsubscribeAll() {
-        orderTrackingService.unsubscribeAll();
-        realtimeSyncService.unsubscribeAll();
+        order_tracking_1.orderTrackingService.unsubscribeAll();
+        realtime_1.realtimeSyncService.unsubscribeAll();
         console.log('All real-time subscriptions removed');
     }
     /**
@@ -439,22 +442,26 @@ export class RealtimeDataSyncService {
         // Clear event listeners
         this.eventListeners.clear();
         // Cleanup connection manager
-        await connectionManager.cleanup();
+        await connection_manager_1.connectionManager.cleanup();
         this.isInitialized = false;
         console.log('Real-time Data Sync Service cleaned up');
     }
 }
+exports.RealtimeDataSyncService = RealtimeDataSyncService;
 // Export singleton instance
-export const realtimeDataSyncService = RealtimeDataSyncService.getInstance();
+exports.realtimeDataSyncService = RealtimeDataSyncService.getInstance();
 // Export utility functions
-export const initializeRealtimeSync = async (config) => {
+const initializeRealtimeSync = async (config) => {
     const service = RealtimeDataSyncService.getInstance(config);
     await service.initialize();
     return service;
 };
-export const getRealtimeSyncMetrics = () => {
-    return realtimeDataSyncService.getSyncMetrics();
+exports.initializeRealtimeSync = initializeRealtimeSync;
+const getRealtimeSyncMetrics = () => {
+    return exports.realtimeDataSyncService.getSyncMetrics();
 };
-export const getRealtimeSyncHealth = () => {
-    return realtimeDataSyncService.getHealthStatus();
+exports.getRealtimeSyncMetrics = getRealtimeSyncMetrics;
+const getRealtimeSyncHealth = () => {
+    return exports.realtimeDataSyncService.getHealthStatus();
 };
+exports.getRealtimeSyncHealth = getRealtimeSyncHealth;

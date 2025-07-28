@@ -20,8 +20,40 @@ service cloud.firestore {
       
       // Allow profile updates with validation
       allow update: if isAuthenticated() && 
-        isOwner(userId) &&
+        (isOwner(userId) || hasRole('admin')) &&
         isValidUserUpdate(resource.data, request.resource.data);
+    }
+
+    // ===========================================
+    // USER APPLICATIONS COLLECTION (Driver/Vendor)
+    // ===========================================
+    match /applications/{applicationId} {
+      // Users can read their own applications
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      
+      // Admins can read all applications
+      allow read: if isAuthenticated() && hasRole('admin');
+      
+      // Users can create applications for themselves
+      allow create: if isAuthenticated() && 
+        request.auth.uid == request.resource.data.userId &&
+        isValidApplicationData(request.resource.data);
+      
+      // Only admins can update applications (for approval/rejection)
+      allow update: if isAuthenticated() && hasRole('admin') &&
+        isValidApplicationUpdate(resource.data, request.resource.data);
+    }
+
+    // ===========================================
+    // VERIFICATION TOKENS COLLECTION
+    // ===========================================
+    match /verificationTokens/{tokenId} {
+      // Only the system can manage verification tokens
+      allow read, write: if isAuthenticated() && hasRole('admin');
+      
+      // Allow token creation during verification process
+      allow create: if isAuthenticated() &&
+        isValidVerificationToken(request.resource.data);
     }
     
     // ===========================================
@@ -227,18 +259,52 @@ service cloud.firestore {
     
     // Data validation functions
     function isValidUserData(data) {
-      return data.keys().hasAll(['email', 'name', 'role', 'createdAt']) &&
+      return data.keys().hasAll(['uid', 'email', 'role', 'status', 'profile', 'verification', 'createdAt']) &&
         data.role in ['customer', 'vendor', 'driver', 'admin'] &&
+        data.status in ['pending', 'active', 'suspended', 'rejected'] &&
         data.email is string &&
-        data.name is string &&
+        data.uid is string &&
+        data.profile is map &&
+        data.verification is map &&
         data.createdAt is timestamp;
     }
     
     function isValidUserUpdate(oldData, newData) {
-      // Prevent role changes by non-admins
+      // Prevent role and status changes by non-admins
       return (oldData.role == newData.role || hasRole('admin')) &&
+        (oldData.status == newData.status || hasRole('admin')) &&
         newData.email is string &&
-        newData.name is string;
+        newData.uid is string &&
+        newData.profile is map &&
+        newData.verification is map;
+    }
+
+    function isValidApplicationData(data) {
+      return data.keys().hasAll(['userId', 'type', 'status', 'userData', 'documents', 'submittedAt']) &&
+        data.type in ['driver', 'vendor'] &&
+        data.status in ['pending', 'approved', 'rejected'] &&
+        data.userId is string &&
+        data.userData is map &&
+        data.documents is list &&
+        data.submittedAt is timestamp;
+    }
+    
+    function isValidApplicationUpdate(oldData, newData) {
+      // Prevent changing core application data
+      return oldData.userId == newData.userId &&
+        oldData.type == newData.type &&
+        oldData.userData == newData.userData &&
+        oldData.documents == newData.documents &&
+        newData.status in ['pending', 'approved', 'rejected'];
+    }
+
+    function isValidVerificationToken(data) {
+      return data.keys().hasAll(['userId', 'type', 'token', 'expiresAt', 'createdAt']) &&
+        data.type in ['email', 'sms'] &&
+        data.userId is string &&
+        data.token is string &&
+        data.expiresAt is timestamp &&
+        data.createdAt is timestamp;
     }
     
     function isValidMarketData(data) {

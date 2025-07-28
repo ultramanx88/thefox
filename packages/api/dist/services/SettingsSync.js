@@ -1,4 +1,7 @@
-import { SettingsService } from '../firebase/settings';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SettingsSync = void 0;
+const settings_1 = require("../firebase/settings");
 const DEFAULT_SYNC_CONFIG = {
     enableRealTimeSync: true,
     conflictResolution: 'last_write_wins',
@@ -9,7 +12,7 @@ const DEFAULT_SYNC_CONFIG = {
 /**
  * Real-time synchronization service for settings across devices
  */
-export class SettingsSync {
+class SettingsSync {
     constructor(cache, config) {
         this.config = DEFAULT_SYNC_CONFIG;
         this.listeners = new Map();
@@ -51,7 +54,7 @@ export class SettingsSync {
     async syncUserSettings(userId, role) {
         try {
             // Get latest from server
-            const serverSettings = await SettingsService.getUserSettings(userId);
+            const serverSettings = await settings_1.SettingsService.getUserSettings(userId);
             const cachedSettings = this.cache.getUserSettings(userId);
             if (!serverSettings) {
                 // Settings deleted on server
@@ -82,7 +85,7 @@ export class SettingsSync {
      */
     async syncMobileAppearance() {
         try {
-            const serverConfig = await SettingsService.getMobileAppearanceConfig();
+            const serverConfig = await settings_1.SettingsService.getMobileAppearanceConfig();
             const cachedConfig = this.cache.getMobileAppearance();
             if (!cachedConfig || serverConfig.version > cachedConfig.version) {
                 this.cache.setMobileAppearance(serverConfig);
@@ -108,7 +111,7 @@ export class SettingsSync {
             for (const userId of dirtyUserIds) {
                 const settings = this.cache.getUserSettings(userId);
                 if (settings) {
-                    await SettingsService.updateUserSettings(userId, settings);
+                    await settings_1.SettingsService.updateUserSettings(userId, settings);
                     this.cache.markClean(userId);
                 }
             }
@@ -123,7 +126,7 @@ export class SettingsSync {
      * Set up real-time listener for user settings
      */
     setupUserSettingsListener(userId, role) {
-        const unsubscribe = SettingsService.onSettingsChange(userId, (settings) => {
+        const unsubscribe = settings_1.SettingsService.onSettingsChange(userId, (settings) => {
             if (settings) {
                 const cached = this.cache.getUserSettings(userId);
                 // Only update if version is newer or different
@@ -155,7 +158,7 @@ export class SettingsSync {
      * Set up real-time listener for mobile appearance
      */
     setupMobileAppearanceListener() {
-        return SettingsService.onMobileAppearanceChange((config) => {
+        return settings_1.SettingsService.onMobileAppearanceChange((config) => {
             const cached = this.cache.getMobileAppearance();
             // Only update if version is newer
             if (!cached || config.version > cached.version) {
@@ -189,7 +192,7 @@ export class SettingsSync {
             // Try to sync immediately if online
             if (this.cache.getOnlineStatus()) {
                 try {
-                    await SettingsService.updateUserSettings(userId, updates, source);
+                    await settings_1.SettingsService.updateUserSettings(userId, updates, source);
                     this.cache.markClean(userId);
                 }
                 catch (error) {
@@ -294,7 +297,7 @@ export class SettingsSync {
         this.cache.setUserSettings(userId, resolvedSettings);
         // Update server if local version was chosen or merged
         if (resolvedSettings !== serverSettings) {
-            await SettingsService.updateUserSettings(userId, resolvedSettings);
+            await settings_1.SettingsService.updateUserSettings(userId, resolvedSettings);
         }
         this.emitEvent('settings_updated', {
             userId,
@@ -355,3 +358,4 @@ export class SettingsSync {
         this.eventListeners.clear();
     }
 }
+exports.SettingsSync = SettingsSync;

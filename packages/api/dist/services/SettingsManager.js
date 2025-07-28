@@ -1,6 +1,9 @@
-import { SettingsService } from '../firebase/settings';
-import { SettingsCache } from './SettingsCache';
-import { SettingsSync } from './SettingsSync';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SettingsManager = void 0;
+const settings_1 = require("../firebase/settings");
+const SettingsCache_1 = require("./SettingsCache");
+const SettingsSync_1 = require("./SettingsSync");
 const DEFAULT_RETRY_CONFIG = {
     maxAttempts: 3,
     baseDelay: 1000, // 1 second
@@ -11,17 +14,17 @@ const DEFAULT_RETRY_CONFIG = {
  * High-level settings management interface
  * Provides business logic layer on top of SettingsService
  */
-export class SettingsManager {
+class SettingsManager {
     constructor() {
         this.retryConfig = DEFAULT_RETRY_CONFIG;
         this.listeners = new Map();
         // Initialize cache and sync services
-        this.cache = new SettingsCache({
+        this.cache = new SettingsCache_1.SettingsCache({
             maxSize: 1000,
             ttl: 5 * 60 * 1000, // 5 minutes
             enablePersistence: true
         });
-        this.sync = new SettingsSync(this.cache, {
+        this.sync = new SettingsSync_1.SettingsSync(this.cache, {
             enableRealTimeSync: true,
             conflictResolution: 'last_write_wins'
         });
@@ -53,7 +56,7 @@ export class SettingsManager {
                 return cached;
             }
             // Get from database
-            let settings = await SettingsService.getUserSettings(userId);
+            let settings = await settings_1.SettingsService.getUserSettings(userId);
             // If no settings exist, create default settings
             if (!settings) {
                 settings = await this.createDefaultUserSettings(userId, role);
@@ -81,12 +84,12 @@ export class SettingsManager {
                 throw this.createError(SettingsErrorType.VALIDATION_ERROR, 'User ID and role are required', false);
             }
             // Check if settings already exist
-            const existingSettings = await SettingsService.getUserSettings(userId);
+            const existingSettings = await settings_1.SettingsService.getUserSettings(userId);
             if (existingSettings) {
                 throw this.createError(SettingsErrorType.VALIDATION_ERROR, 'User settings already exist', false);
             }
             // Get default settings
-            const defaultSettings = await SettingsService.getDefaultSettings(role);
+            const defaultSettings = await settings_1.SettingsService.getDefaultSettings(role);
             // Merge with initial settings if provided
             const settingsData = {
                 ...defaultSettings,
@@ -101,9 +104,9 @@ export class SettingsManager {
                 throw this.createValidationError(validation.errors[0]);
             }
             // Create settings in database
-            await SettingsService.updateUserSettings(userId, settingsData);
+            await settings_1.SettingsService.updateUserSettings(userId, settingsData);
             // Get the created settings
-            const createdSettings = await SettingsService.getUserSettings(userId);
+            const createdSettings = await settings_1.SettingsService.getUserSettings(userId);
             if (!createdSettings) {
                 throw this.createError(SettingsErrorType.STORAGE_ERROR, 'Failed to create user settings', true);
             }
@@ -125,7 +128,7 @@ export class SettingsManager {
                 return true;
             }
             // Check database
-            const settings = await SettingsService.getUserSettings(userId);
+            const settings = await settings_1.SettingsService.getUserSettings(userId);
             return settings !== null;
         }, 'userSettingsExist');
     }
@@ -138,7 +141,7 @@ export class SettingsManager {
                 throw this.createError(SettingsErrorType.VALIDATION_ERROR, 'User ID is required', false);
             }
             // Remove from database
-            await SettingsService.deleteUserSettings(userId);
+            await settings_1.SettingsService.deleteUserSettings(userId);
             // Remove from cache
             this.cache.deleteUserSettings(userId);
             // Clean up listeners
@@ -236,7 +239,7 @@ export class SettingsManager {
      */
     async resetUserSettings(userId, role, categories) {
         try {
-            await SettingsService.resetUserSettings(userId, role, categories);
+            await settings_1.SettingsService.resetUserSettings(userId, role, categories);
             // Clear cache to force reload
             this.cache.invalidateUserSettings(userId);
             // Notify listeners about the reset
@@ -252,7 +255,7 @@ export class SettingsManager {
      */
     async exportUserSettings(userId) {
         try {
-            return await SettingsService.exportUserSettings(userId);
+            return await settings_1.SettingsService.exportUserSettings(userId);
         }
         catch (error) {
             console.error('Error in exportUserSettings:', error);
@@ -346,7 +349,7 @@ export class SettingsManager {
                 return cached;
             }
             // Get from database
-            const config = await SettingsService.getMobileAppearanceConfig();
+            const config = await settings_1.SettingsService.getMobileAppearanceConfig();
             // Cache the config
             this.cache.setMobileAppearance(config);
             return config;
@@ -358,7 +361,7 @@ export class SettingsManager {
     }
     async updateMobileAppearanceConfig(config) {
         try {
-            await SettingsService.updateMobileAppearanceConfig(config);
+            await settings_1.SettingsService.updateMobileAppearanceConfig(config);
             // Invalidate cache to force refresh
             this.cache.invalidateMobileAppearance();
             // Get updated config
@@ -381,7 +384,7 @@ export class SettingsManager {
     // Mobile asset management
     async saveMobileAsset(asset) {
         try {
-            await SettingsService.saveMobileAsset(asset);
+            await settings_1.SettingsService.saveMobileAsset(asset);
         }
         catch (error) {
             console.error('Error in saveMobileAsset:', error);
@@ -390,7 +393,7 @@ export class SettingsManager {
     }
     async getMobileAsset(assetId) {
         try {
-            return await SettingsService.getMobileAsset(assetId);
+            return await settings_1.SettingsService.getMobileAsset(assetId);
         }
         catch (error) {
             console.error('Error in getMobileAsset:', error);
@@ -399,7 +402,7 @@ export class SettingsManager {
     }
     // Private helper methods
     async createDefaultUserSettings(userId, role) {
-        const defaultSettings = await SettingsService.getDefaultSettings(role);
+        const defaultSettings = await settings_1.SettingsService.getDefaultSettings(role);
         const userSettings = {
             userId,
             role,
@@ -413,7 +416,7 @@ export class SettingsManager {
             version: 1
         };
         // Save to database
-        await SettingsService.updateUserSettings(userId, userSettings);
+        await settings_1.SettingsService.updateUserSettings(userId, userSettings);
         return userSettings;
     }
     /**
@@ -557,7 +560,7 @@ export class SettingsManager {
                     return { userId, settings: cached };
                 }
                 // Get from database
-                const settings = await SettingsService.getUserSettings(userId);
+                const settings = await settings_1.SettingsService.getUserSettings(userId);
                 if (settings) {
                     this.settingsCache.set(userId, settings);
                 }
@@ -696,7 +699,7 @@ export class SettingsManager {
         };
         try {
             // Test database connection by trying to get default settings
-            await SettingsService.getDefaultSettings('shopper');
+            await settings_1.SettingsService.getDefaultSettings('shopper');
             details.canConnectToDatabase = true;
         }
         catch (error) {
@@ -707,3 +710,4 @@ export class SettingsManager {
         return { status, details };
     }
 }
+exports.SettingsManager = SettingsManager;

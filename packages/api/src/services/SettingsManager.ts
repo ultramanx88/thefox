@@ -1,7 +1,7 @@
 import { SettingsService } from '../firebase/settings';
 import { SettingsCache } from './SettingsCache';
 import { SettingsSync } from './SettingsSync';
-import type {
+import {
   UserSettings,
   UserRole,
   ValidationResult,

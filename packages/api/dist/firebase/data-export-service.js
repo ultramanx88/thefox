@@ -1,14 +1,17 @@
+"use strict";
 /**
  * Data Export Service for Compliance and Audit Trails
  * Handles GDPR compliance, data export, audit logging, and security trails
  */
-import { firebaseAnalyticsService } from './analytics-service';
-import { firebaseLogger, LogCategory } from './logger';
-import { FirestoreService } from './firestore';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.dataExportService = exports.DataExportService = void 0;
+const analytics_service_1 = require("./analytics-service");
+const logger_1 = require("./logger");
+const firestore_1 = require("./firestore");
 // ===========================================
 // DATA EXPORT SERVICE
 // ===========================================
-export class DataExportService {
+class DataExportService {
     constructor() {
         this.exportRequests = new Map();
         this.auditTrails = new Map();
@@ -36,11 +39,11 @@ export class DataExportService {
             this.startProcessingQueue();
             // Set up periodic cleanup
             this.startPeriodicCleanup();
-            firebaseLogger.info(LogCategory.SYSTEM, 'data_export_init', 'Data Export Service initialized');
+            logger_1.firebaseLogger.info(logger_1.LogCategory.SYSTEM, 'data_export_init', 'Data Export Service initialized');
         }
         catch (error) {
             console.error('Failed to initialize Data Export Service:', error);
-            firebaseLogger.error(LogCategory.SYSTEM, 'data_export_init', 'Failed to initialize Data Export Service', error);
+            logger_1.firebaseLogger.error(logger_1.LogCategory.SYSTEM, 'data_export_init', 'Failed to initialize Data Export Service', error);
         }
     }
     // ===========================================
@@ -80,7 +83,7 @@ export class DataExportService {
             severity: 'medium',
             metadata: { type, reason, format },
         });
-        firebaseLogger.info(LogCategory.SYSTEM, 'export_request_created', `Data export request created: ${type}`, { exportId: exportRequest.id, requestedBy, reason });
+        logger_1.firebaseLogger.info(logger_1.LogCategory.SYSTEM, 'export_request_created', `Data export request created: ${type}`, { exportId: exportRequest.id, requestedBy, reason });
         // Start processing if not already running
         if (!this.isProcessing) {
             this.processNextRequest();
@@ -123,7 +126,7 @@ export class DataExportService {
             category: 'data_access',
             severity: 'low',
         });
-        firebaseLogger.info(LogCategory.SYSTEM, 'export_request_cancelled', `Export request cancelled: ${exportId}`, { cancelledBy });
+        logger_1.firebaseLogger.info(logger_1.LogCategory.SYSTEM, 'export_request_cancelled', `Export request cancelled: ${exportId}`, { cancelledBy });
     }
     // ===========================================
     // DATA EXPORT PROCESSING
@@ -148,7 +151,7 @@ export class DataExportService {
             request.status = 'processing';
             request.progress = 0;
             await this.persistExportRequest(request);
-            firebaseLogger.info(LogCategory.SYSTEM, 'export_processing_started', `Started processing export request: ${request.type}`, { exportId });
+            logger_1.firebaseLogger.info(logger_1.LogCategory.SYSTEM, 'export_processing_started', `Started processing export request: ${request.type}`, { exportId });
             // Process the export based on type
             const exportedData = await this.processExportByType(request);
             // Generate download URL (would integrate with storage service)
@@ -175,7 +178,7 @@ export class DataExportService {
                     dataSize: exportedData.dataSize,
                 },
             });
-            firebaseLogger.info(LogCategory.SYSTEM, 'export_processing_completed', `Export request completed: ${request.type}`, {
+            logger_1.firebaseLogger.info(logger_1.LogCategory.SYSTEM, 'export_processing_completed', `Export request completed: ${request.type}`, {
                 exportId,
                 recordCount: exportedData.recordCount,
                 dataSize: exportedData.dataSize
@@ -198,7 +201,7 @@ export class DataExportService {
                 severity: 'high',
                 metadata: { error: error.message },
             });
-            firebaseLogger.error(LogCategory.SYSTEM, 'export_processing_failed', `Export request failed: ${request.type}`, error, { exportId });
+            logger_1.firebaseLogger.error(logger_1.LogCategory.SYSTEM, 'export_processing_failed', `Export request failed: ${request.type}`, error, { exportId });
         }
         this.isProcessing = false;
         // Process next request in queue
@@ -267,15 +270,15 @@ export class DataExportService {
         // Update progress
         await this.updateProgress(request.id, 10);
         // Get user profile
-        const userProfile = await FirestoreService.read('users', userId);
+        const userProfile = await firestore_1.FirestoreService.read('users', userId);
         // Update progress
         await this.updateProgress(request.id, 30);
         // Get user orders
-        const userOrders = await FirestoreService.query('orders', [{ field: 'userId', operator: '==', value: userId }]);
+        const userOrders = await firestore_1.FirestoreService.query('orders', [{ field: 'userId', operator: '==', value: userId }]);
         // Update progress
         await this.updateProgress(request.id, 50);
         // Get user analytics
-        const userAnalytics = firebaseAnalyticsService.exportUserData(userId);
+        const userAnalytics = analytics_service_1.firebaseAnalyticsService.exportUserData(userId);
         // Update progress
         await this.updateProgress(request.id, 70);
         // Get user audit logs
@@ -300,7 +303,7 @@ export class DataExportService {
         }
         // Update progress
         await this.updateProgress(request.id, 20);
-        const analyticsData = firebaseAnalyticsService.exportAnalyticsData(startDate, endDate, request.format);
+        const analyticsData = analytics_service_1.firebaseAnalyticsService.exportAnalyticsData(startDate, endDate, request.format);
         // Update progress
         await this.updateProgress(request.id, 80);
         return analyticsData;
@@ -317,7 +320,7 @@ export class DataExportService {
         // Update progress
         await this.updateProgress(request.id, 50);
         // Also get audit logs from Firestore
-        const firestoreAuditLogs = await FirestoreService.query('auditLogs');
+        const firestoreAuditLogs = await firestore_1.FirestoreService.query('auditLogs');
         // Update progress
         await this.updateProgress(request.id, 80);
         return {
@@ -332,7 +335,7 @@ export class DataExportService {
     async exportSecurityLogs(request) {
         const { startDate, endDate } = request.filters || {};
         // Get security logs from logger
-        const securityLogs = firebaseLogger.getRecentSecurityLogs(1000);
+        const securityLogs = logger_1.firebaseLogger.getRecentSecurityLogs(1000);
         let filteredLogs = securityLogs;
         if (startDate && endDate) {
             filteredLogs = securityLogs.filter(log => log.timestamp >= startDate && log.timestamp <= endDate);
@@ -340,7 +343,7 @@ export class DataExportService {
         // Update progress
         await this.updateProgress(request.id, 50);
         // Get security logs from Firestore
-        const firestoreSecurityLogs = await FirestoreService.query('securityLogs');
+        const firestoreSecurityLogs = await firestore_1.FirestoreService.query('securityLogs');
         // Update progress
         await this.updateProgress(request.id, 80);
         return {
@@ -360,7 +363,7 @@ export class DataExportService {
         const progressStep = 80 / collections.length;
         for (let i = 0; i < collections.length; i++) {
             const collection = collections[i];
-            businessData[collection] = await FirestoreService.query(collection);
+            businessData[collection] = await firestore_1.FirestoreService.query(collection);
             await this.updateProgress(request.id, 10 + (i + 1) * progressStep);
         }
         return {
@@ -416,9 +419,9 @@ export class DataExportService {
         };
         this.auditTrails.set(auditTrail.id, auditTrail);
         // Persist to Firestore
-        await FirestoreService.create('auditLogs', auditTrail);
+        await firestore_1.FirestoreService.create('auditLogs', auditTrail);
         // Also log through firebase logger
-        firebaseLogger.logAuditEvent(auditTrail.userId, auditTrail.userRole, auditTrail.action, auditTrail.resource, auditTrail.resourceId, auditTrail.changes?.before, auditTrail.changes?.after, auditTrail.success);
+        logger_1.firebaseLogger.logAuditEvent(auditTrail.userId, auditTrail.userRole, auditTrail.action, auditTrail.resource, auditTrail.resourceId, auditTrail.changes?.before, auditTrail.changes?.after, auditTrail.success);
     }
     /**
      * Get audit trails
@@ -487,7 +490,7 @@ export class DataExportService {
         // Get audit trails in period
         report.details.auditTrails = this.getAuditTrails({ startDate, endDate });
         // Get security events
-        const securityLogs = firebaseLogger.getRecentSecurityLogs(1000);
+        const securityLogs = logger_1.firebaseLogger.getRecentSecurityLogs(1000);
         report.details.securityEvents = securityLogs.filter(log => log.timestamp >= startDate && log.timestamp <= endDate);
         report.summary.securityIncidents = report.details.securityEvents.filter(event => event.severity === 'high' || event.severity === 'critical').length;
         // Generate recommendations based on findings
@@ -495,8 +498,8 @@ export class DataExportService {
         // Store the report
         this.complianceReports.set(report.id, report);
         // Persist to Firestore
-        await FirestoreService.create('complianceReports', report);
-        firebaseLogger.info(LogCategory.SYSTEM, 'compliance_report_generated', `Compliance report generated: ${type}`, { reportId: report.id, period: { startDate, endDate } });
+        await firestore_1.FirestoreService.create('complianceReports', report);
+        logger_1.firebaseLogger.info(logger_1.LogCategory.SYSTEM, 'compliance_report_generated', `Compliance report generated: ${type}`, { reportId: report.id, period: { startDate, endDate } });
         return report;
     }
     // ===========================================
@@ -535,7 +538,7 @@ export class DataExportService {
             if (request.expiresAt && request.expiresAt < now) {
                 this.exportRequests.delete(id);
                 // Also delete from Firestore
-                FirestoreService.delete('exportRequests', id).catch(console.error);
+                firestore_1.FirestoreService.delete('exportRequests', id).catch(console.error);
             }
         }
     }
@@ -555,7 +558,7 @@ export class DataExportService {
      */
     async loadExportRequests() {
         try {
-            const requests = await FirestoreService.query('exportRequests');
+            const requests = await firestore_1.FirestoreService.query('exportRequests');
             for (const request of requests) {
                 this.exportRequests.set(request.id, request);
                 // Add pending requests to queue
@@ -573,7 +576,7 @@ export class DataExportService {
      */
     async loadAuditTrails() {
         try {
-            const trails = await FirestoreService.query('auditLogs');
+            const trails = await firestore_1.FirestoreService.query('auditLogs');
             for (const trail of trails) {
                 this.auditTrails.set(trail.id, trail);
             }
@@ -674,7 +677,7 @@ export class DataExportService {
         return 'session_unknown';
     }
     async persistExportRequest(request) {
-        await FirestoreService.update('exportRequests', request.id, request);
+        await firestore_1.FirestoreService.update('exportRequests', request.id, request);
     }
     generateExportId() {
         return `export_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -722,5 +725,6 @@ export class DataExportService {
         };
     }
 }
+exports.DataExportService = DataExportService;
 // Export singleton instance
-export const dataExportService = DataExportService.getInstance();
+exports.dataExportService = DataExportService.getInstance();

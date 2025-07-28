@@ -68,6 +68,24 @@ export declare class FirebaseFunctionsService {
     }): Promise<any>;
     static updateUserProfile(userId: string, updates: any): Promise<any>;
     static deleteUserAccount(userId: string): Promise<any>;
+    static createUserWithRole(userData: {
+        email: string;
+        password: string;
+        role: 'customer' | 'driver' | 'vendor';
+        profile: {
+            firstName: string;
+            lastName: string;
+            phone: string;
+            dateOfBirth?: string;
+        };
+    }): Promise<any>;
+    static setCustomClaims(userId: string, claims: {
+        [key: string]: any;
+    }): Promise<any>;
+    static verifyUserRole(userId: string, requiredRole: string): Promise<any>;
+    static updateUserStatus(userId: string, status: 'pending' | 'active' | 'suspended' | 'rejected', reason?: string): Promise<any>;
+    static sendEmailVerification(userId: string): Promise<any>;
+    static verifyEmailToken(token: string): Promise<any>;
     static createMarket(marketData: {
         name: string;
         description: string;

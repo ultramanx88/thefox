@@ -47,7 +47,7 @@ export declare class RealtimeSyncService {
     /**
      * Subscribe to real-time collection updates
      */
-    subscribeToCollection<T>(collectionPath: string, constraints: any[] | undefined, callback: (data: T[]) => void, errorCallback?: (error: Error) => void): string;
+    subscribeToCollection<T>(collectionPath: string, constraints: any[], callback: (data: T[]) => void, errorCallback?: (error: Error) => void): string;
     /**
      * Unsubscribe from real-time updates
      */

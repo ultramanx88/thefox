@@ -1,308 +1,316 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.defaultMobileAppearanceConfig = exports.defaultPreferenceSettings = exports.defaultPrivacySettings = exports.defaultNotificationSettings = exports.defaultProfileSettings = exports.settingsExportSchema = exports.mobileAssetSchema = exports.imageMetadataSchema = exports.mobileAppearanceConfigSchema = exports.themeConfigSchema = exports.brandingConfigSchema = exports.splashScreenConfigSchema = exports.userSettingsUpdateSchema = exports.userSettingsSchema = exports.roleSpecificSettingsSchema = exports.adminSettingsSchema = exports.driverSettingsSchema = exports.vendorSettingsSchema = exports.shopperSettingsSchema = exports.customThemeSchema = exports.notificationServiceConfigSchema = exports.paymentGatewayConfigSchema = exports.insuranceInfoSchema = exports.availabilityScheduleSchema = exports.taxSettingsSchema = exports.contactInfoSchema = exports.businessHoursSchema = exports.preferenceSettingsSchema = exports.privacySettingsSchema = exports.notificationSettingsSchema = exports.profileSettingsSchema = exports.userRoleSchema = void 0;
+exports.validateUserSettings = validateUserSettings;
+exports.validateUserSettingsUpdate = validateUserSettingsUpdate;
+exports.validateRoleSpecificSettings = validateRoleSpecificSettings;
+exports.validateMobileAppearanceConfig = validateMobileAppearanceConfig;
+exports.validateMobileAsset = validateMobileAsset;
 // Settings validation schemas using Zod
-import { z } from 'zod';
+const zod_1 = require("zod");
 // Base validation schemas
-export const userRoleSchema = z.enum(['shopper', 'vendor', 'driver', 'admin']);
-export const profileSettingsSchema = z.object({
-    displayName: z.string().min(1).max(100),
-    avatar: z.string().url().optional(),
-    language: z.string().min(2).max(5), // ISO language codes
-    timezone: z.string(), // IANA timezone
-    currency: z.string().length(3), // ISO currency codes
-    theme: z.enum(['light', 'dark', 'system'])
+exports.userRoleSchema = zod_1.z.enum(['shopper', 'vendor', 'driver', 'admin']);
+exports.profileSettingsSchema = zod_1.z.object({
+    displayName: zod_1.z.string().min(1).max(100),
+    avatar: zod_1.z.string().url().optional(),
+    language: zod_1.z.string().min(2).max(5), // ISO language codes
+    timezone: zod_1.z.string(), // IANA timezone
+    currency: zod_1.z.string().length(3), // ISO currency codes
+    theme: zod_1.z.enum(['light', 'dark', 'system'])
 });
-export const notificationSettingsSchema = z.object({
-    push: z.object({
-        enabled: z.boolean(),
-        orders: z.boolean(),
-        promotions: z.boolean(),
-        system: z.boolean(),
-        quietHours: z.object({
-            enabled: z.boolean(),
-            start: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/), // HH:mm format
-            end: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/) // HH:mm format
+exports.notificationSettingsSchema = zod_1.z.object({
+    push: zod_1.z.object({
+        enabled: zod_1.z.boolean(),
+        orders: zod_1.z.boolean(),
+        promotions: zod_1.z.boolean(),
+        system: zod_1.z.boolean(),
+        quietHours: zod_1.z.object({
+            enabled: zod_1.z.boolean(),
+            start: zod_1.z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/), // HH:mm format
+            end: zod_1.z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/) // HH:mm format
         })
     }),
-    email: z.object({
-        enabled: z.boolean(),
-        orders: z.boolean(),
-        promotions: z.boolean(),
-        newsletter: z.boolean(),
-        frequency: z.enum(['immediate', 'daily', 'weekly'])
+    email: zod_1.z.object({
+        enabled: zod_1.z.boolean(),
+        orders: zod_1.z.boolean(),
+        promotions: zod_1.z.boolean(),
+        newsletter: zod_1.z.boolean(),
+        frequency: zod_1.z.enum(['immediate', 'daily', 'weekly'])
     }),
-    sms: z.object({
-        enabled: z.boolean(),
-        orders: z.boolean(),
-        security: z.boolean()
+    sms: zod_1.z.object({
+        enabled: zod_1.z.boolean(),
+        orders: zod_1.z.boolean(),
+        security: zod_1.z.boolean()
     })
 });
-export const privacySettingsSchema = z.object({
-    dataSharing: z.boolean(),
-    locationSharing: z.boolean(),
-    profileVisibility: z.enum(['public', 'private', 'friends']),
-    activityTracking: z.boolean(),
-    analytics: z.boolean()
+exports.privacySettingsSchema = zod_1.z.object({
+    dataSharing: zod_1.z.boolean(),
+    locationSharing: zod_1.z.boolean(),
+    profileVisibility: zod_1.z.enum(['public', 'private', 'friends']),
+    activityTracking: zod_1.z.boolean(),
+    analytics: zod_1.z.boolean()
 });
-export const preferenceSettingsSchema = z.object({
-    autoSave: z.boolean(),
-    confirmActions: z.boolean(),
-    showTutorials: z.boolean(),
-    compactView: z.boolean()
+exports.preferenceSettingsSchema = zod_1.z.object({
+    autoSave: zod_1.z.boolean(),
+    confirmActions: zod_1.z.boolean(),
+    showTutorials: zod_1.z.boolean(),
+    compactView: zod_1.z.boolean()
 });
 // Supporting schemas
-export const businessHoursSchema = z.object({
-    dayOfWeek: z.number().min(0).max(6),
-    isOpen: z.boolean(),
-    openTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
-    closeTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)
+exports.businessHoursSchema = zod_1.z.object({
+    dayOfWeek: zod_1.z.number().min(0).max(6),
+    isOpen: zod_1.z.boolean(),
+    openTime: zod_1.z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
+    closeTime: zod_1.z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)
 });
-export const contactInfoSchema = z.object({
-    phone: z.string().min(10).max(15),
-    email: z.string().email(),
-    website: z.string().url().optional(),
-    address: z.string().min(10).max(500)
+exports.contactInfoSchema = zod_1.z.object({
+    phone: zod_1.z.string().min(10).max(15),
+    email: zod_1.z.string().email(),
+    website: zod_1.z.string().url().optional(),
+    address: zod_1.z.string().min(10).max(500)
 });
-export const taxSettingsSchema = z.object({
-    taxId: z.string().optional(),
-    vatRate: z.number().min(0).max(100),
-    includeTaxInPrice: z.boolean()
+exports.taxSettingsSchema = zod_1.z.object({
+    taxId: zod_1.z.string().optional(),
+    vatRate: zod_1.z.number().min(0).max(100),
+    includeTaxInPrice: zod_1.z.boolean()
 });
-export const availabilityScheduleSchema = z.object({
-    dayOfWeek: z.number().min(0).max(6),
-    isAvailable: z.boolean(),
-    startTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
-    endTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)
+exports.availabilityScheduleSchema = zod_1.z.object({
+    dayOfWeek: zod_1.z.number().min(0).max(6),
+    isAvailable: zod_1.z.boolean(),
+    startTime: zod_1.z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
+    endTime: zod_1.z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)
 });
-export const insuranceInfoSchema = z.object({
-    provider: z.string().min(1).max(100),
-    policyNumber: z.string().min(1).max(50),
-    expiryDate: z.string().datetime()
+exports.insuranceInfoSchema = zod_1.z.object({
+    provider: zod_1.z.string().min(1).max(100),
+    policyNumber: zod_1.z.string().min(1).max(50),
+    expiryDate: zod_1.z.string().datetime()
 });
-export const paymentGatewayConfigSchema = z.object({
-    provider: z.enum(['stripe', 'omise', 'qrcode']),
-    enabled: z.boolean(),
-    publicKey: z.string().optional(),
-    secretKey: z.string().optional(),
-    webhookSecret: z.string().optional()
+exports.paymentGatewayConfigSchema = zod_1.z.object({
+    provider: zod_1.z.enum(['stripe', 'omise', 'qrcode']),
+    enabled: zod_1.z.boolean(),
+    publicKey: zod_1.z.string().optional(),
+    secretKey: zod_1.z.string().optional(),
+    webhookSecret: zod_1.z.string().optional()
 });
-export const notificationServiceConfigSchema = z.object({
-    provider: z.enum(['firebase', 'onesignal', 'pusher']),
-    enabled: z.boolean(),
-    apiKey: z.string().optional(),
-    appId: z.string().optional()
+exports.notificationServiceConfigSchema = zod_1.z.object({
+    provider: zod_1.z.enum(['firebase', 'onesignal', 'pusher']),
+    enabled: zod_1.z.boolean(),
+    apiKey: zod_1.z.string().optional(),
+    appId: zod_1.z.string().optional()
 });
-export const customThemeSchema = z.object({
-    id: z.string().min(1),
-    name: z.string().min(1).max(50),
-    colors: z.object({
-        primary: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-        secondary: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-        background: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-        surface: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-        text: z.string().regex(/^#[0-9A-Fa-f]{6}$/)
+exports.customThemeSchema = zod_1.z.object({
+    id: zod_1.z.string().min(1),
+    name: zod_1.z.string().min(1).max(50),
+    colors: zod_1.z.object({
+        primary: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+        secondary: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+        background: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+        surface: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+        text: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/)
     })
 });
 // Role-specific settings schemas
-export const shopperSettingsSchema = z.object({
-    type: z.literal('shopper'),
-    defaultDeliveryAddress: z.string().optional(),
-    paymentPreferences: z.object({
-        defaultMethod: z.string().optional(),
-        saveCards: z.boolean(),
-        autoReorder: z.boolean()
+exports.shopperSettingsSchema = zod_1.z.object({
+    type: zod_1.z.literal('shopper'),
+    defaultDeliveryAddress: zod_1.z.string().optional(),
+    paymentPreferences: zod_1.z.object({
+        defaultMethod: zod_1.z.string().optional(),
+        saveCards: zod_1.z.boolean(),
+        autoReorder: zod_1.z.boolean()
     }),
-    orderPreferences: z.object({
-        confirmationRequired: z.boolean(),
-        substituteItems: z.boolean(),
-        deliveryInstructions: z.string().max(500).optional()
+    orderPreferences: zod_1.z.object({
+        confirmationRequired: zod_1.z.boolean(),
+        substituteItems: zod_1.z.boolean(),
+        deliveryInstructions: zod_1.z.string().max(500).optional()
     })
 });
-export const vendorSettingsSchema = z.object({
-    type: z.literal('vendor'),
-    businessProfile: z.object({
-        businessName: z.string().min(1).max(100),
-        description: z.string().max(1000),
-        logo: z.string().url().optional(),
-        banner: z.string().url().optional(),
-        businessHours: z.array(businessHoursSchema),
-        contactInfo: contactInfoSchema
+exports.vendorSettingsSchema = zod_1.z.object({
+    type: zod_1.z.literal('vendor'),
+    businessProfile: zod_1.z.object({
+        businessName: zod_1.z.string().min(1).max(100),
+        description: zod_1.z.string().max(1000),
+        logo: zod_1.z.string().url().optional(),
+        banner: zod_1.z.string().url().optional(),
+        businessHours: zod_1.z.array(exports.businessHoursSchema),
+        contactInfo: exports.contactInfoSchema
     }),
-    operationalSettings: z.object({
-        autoAcceptOrders: z.boolean(),
-        preparationTime: z.number().min(1).max(480), // max 8 hours
-        deliveryRadius: z.number().min(0.1).max(100), // max 100km
-        minimumOrder: z.number().min(0)
+    operationalSettings: zod_1.z.object({
+        autoAcceptOrders: zod_1.z.boolean(),
+        preparationTime: zod_1.z.number().min(1).max(480), // max 8 hours
+        deliveryRadius: zod_1.z.number().min(0.1).max(100), // max 100km
+        minimumOrder: zod_1.z.number().min(0)
     }),
-    financialSettings: z.object({
-        payoutSchedule: z.enum(['daily', 'weekly', 'monthly']),
-        taxSettings: taxSettingsSchema
+    financialSettings: zod_1.z.object({
+        payoutSchedule: zod_1.z.enum(['daily', 'weekly', 'monthly']),
+        taxSettings: exports.taxSettingsSchema
     })
 });
-export const driverSettingsSchema = z.object({
-    type: z.literal('driver'),
-    availability: z.object({
-        schedule: z.array(availabilityScheduleSchema),
-        autoAcceptJobs: z.boolean(),
-        maxJobsPerHour: z.number().min(1).max(20)
+exports.driverSettingsSchema = zod_1.z.object({
+    type: zod_1.z.literal('driver'),
+    availability: zod_1.z.object({
+        schedule: zod_1.z.array(exports.availabilityScheduleSchema),
+        autoAcceptJobs: zod_1.z.boolean(),
+        maxJobsPerHour: zod_1.z.number().min(1).max(20)
     }),
-    vehicleInfo: z.object({
-        type: z.enum(['motorcycle', 'car', 'bicycle']),
-        licensePlate: z.string().min(1).max(20),
-        insurance: insuranceInfoSchema
+    vehicleInfo: zod_1.z.object({
+        type: zod_1.z.enum(['motorcycle', 'car', 'bicycle']),
+        licensePlate: zod_1.z.string().min(1).max(20),
+        insurance: exports.insuranceInfoSchema
     }),
-    jobPreferences: z.object({
-        maxDistance: z.number().min(1).max(100),
-        preferredAreas: z.array(z.string()),
-        jobTypes: z.array(z.string())
+    jobPreferences: zod_1.z.object({
+        maxDistance: zod_1.z.number().min(1).max(100),
+        preferredAreas: zod_1.z.array(zod_1.z.string()),
+        jobTypes: zod_1.z.array(zod_1.z.string())
     })
 });
-export const adminSettingsSchema = z.object({
-    type: z.literal('admin'),
-    systemConfig: z.object({
-        maintenanceMode: z.boolean(),
-        registrationEnabled: z.boolean(),
-        featuresEnabled: z.array(z.string())
+exports.adminSettingsSchema = zod_1.z.object({
+    type: zod_1.z.literal('admin'),
+    systemConfig: zod_1.z.object({
+        maintenanceMode: zod_1.z.boolean(),
+        registrationEnabled: zod_1.z.boolean(),
+        featuresEnabled: zod_1.z.array(zod_1.z.string())
     }),
-    platformPolicies: z.object({
-        commissionRate: z.number().min(0).max(100),
-        deliveryFee: z.number().min(0),
-        cancellationPolicy: z.string().max(2000)
+    platformPolicies: zod_1.z.object({
+        commissionRate: zod_1.z.number().min(0).max(100),
+        deliveryFee: zod_1.z.number().min(0),
+        cancellationPolicy: zod_1.z.string().max(2000)
     }),
-    integrations: z.object({
-        paymentGateways: z.array(paymentGatewayConfigSchema),
-        notificationServices: z.array(notificationServiceConfigSchema)
+    integrations: zod_1.z.object({
+        paymentGateways: zod_1.z.array(exports.paymentGatewayConfigSchema),
+        notificationServices: zod_1.z.array(exports.notificationServiceConfigSchema)
     }),
-    mobileAppearance: z.object({
-        splashScreen: z.object({
-            backgroundImage: z.string().url().optional(),
-            backgroundColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-            logoImage: z.string().url().optional(),
-            logoPosition: z.enum(['center', 'top', 'bottom']),
-            showLoadingIndicator: z.boolean()
+    mobileAppearance: zod_1.z.object({
+        splashScreen: zod_1.z.object({
+            backgroundImage: zod_1.z.string().url().optional(),
+            backgroundColor: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+            logoImage: zod_1.z.string().url().optional(),
+            logoPosition: zod_1.z.enum(['center', 'top', 'bottom']),
+            showLoadingIndicator: zod_1.z.boolean()
         }),
-        branding: z.object({
-            primaryLogo: z.string().url().optional(),
-            secondaryLogo: z.string().url().optional(),
-            appIcon: z.string().url().optional(),
-            brandColors: z.object({
-                primary: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-                secondary: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-                accent: z.string().regex(/^#[0-9A-Fa-f]{6}$/)
+        branding: zod_1.z.object({
+            primaryLogo: zod_1.z.string().url().optional(),
+            secondaryLogo: zod_1.z.string().url().optional(),
+            appIcon: zod_1.z.string().url().optional(),
+            brandColors: zod_1.z.object({
+                primary: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+                secondary: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+                accent: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/)
             })
         }),
-        theme: z.object({
-            defaultTheme: z.enum(['light', 'dark', 'system']),
-            customThemes: z.array(customThemeSchema).optional()
+        theme: zod_1.z.object({
+            defaultTheme: zod_1.z.enum(['light', 'dark', 'system']),
+            customThemes: zod_1.z.array(exports.customThemeSchema).optional()
         })
     })
 });
-export const roleSpecificSettingsSchema = z.discriminatedUnion('type', [
-    shopperSettingsSchema,
-    vendorSettingsSchema,
-    driverSettingsSchema,
-    adminSettingsSchema
+exports.roleSpecificSettingsSchema = zod_1.z.discriminatedUnion('type', [
+    exports.shopperSettingsSchema,
+    exports.vendorSettingsSchema,
+    exports.driverSettingsSchema,
+    exports.adminSettingsSchema
 ]);
 // Main user settings schema
-export const userSettingsSchema = z.object({
-    userId: z.string().min(1),
-    role: userRoleSchema,
-    profile: profileSettingsSchema,
-    notifications: notificationSettingsSchema,
-    privacy: privacySettingsSchema,
-    roleSpecific: roleSpecificSettingsSchema,
-    preferences: preferenceSettingsSchema,
-    version: z.number().min(1)
+exports.userSettingsSchema = zod_1.z.object({
+    userId: zod_1.z.string().min(1),
+    role: exports.userRoleSchema,
+    profile: exports.profileSettingsSchema,
+    notifications: exports.notificationSettingsSchema,
+    privacy: exports.privacySettingsSchema,
+    roleSpecific: exports.roleSpecificSettingsSchema,
+    preferences: exports.preferenceSettingsSchema,
+    version: zod_1.z.number().min(1)
 });
 // Partial schemas for updates
-export const userSettingsUpdateSchema = userSettingsSchema.partial().omit({
+exports.userSettingsUpdateSchema = exports.userSettingsSchema.partial().omit({
     userId: true,
     createdAt: true,
     updatedAt: true
 });
 // Mobile appearance schemas
-export const splashScreenConfigSchema = z.object({
-    backgroundImage: z.string().url().optional(),
-    backgroundColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-    logoImage: z.string().url().optional(),
-    logoPosition: z.enum(['center', 'top', 'bottom']),
-    showLoadingIndicator: z.boolean()
+exports.splashScreenConfigSchema = zod_1.z.object({
+    backgroundImage: zod_1.z.string().url().optional(),
+    backgroundColor: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+    logoImage: zod_1.z.string().url().optional(),
+    logoPosition: zod_1.z.enum(['center', 'top', 'bottom']),
+    showLoadingIndicator: zod_1.z.boolean()
 });
-export const brandingConfigSchema = z.object({
-    primaryLogo: z.string().url().optional(),
-    secondaryLogo: z.string().url().optional(),
-    appIcon: z.string().url().optional(),
-    brandColors: z.object({
-        primary: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-        secondary: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-        accent: z.string().regex(/^#[0-9A-Fa-f]{6}$/)
+exports.brandingConfigSchema = zod_1.z.object({
+    primaryLogo: zod_1.z.string().url().optional(),
+    secondaryLogo: zod_1.z.string().url().optional(),
+    appIcon: zod_1.z.string().url().optional(),
+    brandColors: zod_1.z.object({
+        primary: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+        secondary: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+        accent: zod_1.z.string().regex(/^#[0-9A-Fa-f]{6}$/)
     })
 });
-export const themeConfigSchema = z.object({
-    defaultTheme: z.enum(['light', 'dark', 'system']),
-    customThemes: z.array(customThemeSchema).optional()
+exports.themeConfigSchema = zod_1.z.object({
+    defaultTheme: zod_1.z.enum(['light', 'dark', 'system']),
+    customThemes: zod_1.z.array(exports.customThemeSchema).optional()
 });
-export const mobileAppearanceConfigSchema = z.object({
-    splashScreen: splashScreenConfigSchema,
-    branding: brandingConfigSchema,
-    theme: themeConfigSchema,
-    version: z.number().min(1)
+exports.mobileAppearanceConfigSchema = zod_1.z.object({
+    splashScreen: exports.splashScreenConfigSchema,
+    branding: exports.brandingConfigSchema,
+    theme: exports.themeConfigSchema,
+    version: zod_1.z.number().min(1)
 });
-export const imageMetadataSchema = z.object({
-    filename: z.string().min(1),
-    size: z.number().min(1),
-    width: z.number().min(1),
-    height: z.number().min(1),
-    format: z.enum(['jpg', 'jpeg', 'png', 'webp', 'svg']),
-    optimized: z.boolean()
+exports.imageMetadataSchema = zod_1.z.object({
+    filename: zod_1.z.string().min(1),
+    size: zod_1.z.number().min(1),
+    width: zod_1.z.number().min(1),
+    height: zod_1.z.number().min(1),
+    format: zod_1.z.enum(['jpg', 'jpeg', 'png', 'webp', 'svg']),
+    optimized: zod_1.z.boolean()
 });
-export const mobileAssetSchema = z.object({
-    assetId: z.string().min(1),
-    type: z.enum(['splash_background', 'logo', 'app_icon']),
-    url: z.string().url(),
-    metadata: imageMetadataSchema
+exports.mobileAssetSchema = zod_1.z.object({
+    assetId: zod_1.z.string().min(1),
+    type: zod_1.z.enum(['splash_background', 'logo', 'app_icon']),
+    url: zod_1.z.string().url(),
+    metadata: exports.imageMetadataSchema
 });
 // Settings export schema
-export const settingsExportSchema = z.object({
-    userId: z.string().min(1),
-    role: userRoleSchema,
-    settings: userSettingsSchema.omit({
+exports.settingsExportSchema = zod_1.z.object({
+    userId: zod_1.z.string().min(1),
+    role: exports.userRoleSchema,
+    settings: exports.userSettingsSchema.omit({
         userId: true,
         createdAt: true,
         updatedAt: true,
         version: true
     }),
-    format: z.enum(['json', 'csv'])
+    format: zod_1.z.enum(['json', 'csv'])
 });
 // Validation helper functions
-export function validateUserSettings(data) {
-    return userSettingsSchema.safeParse(data);
+function validateUserSettings(data) {
+    return exports.userSettingsSchema.safeParse(data);
 }
-export function validateUserSettingsUpdate(data) {
-    return userSettingsUpdateSchema.safeParse(data);
+function validateUserSettingsUpdate(data) {
+    return exports.userSettingsUpdateSchema.safeParse(data);
 }
-export function validateRoleSpecificSettings(data, role) {
+function validateRoleSpecificSettings(data, role) {
     const roleSchemas = {
-        shopper: shopperSettingsSchema,
-        vendor: vendorSettingsSchema,
-        driver: driverSettingsSchema,
-        admin: adminSettingsSchema
+        shopper: exports.shopperSettingsSchema,
+        vendor: exports.vendorSettingsSchema,
+        driver: exports.driverSettingsSchema,
+        admin: exports.adminSettingsSchema
     };
     return roleSchemas[role].safeParse(data);
 }
-export function validateMobileAppearanceConfig(data) {
-    return mobileAppearanceConfigSchema.safeParse(data);
+function validateMobileAppearanceConfig(data) {
+    return exports.mobileAppearanceConfigSchema.safeParse(data);
 }
-export function validateMobileAsset(data) {
-    return mobileAssetSchema.safeParse(data);
+function validateMobileAsset(data) {
+    return exports.mobileAssetSchema.safeParse(data);
 }
 // Default values
-export const defaultProfileSettings = {
+exports.defaultProfileSettings = {
     displayName: '',
     language: 'th',
     timezone: 'Asia/Bangkok',
     currency: 'THB',
     theme: 'system'
 };
-export const defaultNotificationSettings = {
+exports.defaultNotificationSettings = {
     push: {
         enabled: true,
         orders: true,
@@ -327,20 +335,20 @@ export const defaultNotificationSettings = {
         security: true
     }
 };
-export const defaultPrivacySettings = {
+exports.defaultPrivacySettings = {
     dataSharing: false,
     locationSharing: true,
     profileVisibility: 'public',
     activityTracking: true,
     analytics: true
 };
-export const defaultPreferenceSettings = {
+exports.defaultPreferenceSettings = {
     autoSave: true,
     confirmActions: true,
     showTutorials: true,
     compactView: false
 };
-export const defaultMobileAppearanceConfig = {
+exports.defaultMobileAppearanceConfig = {
     splashScreen: {
         backgroundColor: '#FFFFFF',
         logoPosition: 'center',

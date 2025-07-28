@@ -1,14 +1,17 @@
+"use strict";
 /**
  * Real-time Order Tracking Service
  * Handles real-time order status updates and delivery tracking
  */
-import { doc, collection, onSnapshot, updateDoc, serverTimestamp, query, where, orderBy, GeoPoint } from 'firebase/firestore';
-import { db } from './config';
-import { realtimeSyncService } from './realtime';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.orderTrackingService = exports.OrderTrackingService = void 0;
+const firestore_1 = require("firebase/firestore");
+const config_1 = require("./config");
+const realtime_1 = require("./realtime");
 // ===========================================
 // ORDER TRACKING SERVICE
 // ===========================================
-export class OrderTrackingService {
+class OrderTrackingService {
     constructor() {
         this.orderSubscriptions = new Map();
         this.deliverySubscriptions = new Map();
@@ -27,8 +30,8 @@ export class OrderTrackingService {
      */
     subscribeToOrderStatus(orderId, callback, errorCallback) {
         try {
-            const orderRef = doc(db, 'orders', orderId);
-            const unsubscribe = onSnapshot(orderRef, (snapshot) => {
+            const orderRef = (0, firestore_1.doc)(config_1.db, 'orders', orderId);
+            const unsubscribe = (0, firestore_1.onSnapshot)(orderRef, (snapshot) => {
                 if (snapshot.exists()) {
                     const orderData = {
                         id: snapshot.id,
@@ -61,11 +64,11 @@ export class OrderTrackingService {
      */
     async updateOrderStatus(update) {
         try {
-            const orderRef = doc(db, 'orders', update.orderId);
+            const orderRef = (0, firestore_1.doc)(config_1.db, 'orders', update.orderId);
             // Prepare update data
             const updateData = {
                 status: update.status,
-                updatedAt: serverTimestamp(),
+                updatedAt: (0, firestore_1.serverTimestamp)(),
             };
             // Add optional fields
             if (update.driverId) {
@@ -75,7 +78,7 @@ export class OrderTrackingService {
                 updateData.estimatedDeliveryTime = update.estimatedDeliveryTime;
             }
             if (update.location) {
-                updateData.currentLocation = new GeoPoint(update.location.latitude, update.location.longitude);
+                updateData.currentLocation = new firestore_1.GeoPoint(update.location.latitude, update.location.longitude);
             }
             // Add to status history
             const statusHistoryEntry = {
@@ -84,17 +87,17 @@ export class OrderTrackingService {
                 notes: update.notes,
             };
             if (update.location) {
-                statusHistoryEntry.location = new GeoPoint(update.location.latitude, update.location.longitude);
+                statusHistoryEntry.location = new firestore_1.GeoPoint(update.location.latitude, update.location.longitude);
             }
             if (update.driverId) {
                 statusHistoryEntry.driverId = update.driverId;
             }
             updateData.statusHistory = [...(await this.getOrderStatusHistory(update.orderId)), statusHistoryEntry];
             // Update order document
-            await updateDoc(orderRef, updateData);
+            await (0, firestore_1.updateDoc)(orderRef, updateData);
             // Queue offline action if network is unavailable
             if (!navigator.onLine) {
-                realtimeSyncService.queueOfflineAction({
+                realtime_1.realtimeSyncService.queueOfflineAction({
                     type: 'update',
                     collection: 'orders',
                     documentId: update.orderId,
@@ -114,7 +117,7 @@ export class OrderTrackingService {
      */
     async getOrderStatusHistory(orderId) {
         try {
-            const orderRef = doc(db, 'orders', orderId);
+            const orderRef = (0, firestore_1.doc)(config_1.db, 'orders', orderId);
             const orderSnap = await orderRef.get();
             if (orderSnap.exists()) {
                 return orderSnap.data().statusHistory || [];
@@ -134,9 +137,9 @@ export class OrderTrackingService {
      */
     subscribeToDeliveryTracking(orderId, callback, errorCallback) {
         try {
-            const deliveryRef = collection(db, 'deliveryTracking');
-            const q = query(deliveryRef, where('orderId', '==', orderId), orderBy('timestamp', 'desc'));
-            const unsubscribe = onSnapshot(q, (snapshot) => {
+            const deliveryRef = (0, firestore_1.collection)(config_1.db, 'deliveryTracking');
+            const q = (0, firestore_1.query)(deliveryRef, (0, firestore_1.where)('orderId', '==', orderId), (0, firestore_1.orderBy)('timestamp', 'desc'));
+            const unsubscribe = (0, firestore_1.onSnapshot)(q, (snapshot) => {
                 const locations = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data(),
@@ -162,24 +165,24 @@ export class OrderTrackingService {
      */
     async updateDeliveryLocation(location) {
         try {
-            const deliveryRef = collection(db, 'deliveryTracking');
+            const deliveryRef = (0, firestore_1.collection)(config_1.db, 'deliveryTracking');
             const locationData = {
                 ...location,
-                timestamp: serverTimestamp(),
-                location: new GeoPoint(location.latitude, location.longitude),
+                timestamp: (0, firestore_1.serverTimestamp)(),
+                location: new firestore_1.GeoPoint(location.latitude, location.longitude),
             };
             // Add new location entry
             await deliveryRef.add(locationData);
             // Also update the order's current location
-            const orderRef = doc(db, 'orders', location.orderId);
-            await updateDoc(orderRef, {
-                currentLocation: new GeoPoint(location.latitude, location.longitude),
-                lastLocationUpdate: serverTimestamp(),
-                updatedAt: serverTimestamp(),
+            const orderRef = (0, firestore_1.doc)(config_1.db, 'orders', location.orderId);
+            await (0, firestore_1.updateDoc)(orderRef, {
+                currentLocation: new firestore_1.GeoPoint(location.latitude, location.longitude),
+                lastLocationUpdate: (0, firestore_1.serverTimestamp)(),
+                updatedAt: (0, firestore_1.serverTimestamp)(),
             });
             // Queue offline action if network is unavailable
             if (!navigator.onLine) {
-                realtimeSyncService.queueOfflineAction({
+                realtime_1.realtimeSyncService.queueOfflineAction({
                     type: 'create',
                     collection: 'deliveryTracking',
                     data: locationData,
@@ -200,9 +203,9 @@ export class OrderTrackingService {
      * Subscribe to multiple orders for a user
      */
     subscribeToUserOrders(userId, callback, errorCallback) {
-        return realtimeSyncService.subscribeToCollection('orders', [
-            where('userId', '==', userId),
-            orderBy('createdAt', 'desc')
+        return realtime_1.realtimeSyncService.subscribeToCollection('orders', [
+            (0, firestore_1.where)('userId', '==', userId),
+            (0, firestore_1.orderBy)('createdAt', 'desc')
         ], callback, errorCallback);
     }
     /**
@@ -210,26 +213,26 @@ export class OrderTrackingService {
      */
     subscribeToMarketOrders(marketId, status, callback, errorCallback) {
         const constraints = [
-            where('marketId', '==', marketId),
-            orderBy('createdAt', 'desc')
+            (0, firestore_1.where)('marketId', '==', marketId),
+            (0, firestore_1.orderBy)('createdAt', 'desc')
         ];
         if (status) {
-            constraints.unshift(where('status', '==', status));
+            constraints.unshift((0, firestore_1.where)('status', '==', status));
         }
-        return realtimeSyncService.subscribeToCollection('orders', constraints, callback, errorCallback);
+        return realtime_1.realtimeSyncService.subscribeToCollection('orders', constraints, callback, errorCallback);
     }
     /**
      * Subscribe to driver orders
      */
     subscribeToDriverOrders(driverId, status, callback, errorCallback) {
         const constraints = [
-            where('driverId', '==', driverId),
-            orderBy('createdAt', 'desc')
+            (0, firestore_1.where)('driverId', '==', driverId),
+            (0, firestore_1.orderBy)('createdAt', 'desc')
         ];
         if (status) {
-            constraints.unshift(where('status', '==', status));
+            constraints.unshift((0, firestore_1.where)('status', '==', status));
         }
-        return realtimeSyncService.subscribeToCollection('orders', constraints, callback, errorCallback);
+        return realtime_1.realtimeSyncService.subscribeToCollection('orders', constraints, callback, errorCallback);
     }
     // ===========================================
     // SUBSCRIPTION MANAGEMENT
@@ -271,7 +274,7 @@ export class OrderTrackingService {
         });
         this.deliverySubscriptions.clear();
         // Also unsubscribe from realtime sync service
-        realtimeSyncService.unsubscribeAll();
+        realtime_1.realtimeSyncService.unsubscribeAll();
         console.log('All order tracking subscriptions removed');
     }
     // ===========================================
@@ -320,5 +323,6 @@ export class OrderTrackingService {
         return degrees * (Math.PI / 180);
     }
 }
+exports.OrderTrackingService = OrderTrackingService;
 // Export singleton instance
-export const orderTrackingService = OrderTrackingService.getInstance();
+exports.orderTrackingService = OrderTrackingService.getInstance();

@@ -1,14 +1,50 @@
+"use strict";
 /**
  * Connection State Manager
  * Handles network connectivity, connection state changes, and data conflicts
  */
-import { enableNetwork, disableNetwork, waitForPendingWrites, terminate } from 'firebase/firestore';
-import { db } from './config';
-import { realtimeSyncService } from './realtime';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.connectionManager = exports.ConnectionManager = void 0;
+const firestore_1 = require("firebase/firestore");
+const config_1 = require("./config");
+const realtime_1 = require("./realtime");
 // ===========================================
 // CONNECTION MANAGER
 // ===========================================
-export class ConnectionManager {
+class ConnectionManager {
     constructor() {
         this.networkQuality = null;
         this.eventListeners = new Map();
@@ -90,7 +126,7 @@ export class ConnectionManager {
                 // Re-enable Firestore network
                 await this.enableFirestoreNetwork();
                 // Sync pending offline actions
-                await realtimeSyncService.syncOfflineActions();
+                await realtime_1.realtimeSyncService.syncOfflineActions();
                 // Resolve any pending conflicts
                 await this.resolveQueuedConflicts();
                 this.emitEvent('connection:restored', {
@@ -141,7 +177,7 @@ export class ConnectionManager {
      */
     async enableFirestoreNetwork() {
         try {
-            await enableNetwork(db);
+            await (0, firestore_1.enableNetwork)(config_1.db);
             this.connectionState.isFirestoreConnected = true;
             console.log('Firestore network enabled');
         }
@@ -156,7 +192,7 @@ export class ConnectionManager {
      */
     async disableFirestoreNetwork() {
         try {
-            await disableNetwork(db);
+            await (0, firestore_1.disableNetwork)(config_1.db);
             this.connectionState.isFirestoreConnected = false;
             console.log('Firestore network disabled');
         }
@@ -170,7 +206,7 @@ export class ConnectionManager {
      */
     async waitForPendingWrites() {
         try {
-            await waitForPendingWrites(db);
+            await (0, firestore_1.waitForPendingWrites)(config_1.db);
             this.connectionState.pendingWrites = 0;
             console.log('All pending writes completed');
         }
@@ -217,7 +253,7 @@ export class ConnectionManager {
         }
         // Apply the resolved data
         try {
-            const { FirestoreService } = await import('./firestore');
+            const { FirestoreService } = await Promise.resolve().then(() => __importStar(require('./firestore')));
             await FirestoreService.update(conflict.collection, conflict.documentId, resolvedData);
             this.emitEvent('conflict:resolved', {
                 conflict,
@@ -310,7 +346,7 @@ export class ConnectionManager {
      * Test Firestore connection
      */
     async testConnection() {
-        const { FirestoreService } = await import('./firestore');
+        const { FirestoreService } = await Promise.resolve().then(() => __importStar(require('./firestore')));
         // Try to read a system document or create a test document
         await FirestoreService.read('system', 'connection-test');
     }
@@ -439,7 +475,7 @@ export class ConnectionManager {
         this.eventListeners.clear();
         this.conflictQueue.clear();
         try {
-            await terminate(db);
+            await (0, firestore_1.terminate)(config_1.db);
         }
         catch (error) {
             console.warn('Error terminating Firestore:', error);
@@ -447,5 +483,6 @@ export class ConnectionManager {
         console.log('Connection manager cleaned up');
     }
 }
+exports.ConnectionManager = ConnectionManager;
 // Export singleton instance
-export const connectionManager = ConnectionManager.getInstance();
+exports.connectionManager = ConnectionManager.getInstance();

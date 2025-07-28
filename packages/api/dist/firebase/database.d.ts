@@ -157,7 +157,7 @@ export declare class FirestoreService {
     delete(collectionName: string, id: string): Promise<void>;
     list<T>(collectionName: string, constraints?: QueryConstraint[], limitCount?: number): Promise<T[]>;
     onDocumentChange<T>(collectionName: string, id: string, callback: (data: T | null) => void): Unsubscribe;
-    onCollectionChange<T>(collectionName: string, constraints: QueryConstraint[] | undefined, callback: (data: T[]) => void): Unsubscribe;
+    onCollectionChange<T>(collectionName: string, constraints: QueryConstraint[], callback: (data: T[]) => void): Unsubscribe;
     getUserByEmail(email: string): Promise<User | null>;
     getUsersByRole(role: string): Promise<User[]>;
     getOpenMarkets(): Promise<Market[]>;

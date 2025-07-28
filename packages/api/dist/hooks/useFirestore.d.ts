@@ -10,7 +10,7 @@ export declare function useFirestoreCollection<T>(collectionName: string, filter
     value: any;
 }>, orderByField?: string, orderDirection?: OrderByDirection, realtime?: boolean): {
     refetch: () => Promise<void>;
-    data: T[] | null;
+    data: T[];
     loading: boolean;
     error: string | null;
 };

@@ -1,14 +1,50 @@
+"use strict";
 /**
  * Firebase Performance Monitoring and Analytics Service
  * Tracks performance metrics, usage analytics, and system health
  */
-import { getPerformance, trace } from 'firebase/performance';
-import { getAnalytics, logEvent, setUserId, setUserProperties } from 'firebase/analytics';
-import { app } from './config';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.firebaseMonitoringService = exports.FirebaseMonitoringService = void 0;
+const performance_1 = require("firebase/performance");
+const analytics_1 = require("firebase/analytics");
+const config_1 = require("./config");
 // ===========================================
 // FIREBASE MONITORING SERVICE
 // ===========================================
-export class FirebaseMonitoringService {
+class FirebaseMonitoringService {
     constructor() {
         this.performance = null;
         this.analytics = null;
@@ -32,12 +68,12 @@ export class FirebaseMonitoringService {
         try {
             // Initialize Performance Monitoring (browser only)
             if (typeof window !== 'undefined') {
-                this.performance = getPerformance(app);
+                this.performance = (0, performance_1.getPerformance)(config_1.app);
                 console.log('Firebase Performance Monitoring initialized');
             }
             // Initialize Analytics (browser only)
             if (typeof window !== 'undefined') {
-                this.analytics = getAnalytics(app);
+                this.analytics = (0, analytics_1.getAnalytics)(config_1.app);
                 console.log('Firebase Analytics initialized');
             }
         }
@@ -57,7 +93,7 @@ export class FirebaseMonitoringService {
             return traceName;
         }
         try {
-            const performanceTrace = trace(this.performance, traceName);
+            const performanceTrace = (0, performance_1.trace)(this.performance, traceName);
             // Add custom attributes
             if (metadata) {
                 Object.entries(metadata).forEach(([key, value]) => {
@@ -156,7 +192,7 @@ export class FirebaseMonitoringService {
             return;
         }
         try {
-            logEvent(this.analytics, eventName, parameters);
+            (0, analytics_1.logEvent)(this.analytics, eventName, parameters);
             console.log(`Analytics event tracked: ${eventName}`, parameters);
         }
         catch (error) {
@@ -170,7 +206,7 @@ export class FirebaseMonitoringService {
         if (!this.analytics)
             return;
         try {
-            setUserId(this.analytics, userId);
+            (0, analytics_1.setUserId)(this.analytics, userId);
             console.log(`Analytics user ID set: ${userId}`);
         }
         catch (error) {
@@ -184,7 +220,7 @@ export class FirebaseMonitoringService {
         if (!this.analytics)
             return;
         try {
-            setUserProperties(this.analytics, properties);
+            (0, analytics_1.setUserProperties)(this.analytics, properties);
             console.log('Analytics user properties set:', properties);
         }
         catch (error) {
@@ -252,7 +288,7 @@ export class FirebaseMonitoringService {
     async checkFirestoreHealth() {
         const startTime = Date.now();
         try {
-            const { FirestoreService } = await import('./firestore');
+            const { FirestoreService } = await Promise.resolve().then(() => __importStar(require('./firestore')));
             // Try to read a system document
             await FirestoreService.read('system', 'health-check');
             const responseTime = Date.now() - startTime;
@@ -282,7 +318,7 @@ export class FirebaseMonitoringService {
     async checkStorageHealth() {
         const startTime = Date.now();
         try {
-            const { storage } = await import('./config');
+            const { storage } = await Promise.resolve().then(() => __importStar(require('./config')));
             // Simple health check - just verify storage is accessible
             const storageRef = storage.app;
             const responseTime = Date.now() - startTime;
@@ -312,7 +348,7 @@ export class FirebaseMonitoringService {
     async checkFunctionsHealth() {
         const startTime = Date.now();
         try {
-            const { functions } = await import('./config');
+            const { functions } = await Promise.resolve().then(() => __importStar(require('./config')));
             // Simple health check - verify functions are accessible
             const functionsApp = functions.app;
             const responseTime = Date.now() - startTime;
@@ -342,7 +378,7 @@ export class FirebaseMonitoringService {
     async checkAuthHealth() {
         const startTime = Date.now();
         try {
-            const { auth } = await import('./config');
+            const { auth } = await Promise.resolve().then(() => __importStar(require('./config')));
             // Simple health check - verify auth is accessible
             const authApp = auth.app;
             const responseTime = Date.now() - startTime;
@@ -544,5 +580,6 @@ export class FirebaseMonitoringService {
         };
     }
 }
+exports.FirebaseMonitoringService = FirebaseMonitoringService;
 // Export singleton instance
-export const firebaseMonitoringService = FirebaseMonitoringService.getInstance();
+exports.firebaseMonitoringService = FirebaseMonitoringService.getInstance();

@@ -1,8 +1,10 @@
-import { SettingsManager } from '../SettingsManager';
-import { SettingsService } from '../../firebase/settings';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const SettingsManager_1 = require("../SettingsManager");
+const settings_1 = require("../../firebase/settings");
 // Mock the SettingsService
 jest.mock('../../firebase/settings');
-const mockSettingsService = SettingsService;
+const mockSettingsService = settings_1.SettingsService;
 describe('SettingsManager', () => {
     let settingsManager;
     const mockUserId = 'test-user-123';
@@ -74,7 +76,7 @@ describe('SettingsManager', () => {
         version: 1
     };
     beforeEach(() => {
-        settingsManager = SettingsManager.getInstance();
+        settingsManager = SettingsManager_1.SettingsManager.getInstance();
         settingsManager.clearCache();
         jest.clearAllMocks();
     });

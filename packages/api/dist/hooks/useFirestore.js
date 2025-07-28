@@ -1,19 +1,23 @@
-import { useState, useEffect } from 'react';
-import { FirestoreService } from '../firebase/firestore';
-export function useFirestoreCollection(collectionName, filters, orderByField, orderDirection = 'asc', realtime = false) {
-    const [state, setState] = useState({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.useFirestoreCollection = useFirestoreCollection;
+exports.useFirestoreDocument = useFirestoreDocument;
+const react_1 = require("react");
+const firestore_1 = require("../firebase/firestore");
+function useFirestoreCollection(collectionName, filters, orderByField, orderDirection = 'asc', realtime = false) {
+    const [state, setState] = (0, react_1.useState)({
         data: null,
         loading: true,
         error: null,
     });
-    useEffect(() => {
+    (0, react_1.useEffect)(() => {
         let unsubscribe;
         const fetchData = async () => {
             try {
                 setState(prev => ({ ...prev, loading: true, error: null }));
                 if (realtime) {
                     // Set up real-time listener
-                    unsubscribe = FirestoreService.onSnapshot(collectionName, (data) => {
+                    unsubscribe = firestore_1.FirestoreService.onSnapshot(collectionName, (data) => {
                         setState({
                             data,
                             loading: false,
@@ -23,7 +27,7 @@ export function useFirestoreCollection(collectionName, filters, orderByField, or
                 }
                 else {
                     // One-time fetch
-                    const data = await FirestoreService.query(collectionName, filters, orderByField, orderDirection);
+                    const data = await firestore_1.FirestoreService.query(collectionName, filters, orderByField, orderDirection);
                     setState({
                         data,
                         loading: false,
@@ -49,7 +53,7 @@ export function useFirestoreCollection(collectionName, filters, orderByField, or
     const refetch = async () => {
         try {
             setState(prev => ({ ...prev, loading: true, error: null }));
-            const data = await FirestoreService.query(collectionName, filters, orderByField, orderDirection);
+            const data = await firestore_1.FirestoreService.query(collectionName, filters, orderByField, orderDirection);
             setState({
                 data,
                 loading: false,
@@ -69,13 +73,13 @@ export function useFirestoreCollection(collectionName, filters, orderByField, or
         refetch,
     };
 }
-export function useFirestoreDocument(collectionName, docId) {
-    const [state, setState] = useState({
+function useFirestoreDocument(collectionName, docId) {
+    const [state, setState] = (0, react_1.useState)({
         data: null,
         loading: true,
         error: null,
     });
-    useEffect(() => {
+    (0, react_1.useEffect)(() => {
         if (!docId) {
             setState({ data: null, loading: false, error: null });
             return;
@@ -83,7 +87,7 @@ export function useFirestoreDocument(collectionName, docId) {
         const fetchDocument = async () => {
             try {
                 setState(prev => ({ ...prev, loading: true, error: null }));
-                const data = await FirestoreService.read(collectionName, docId);
+                const data = await firestore_1.FirestoreService.read(collectionName, docId);
                 setState({
                     data,
                     loading: false,
@@ -105,7 +109,7 @@ export function useFirestoreDocument(collectionName, docId) {
             return;
         try {
             setState(prev => ({ ...prev, loading: true, error: null }));
-            const data = await FirestoreService.read(collectionName, docId);
+            const data = await firestore_1.FirestoreService.read(collectionName, docId);
             setState({
                 data,
                 loading: false,

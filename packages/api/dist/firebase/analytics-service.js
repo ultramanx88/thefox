@@ -1,14 +1,17 @@
+"use strict";
 /**
  * Comprehensive Firebase Analytics and Business Metrics Service
  * Handles event tracking, custom analytics, and business intelligence
  */
-import { getAnalytics, logEvent, setUserId, setUserProperties, setCurrentScreen, setAnalyticsCollectionEnabled } from 'firebase/analytics';
-import { app } from './config';
-import { firebaseLogger, LogCategory } from './logger';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.firebaseAnalyticsService = exports.FirebaseAnalyticsService = void 0;
+const analytics_1 = require("firebase/analytics");
+const config_1 = require("./config");
+const logger_1 = require("./logger");
 // ===========================================
 // FIREBASE ANALYTICS SERVICE
 // ===========================================
-export class FirebaseAnalyticsService {
+class FirebaseAnalyticsService {
     constructor() {
         this.analytics = null;
         this.eventBuffer = [];
@@ -42,19 +45,19 @@ export class FirebaseAnalyticsService {
         try {
             // Initialize Firebase Analytics (browser only)
             if (typeof window !== 'undefined' && this.config.enableFirebaseAnalytics) {
-                this.analytics = getAnalytics(app);
+                this.analytics = (0, analytics_1.getAnalytics)(config_1.app);
                 // Set analytics collection based on privacy settings
-                setAnalyticsCollectionEnabled(this.analytics, !this.config.privacyMode);
+                (0, analytics_1.setAnalyticsCollectionEnabled)(this.analytics, !this.config.privacyMode);
                 console.log('Firebase Analytics initialized');
             }
             // Set up periodic data processing
             this.startPeriodicProcessing();
             this.isInitialized = true;
-            firebaseLogger.info(LogCategory.ANALYTICS, 'initialization', 'Firebase Analytics Service initialized');
+            logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'initialization', 'Firebase Analytics Service initialized');
         }
         catch (error) {
             console.error('Failed to initialize Firebase Analytics:', error);
-            firebaseLogger.error(LogCategory.ANALYTICS, 'initialization', 'Failed to initialize Firebase Analytics', error);
+            logger_1.firebaseLogger.error(logger_1.LogCategory.ANALYTICS, 'initialization', 'Failed to initialize Firebase Analytics', error);
         }
     }
     // ===========================================
@@ -73,7 +76,7 @@ export class FirebaseAnalyticsService {
             const sanitizedParams = this.sanitizeParameters(parameters);
             // Track in Firebase Analytics
             if (this.analytics && this.config.enableFirebaseAnalytics) {
-                logEvent(this.analytics, eventName, sanitizedParams);
+                (0, analytics_1.logEvent)(this.analytics, eventName, sanitizedParams);
             }
             // Store in custom analytics
             if (this.config.enableCustomAnalytics) {
@@ -87,11 +90,11 @@ export class FirebaseAnalyticsService {
                 this.eventBuffer.push(analyticsEvent);
                 this.processEventBuffer();
             }
-            firebaseLogger.info(LogCategory.ANALYTICS, 'track_event', `Event tracked: ${eventName}`, { eventName, parameters: sanitizedParams, userId });
+            logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'track_event', `Event tracked: ${eventName}`, { eventName, parameters: sanitizedParams, userId });
         }
         catch (error) {
             console.error(`Failed to track event ${eventName}:`, error);
-            firebaseLogger.error(LogCategory.ANALYTICS, 'track_event', `Failed to track event: ${eventName}`, error, { eventName, parameters });
+            logger_1.firebaseLogger.error(logger_1.LogCategory.ANALYTICS, 'track_event', `Failed to track event: ${eventName}`, error, { eventName, parameters });
         }
     }
     /**
@@ -111,7 +114,7 @@ export class FirebaseAnalyticsService {
      */
     trackPageView(pageName, pageTitle, userId) {
         if (this.analytics) {
-            setCurrentScreen(this.analytics, pageName, {
+            (0, analytics_1.setCurrentScreen)(this.analytics, pageName, {
                 screen_class: pageTitle || pageName,
             });
         }
@@ -169,7 +172,7 @@ export class FirebaseAnalyticsService {
             metric_unit: metric.unit,
             metric_category: metric.category,
         });
-        firebaseLogger.info(LogCategory.ANALYTICS, 'business_metric', `Business metric recorded: ${metric.name}`, { metric: businessMetric });
+        logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'business_metric', `Business metric recorded: ${metric.name}`, { metric: businessMetric });
     }
     /**
      * Track order metrics
@@ -244,8 +247,8 @@ export class FirebaseAnalyticsService {
         try {
             // Set in Firebase Analytics
             if (this.analytics) {
-                setUserId(this.analytics, userId);
-                setUserProperties(this.analytics, this.sanitizeParameters(properties));
+                (0, analytics_1.setUserId)(this.analytics, userId);
+                (0, analytics_1.setUserProperties)(this.analytics, this.sanitizeParameters(properties));
             }
             // Update user analytics
             const existingUser = this.userAnalytics.get(userId);
@@ -258,11 +261,11 @@ export class FirebaseAnalyticsService {
                 ...properties,
             };
             this.userAnalytics.set(userId, userAnalytics);
-            firebaseLogger.info(LogCategory.ANALYTICS, 'user_properties', `User properties set for: ${userId}`, { userId, properties: this.sanitizeParameters(properties) });
+            logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'user_properties', `User properties set for: ${userId}`, { userId, properties: this.sanitizeParameters(properties) });
         }
         catch (error) {
             console.error(`Failed to set user properties for ${userId}:`, error);
-            firebaseLogger.error(LogCategory.ANALYTICS, 'user_properties', `Failed to set user properties for: ${userId}`, error, { userId, properties });
+            logger_1.firebaseLogger.error(logger_1.LogCategory.ANALYTICS, 'user_properties', `Failed to set user properties for: ${userId}`, error, { userId, properties });
         }
     }
     /**
@@ -413,7 +416,7 @@ export class FirebaseAnalyticsService {
                 totalRecords: events.length + metrics.length + users.length,
             },
         };
-        firebaseLogger.logAuditEvent('system', 'admin', 'data_export', 'analytics', undefined, undefined, {
+        logger_1.firebaseLogger.logAuditEvent('system', 'admin', 'data_export', 'analytics', undefined, undefined, {
             format,
             period: { startDate, endDate },
             recordCount: exportData.metadata.totalRecords,
@@ -427,7 +430,7 @@ export class FirebaseAnalyticsService {
         const userAnalytics = this.userAnalytics.get(userId) || null;
         const events = this.eventBuffer.filter(event => event.userId === userId);
         const metrics = Array.from(this.businessMetrics.values()).filter(metric => metric.metadata?.userId === userId);
-        firebaseLogger.logAuditEvent(userId, 'user', 'data_export', 'user_analytics', userId, undefined, { recordCount: events.length + metrics.length }, true);
+        logger_1.firebaseLogger.logAuditEvent(userId, 'user', 'data_export', 'user_analytics', userId, undefined, { recordCount: events.length + metrics.length }, true);
         return {
             userAnalytics,
             events,
@@ -559,9 +562,9 @@ export class FirebaseAnalyticsService {
         this.config = { ...this.config, ...config };
         // Update Firebase Analytics collection if needed
         if (this.analytics && 'privacyMode' in config) {
-            setAnalyticsCollectionEnabled(this.analytics, !this.config.privacyMode);
+            (0, analytics_1.setAnalyticsCollectionEnabled)(this.analytics, !this.config.privacyMode);
         }
-        firebaseLogger.info(LogCategory.ANALYTICS, 'config_update', 'Analytics configuration updated', config);
+        logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'config_update', 'Analytics configuration updated', config);
     }
     /**
      * Get analytics configuration
@@ -588,9 +591,10 @@ export class FirebaseAnalyticsService {
         this.eventBuffer = [];
         this.businessMetrics.clear();
         this.userAnalytics.clear();
-        firebaseLogger.logAuditEvent('system', 'admin', 'data_clear', 'analytics', undefined, undefined, { action: 'clear_all_data' }, true);
+        logger_1.firebaseLogger.logAuditEvent('system', 'admin', 'data_clear', 'analytics', undefined, undefined, { action: 'clear_all_data' }, true);
         console.log('All analytics data cleared');
     }
 }
+exports.FirebaseAnalyticsService = FirebaseAnalyticsService;
 // Export singleton instance
-export const firebaseAnalyticsService = FirebaseAnalyticsService.getInstance();
+exports.firebaseAnalyticsService = FirebaseAnalyticsService.getInstance();

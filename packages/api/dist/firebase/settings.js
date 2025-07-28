@@ -1,12 +1,15 @@
-import { collection, doc, getDoc, setDoc, deleteDoc, onSnapshot, serverTimestamp, Timestamp, writeBatch } from 'firebase/firestore';
-import { db } from './config';
-import { validateUserSettingsUpdate, validateMobileAppearanceConfig, validateMobileAsset, defaultProfileSettings, defaultNotificationSettings, defaultPrivacySettings, defaultPreferenceSettings, defaultMobileAppearanceConfig } from '../validation/settings';
-export class SettingsService {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SettingsService = void 0;
+const firestore_1 = require("firebase/firestore");
+const config_1 = require("./config");
+const settings_1 = require("../validation/settings");
+class SettingsService {
     // Get user settings
     static async getUserSettings(userId) {
         try {
-            const settingsRef = doc(db, this.SETTINGS_COLLECTION, userId);
-            const settingsSnap = await getDoc(settingsRef);
+            const settingsRef = (0, firestore_1.doc)(config_1.db, this.SETTINGS_COLLECTION, userId);
+            const settingsSnap = await (0, firestore_1.getDoc)(settingsRef);
             if (settingsSnap.exists()) {
                 const data = settingsSnap.data();
                 return {
@@ -27,25 +30,25 @@ export class SettingsService {
     static async updateUserSettings(userId, settings, source = 'web') {
         try {
             // Validate settings
-            const validation = validateUserSettingsUpdate(settings);
+            const validation = (0, settings_1.validateUserSettingsUpdate)(settings);
             if (!validation.success) {
                 throw this.createValidationError(validation.error.issues);
             }
-            const settingsRef = doc(db, this.SETTINGS_COLLECTION, userId);
+            const settingsRef = (0, firestore_1.doc)(config_1.db, this.SETTINGS_COLLECTION, userId);
             const currentSettings = await this.getUserSettings(userId);
             // Prepare update data
             const updateData = {
                 ...settings,
-                updatedAt: serverTimestamp(),
+                updatedAt: (0, firestore_1.serverTimestamp)(),
                 version: (currentSettings?.version || 0) + 1
             };
             // If this is a new settings document, include creation timestamp
             if (!currentSettings) {
-                updateData.createdAt = serverTimestamp();
+                updateData.createdAt = (0, firestore_1.serverTimestamp)();
                 updateData.userId = userId;
             }
             // Update settings
-            await setDoc(settingsRef, updateData, { merge: true });
+            await (0, firestore_1.setDoc)(settingsRef, updateData, { merge: true });
             // Log changes for audit
             if (currentSettings) {
                 await this.logSettingsChanges(userId, currentSettings, updateData, source);
@@ -108,7 +111,7 @@ export class SettingsService {
                 userId,
                 role: settings.role,
                 settings: exportSettings,
-                exportedAt: Timestamp.now(),
+                exportedAt: firestore_1.Timestamp.now(),
                 format: 'json'
             };
         }
@@ -120,8 +123,8 @@ export class SettingsService {
     // Get default settings for a role
     static async getDefaultSettings(role) {
         try {
-            const defaultsRef = doc(db, this.SETTINGS_DEFAULTS_COLLECTION, role);
-            const defaultsSnap = await getDoc(defaultsRef);
+            const defaultsRef = (0, firestore_1.doc)(config_1.db, this.SETTINGS_DEFAULTS_COLLECTION, role);
+            const defaultsSnap = await (0, firestore_1.getDoc)(defaultsRef);
             if (defaultsSnap.exists()) {
                 return defaultsSnap.data();
             }
@@ -136,14 +139,14 @@ export class SettingsService {
     // Initialize default settings in database
     static async initializeDefaultSettings() {
         try {
-            const batch = writeBatch(db);
+            const batch = (0, firestore_1.writeBatch)(config_1.db);
             const roles = ['shopper', 'vendor', 'driver', 'admin'];
             for (const role of roles) {
-                const defaultsRef = doc(db, this.SETTINGS_DEFAULTS_COLLECTION, role);
+                const defaultsRef = (0, firestore_1.doc)(config_1.db, this.SETTINGS_DEFAULTS_COLLECTION, role);
                 const defaults = this.getHardcodedDefaults(role);
                 batch.set(defaultsRef, {
                     ...defaults,
-                    updatedAt: serverTimestamp()
+                    updatedAt: (0, firestore_1.serverTimestamp)()
                 });
             }
             await batch.commit();
@@ -155,8 +158,8 @@ export class SettingsService {
     }
     // Real-time settings listener
     static onSettingsChange(userId, callback) {
-        const settingsRef = doc(db, this.SETTINGS_COLLECTION, userId);
-        return onSnapshot(settingsRef, (doc) => {
+        const settingsRef = (0, firestore_1.doc)(config_1.db, this.SETTINGS_COLLECTION, userId);
+        return (0, firestore_1.onSnapshot)(settingsRef, (doc) => {
             if (doc.exists()) {
                 const data = doc.data();
                 callback({
@@ -177,8 +180,8 @@ export class SettingsService {
     // Mobile appearance management
     static async getMobileAppearanceConfig() {
         try {
-            const appearanceRef = doc(db, this.MOBILE_APPEARANCE_COLLECTION, 'config');
-            const appearanceSnap = await getDoc(appearanceRef);
+            const appearanceRef = (0, firestore_1.doc)(config_1.db, this.MOBILE_APPEARANCE_COLLECTION, 'config');
+            const appearanceSnap = await (0, firestore_1.getDoc)(appearanceRef);
             if (appearanceSnap.exists()) {
                 const data = appearanceSnap.data();
                 return {
@@ -188,8 +191,8 @@ export class SettingsService {
             }
             // Return default config if not found
             return {
-                ...defaultMobileAppearanceConfig,
-                updatedAt: Timestamp.now()
+                ...settings_1.defaultMobileAppearanceConfig,
+                updatedAt: firestore_1.Timestamp.now()
             };
         }
         catch (error) {
@@ -200,18 +203,18 @@ export class SettingsService {
     static async updateMobileAppearanceConfig(config) {
         try {
             // Validate config
-            const validation = validateMobileAppearanceConfig(config);
+            const validation = (0, settings_1.validateMobileAppearanceConfig)(config);
             if (!validation.success) {
                 throw this.createValidationError(validation.error.issues);
             }
-            const appearanceRef = doc(db, this.MOBILE_APPEARANCE_COLLECTION, 'config');
+            const appearanceRef = (0, firestore_1.doc)(config_1.db, this.MOBILE_APPEARANCE_COLLECTION, 'config');
             const currentConfig = await this.getMobileAppearanceConfig();
             const updateData = {
                 ...config,
-                updatedAt: serverTimestamp(),
+                updatedAt: (0, firestore_1.serverTimestamp)(),
                 version: (currentConfig?.version || 0) + 1
             };
-            await setDoc(appearanceRef, updateData, { merge: true });
+            await (0, firestore_1.setDoc)(appearanceRef, updateData, { merge: true });
         }
         catch (error) {
             console.error('Error updating mobile appearance config:', error);
@@ -220,8 +223,8 @@ export class SettingsService {
     }
     // Mobile appearance real-time listener
     static onMobileAppearanceChange(callback) {
-        const appearanceRef = doc(db, this.MOBILE_APPEARANCE_COLLECTION, 'config');
-        return onSnapshot(appearanceRef, (doc) => {
+        const appearanceRef = (0, firestore_1.doc)(config_1.db, this.MOBILE_APPEARANCE_COLLECTION, 'config');
+        return (0, firestore_1.onSnapshot)(appearanceRef, (doc) => {
             if (doc.exists()) {
                 const data = doc.data();
                 callback({
@@ -231,8 +234,8 @@ export class SettingsService {
             }
             else {
                 callback({
-                    ...defaultMobileAppearanceConfig,
-                    updatedAt: Timestamp.now()
+                    ...settings_1.defaultMobileAppearanceConfig,
+                    updatedAt: firestore_1.Timestamp.now()
                 });
             }
         }, (error) => {
@@ -242,14 +245,14 @@ export class SettingsService {
     // Mobile asset management
     static async saveMobileAsset(asset) {
         try {
-            const validation = validateMobileAsset({ ...asset, uploadedAt: Timestamp.now() });
+            const validation = (0, settings_1.validateMobileAsset)({ ...asset, uploadedAt: firestore_1.Timestamp.now() });
             if (!validation.success) {
                 throw this.createValidationError(validation.error.issues);
             }
-            const assetRef = doc(db, this.MOBILE_ASSETS_COLLECTION, asset.assetId);
-            await setDoc(assetRef, {
+            const assetRef = (0, firestore_1.doc)(config_1.db, this.MOBILE_ASSETS_COLLECTION, asset.assetId);
+            await (0, firestore_1.setDoc)(assetRef, {
                 ...asset,
-                uploadedAt: serverTimestamp()
+                uploadedAt: (0, firestore_1.serverTimestamp)()
             });
         }
         catch (error) {
@@ -259,8 +262,8 @@ export class SettingsService {
     }
     static async getMobileAsset(assetId) {
         try {
-            const assetRef = doc(db, this.MOBILE_ASSETS_COLLECTION, assetId);
-            const assetSnap = await getDoc(assetRef);
+            const assetRef = (0, firestore_1.doc)(config_1.db, this.MOBILE_ASSETS_COLLECTION, assetId);
+            const assetSnap = await (0, firestore_1.getDoc)(assetRef);
             if (assetSnap.exists()) {
                 const data = assetSnap.data();
                 return {
@@ -278,8 +281,8 @@ export class SettingsService {
     // Delete user settings
     static async deleteUserSettings(userId) {
         try {
-            const settingsRef = doc(db, this.SETTINGS_COLLECTION, userId);
-            await deleteDoc(settingsRef);
+            const settingsRef = (0, firestore_1.doc)(config_1.db, this.SETTINGS_COLLECTION, userId);
+            await (0, firestore_1.deleteDoc)(settingsRef);
         }
         catch (error) {
             console.error('Error deleting user settings:', error);
@@ -289,8 +292,8 @@ export class SettingsService {
     // Delete mobile asset
     static async deleteMobileAsset(assetId) {
         try {
-            const assetRef = doc(db, this.MOBILE_ASSETS_COLLECTION, assetId);
-            await deleteDoc(assetRef);
+            const assetRef = (0, firestore_1.doc)(config_1.db, this.MOBILE_ASSETS_COLLECTION, assetId);
+            await (0, firestore_1.deleteDoc)(assetRef);
         }
         catch (error) {
             console.error('Error deleting mobile asset:', error);
@@ -311,18 +314,18 @@ export class SettingsService {
                             field: key,
                             oldValue,
                             newValue,
-                            timestamp: Timestamp.now(),
+                            timestamp: firestore_1.Timestamp.now(),
                             source
                         });
                     }
                 }
             });
             if (changes.length > 0) {
-                const auditRef = doc(collection(db, this.SETTINGS_AUDIT_COLLECTION, userId, 'changes'));
-                await setDoc(auditRef, {
+                const auditRef = (0, firestore_1.doc)((0, firestore_1.collection)(config_1.db, this.SETTINGS_AUDIT_COLLECTION, userId, 'changes'));
+                await (0, firestore_1.setDoc)(auditRef, {
                     userId,
                     changes,
-                    timestamp: serverTimestamp()
+                    timestamp: (0, firestore_1.serverTimestamp)()
                 });
             }
         }
@@ -334,10 +337,10 @@ export class SettingsService {
     static getHardcodedDefaults(role) {
         const baseDefaults = {
             role,
-            profile: defaultProfileSettings,
-            notifications: defaultNotificationSettings,
-            privacy: defaultPrivacySettings,
-            preferences: defaultPreferenceSettings
+            profile: settings_1.defaultProfileSettings,
+            notifications: settings_1.defaultNotificationSettings,
+            privacy: settings_1.defaultPrivacySettings,
+            preferences: settings_1.defaultPreferenceSettings
         };
         const roleSpecificDefaults = {
             shopper: {
@@ -422,7 +425,7 @@ export class SettingsService {
                     paymentGateways: [],
                     notificationServices: []
                 },
-                mobileAppearance: defaultMobileAppearanceConfig
+                mobileAppearance: settings_1.defaultMobileAppearanceConfig
             }
         };
         return {
@@ -444,6 +447,7 @@ export class SettingsService {
         return this.createSettingsError(SettingsErrorType.VALIDATION_ERROR, firstIssue.message, false, firstIssue.path?.join('.'), firstIssue.code);
     }
 }
+exports.SettingsService = SettingsService;
 // Collection references
 SettingsService.SETTINGS_COLLECTION = 'settings';
 SettingsService.SETTINGS_DEFAULTS_COLLECTION = 'settingsDefaults';

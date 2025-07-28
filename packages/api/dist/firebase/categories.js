@@ -1,5 +1,8 @@
-import { FirestoreService } from './firestore';
-export class CategoryService extends FirestoreService {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CategoryService = void 0;
+const firestore_1 = require("./firestore");
+class CategoryService extends firestore_1.FirestoreService {
     // Create category
     static async createCategory(categoryData) {
         return this.create(this.collectionName, categoryData);
@@ -268,4 +271,5 @@ export class CategoryService extends FirestoreService {
         console.log('Default categories initialized successfully');
     }
 }
+exports.CategoryService = CategoryService;
 CategoryService.collectionName = 'categories';

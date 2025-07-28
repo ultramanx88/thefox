@@ -1,36 +1,50 @@
-import { app, auth, db, storage, functions, analytics, messaging, testFirebaseConnection } from './config';
-import { currentConfig, getCurrentEnvironment } from './environment';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.currentConfig = exports.messaging = exports.analytics = exports.functions = exports.storage = exports.db = exports.auth = exports.app = void 0;
+exports.initializeFirebase = initializeFirebase;
+exports.getFirebaseApp = getFirebaseApp;
+exports.getFirebaseServices = getFirebaseServices;
+exports.isFirebaseReady = isFirebaseReady;
+const config_1 = require("./config");
+Object.defineProperty(exports, "app", { enumerable: true, get: function () { return config_1.app; } });
+Object.defineProperty(exports, "auth", { enumerable: true, get: function () { return config_1.auth; } });
+Object.defineProperty(exports, "db", { enumerable: true, get: function () { return config_1.db; } });
+Object.defineProperty(exports, "storage", { enumerable: true, get: function () { return config_1.storage; } });
+Object.defineProperty(exports, "functions", { enumerable: true, get: function () { return config_1.functions; } });
+Object.defineProperty(exports, "analytics", { enumerable: true, get: function () { return config_1.analytics; } });
+Object.defineProperty(exports, "messaging", { enumerable: true, get: function () { return config_1.messaging; } });
+const environment_1 = require("./environment");
 /**
  * Initialize and test Firebase services
  */
-export async function initializeFirebase() {
-    const environment = getCurrentEnvironment();
+async function initializeFirebase() {
+    const environment = (0, environment_1.getCurrentEnvironment)();
     const errors = [];
     console.log(`🔥 Initializing Firebase for ${environment} environment...`);
-    console.log(`📋 Project ID: ${currentConfig.firebase.projectId}`);
-    console.log(`🌐 Auth Domain: ${currentConfig.firebase.authDomain}`);
+    console.log(`📋 Project ID: ${environment_1.currentConfig.firebase.projectId}`);
+    console.log(`🌐 Auth Domain: ${environment_1.currentConfig.firebase.authDomain}`);
     // Test Firebase connection
-    const connectionTest = await testFirebaseConnection();
+    const connectionTest = await (0, config_1.testFirebaseConnection)();
     // Test optional services
     let analyticsAvailable = false;
     let messagingAvailable = false;
     try {
-        analyticsAvailable = !!analytics;
+        analyticsAvailable = !!config_1.analytics;
     }
     catch (error) {
         errors.push(`Analytics initialization failed: ${error}`);
     }
     try {
-        messagingAvailable = !!messaging;
+        messagingAvailable = !!config_1.messaging;
     }
     catch (error) {
         errors.push(`Messaging initialization failed: ${error}`);
     }
     // Validate configuration
-    if (!currentConfig.firebase.apiKey) {
+    if (!environment_1.currentConfig.firebase.apiKey) {
         errors.push('Firebase API key is missing');
     }
-    if (!currentConfig.firebase.projectId) {
+    if (!environment_1.currentConfig.firebase.projectId) {
         errors.push('Firebase project ID is missing');
     }
     const result = {
@@ -60,35 +74,34 @@ export async function initializeFirebase() {
 /**
  * Get Firebase app instance
  */
-export function getFirebaseApp() {
-    return app;
+function getFirebaseApp() {
+    return config_1.app;
 }
 /**
  * Get all Firebase services
  */
-export function getFirebaseServices() {
+function getFirebaseServices() {
     return {
-        app,
-        auth,
-        db,
-        storage,
-        functions,
-        analytics,
-        messaging,
+        app: config_1.app,
+        auth: config_1.auth,
+        db: config_1.db,
+        storage: config_1.storage,
+        functions: config_1.functions,
+        analytics: config_1.analytics,
+        messaging: config_1.messaging,
     };
 }
 /**
  * Check if Firebase is ready
  */
-export function isFirebaseReady() {
+function isFirebaseReady() {
     try {
-        return !!app && !!auth && !!db && !!storage && !!functions;
+        return !!config_1.app && !!config_1.auth && !!config_1.db && !!config_1.storage && !!config_1.functions;
     }
     catch (error) {
         console.error('Firebase readiness check failed:', error);
         return false;
     }
 }
-// Export services for convenience
-export { app, auth, db, storage, functions, analytics, messaging };
-export { currentConfig } from './environment';
+var environment_2 = require("./environment");
+Object.defineProperty(exports, "currentConfig", { enumerable: true, get: function () { return environment_2.currentConfig; } });

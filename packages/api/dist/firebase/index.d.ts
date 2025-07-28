@@ -1,5 +1,5 @@
 export { app, auth, db, storage, functions } from './config';
-export { FirebaseAuthService } from './auth';
+export { FirebaseAuthService, type UserRole, type UserStatus, type UserProfile, type AuthUser } from './auth';
 export { FirestoreService } from './firestore';
 export { FirebaseStorageService } from './storage';
 export { FirebaseFunctionsService } from './functions';

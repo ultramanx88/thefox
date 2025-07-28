@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react';
-import { FirebaseAuthService } from '../firebase/auth';
-export function useAuth() {
-    const [authState, setAuthState] = useState({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.useAuth = useAuth;
+const react_1 = require("react");
+const auth_1 = require("../firebase/auth");
+function useAuth() {
+    const [authState, setAuthState] = (0, react_1.useState)({
         user: null,
         loading: true,
         error: null,
     });
-    useEffect(() => {
-        const unsubscribe = FirebaseAuthService.onAuthStateChanged((user) => {
+    (0, react_1.useEffect)(() => {
+        const unsubscribe = auth_1.FirebaseAuthService.onAuthStateChanged((user) => {
             setAuthState({
                 user,
                 loading: false,
@@ -19,7 +22,7 @@ export function useAuth() {
     const signIn = async (email, password) => {
         try {
             setAuthState(prev => ({ ...prev, loading: true, error: null }));
-            await FirebaseAuthService.signIn(email, password);
+            await auth_1.FirebaseAuthService.signIn(email, password);
         }
         catch (error) {
             setAuthState(prev => ({
@@ -33,7 +36,7 @@ export function useAuth() {
     const signUp = async (email, password, displayName) => {
         try {
             setAuthState(prev => ({ ...prev, loading: true, error: null }));
-            await FirebaseAuthService.signUp(email, password, displayName);
+            await auth_1.FirebaseAuthService.signUp(email, password, displayName);
         }
         catch (error) {
             setAuthState(prev => ({
@@ -47,7 +50,7 @@ export function useAuth() {
     const signOut = async () => {
         try {
             setAuthState(prev => ({ ...prev, loading: true, error: null }));
-            await FirebaseAuthService.signOut();
+            await auth_1.FirebaseAuthService.signOut();
         }
         catch (error) {
             setAuthState(prev => ({
@@ -60,7 +63,7 @@ export function useAuth() {
     };
     const sendPasswordResetEmail = async (email) => {
         try {
-            await FirebaseAuthService.sendPasswordResetEmail(email);
+            await auth_1.FirebaseAuthService.sendPasswordResetEmail(email);
         }
         catch (error) {
             setAuthState(prev => ({

@@ -1,19 +1,27 @@
-import { useState, useEffect } from 'react';
-import { CategoryService } from '../firebase/categories';
-export function useCategories(activeOnly = true, realtime = false) {
-    const [state, setState] = useState({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.useCategories = useCategories;
+exports.useCategoryTree = useCategoryTree;
+exports.useMainCategories = useMainCategories;
+exports.useSubcategories = useSubcategories;
+exports.useCategoriesWithProductCount = useCategoriesWithProductCount;
+exports.useCategorySearch = useCategorySearch;
+const react_1 = require("react");
+const categories_1 = require("../firebase/categories");
+function useCategories(activeOnly = true, realtime = false) {
+    const [state, setState] = (0, react_1.useState)({
         categories: [],
         loading: true,
         error: null,
     });
-    useEffect(() => {
+    (0, react_1.useEffect)(() => {
         let unsubscribe;
         const fetchCategories = async () => {
             try {
                 setState(prev => ({ ...prev, loading: true, error: null }));
                 if (realtime) {
                     // Set up real-time listener
-                    unsubscribe = CategoryService.onCategoriesChange((categories) => {
+                    unsubscribe = categories_1.CategoryService.onCategoriesChange((categories) => {
                         setState({
                             categories,
                             loading: false,
@@ -23,7 +31,7 @@ export function useCategories(activeOnly = true, realtime = false) {
                 }
                 else {
                     // One-time fetch
-                    const categories = await CategoryService.getCategories(activeOnly);
+                    const categories = await categories_1.CategoryService.getCategories(activeOnly);
                     setState({
                         categories,
                         loading: false,
@@ -49,7 +57,7 @@ export function useCategories(activeOnly = true, realtime = false) {
     const refetch = async () => {
         try {
             setState(prev => ({ ...prev, loading: true, error: null }));
-            const categories = await CategoryService.getCategories(activeOnly);
+            const categories = await categories_1.CategoryService.getCategories(activeOnly);
             setState({
                 categories,
                 loading: false,
@@ -69,17 +77,17 @@ export function useCategories(activeOnly = true, realtime = false) {
         refetch,
     };
 }
-export function useCategoryTree() {
-    const [state, setState] = useState({
+function useCategoryTree() {
+    const [state, setState] = (0, react_1.useState)({
         categoryTree: [],
         loading: true,
         error: null,
     });
-    useEffect(() => {
+    (0, react_1.useEffect)(() => {
         const fetchCategoryTree = async () => {
             try {
                 setState(prev => ({ ...prev, loading: true, error: null }));
-                const categoryTree = await CategoryService.getCategoryTree();
+                const categoryTree = await categories_1.CategoryService.getCategoryTree();
                 setState({
                     categoryTree,
                     loading: false,
@@ -99,7 +107,7 @@ export function useCategoryTree() {
     const refetch = async () => {
         try {
             setState(prev => ({ ...prev, loading: true, error: null }));
-            const categoryTree = await CategoryService.getCategoryTree();
+            const categoryTree = await categories_1.CategoryService.getCategoryTree();
             setState({
                 categoryTree,
                 loading: false,
@@ -119,17 +127,17 @@ export function useCategoryTree() {
         refetch,
     };
 }
-export function useMainCategories() {
-    const [state, setState] = useState({
+function useMainCategories() {
+    const [state, setState] = (0, react_1.useState)({
         categories: [],
         loading: true,
         error: null,
     });
-    useEffect(() => {
+    (0, react_1.useEffect)(() => {
         const fetchMainCategories = async () => {
             try {
                 setState(prev => ({ ...prev, loading: true, error: null }));
-                const categories = await CategoryService.getMainCategories();
+                const categories = await categories_1.CategoryService.getMainCategories();
                 setState({
                     categories,
                     loading: false,
@@ -149,7 +157,7 @@ export function useMainCategories() {
     const refetch = async () => {
         try {
             setState(prev => ({ ...prev, loading: true, error: null }));
-            const categories = await CategoryService.getMainCategories();
+            const categories = await categories_1.CategoryService.getMainCategories();
             setState({
                 categories,
                 loading: false,
@@ -169,13 +177,13 @@ export function useMainCategories() {
         refetch,
     };
 }
-export function useSubcategories(parentId) {
-    const [state, setState] = useState({
+function useSubcategories(parentId) {
+    const [state, setState] = (0, react_1.useState)({
         categories: [],
         loading: true,
         error: null,
     });
-    useEffect(() => {
+    (0, react_1.useEffect)(() => {
         if (!parentId) {
             setState({ categories: [], loading: false, error: null });
             return;
@@ -183,7 +191,7 @@ export function useSubcategories(parentId) {
         const fetchSubcategories = async () => {
             try {
                 setState(prev => ({ ...prev, loading: true, error: null }));
-                const categories = await CategoryService.getSubcategories(parentId);
+                const categories = await categories_1.CategoryService.getSubcategories(parentId);
                 setState({
                     categories,
                     loading: false,
@@ -205,7 +213,7 @@ export function useSubcategories(parentId) {
             return;
         try {
             setState(prev => ({ ...prev, loading: true, error: null }));
-            const categories = await CategoryService.getSubcategories(parentId);
+            const categories = await categories_1.CategoryService.getSubcategories(parentId);
             setState({
                 categories,
                 loading: false,
@@ -225,17 +233,17 @@ export function useSubcategories(parentId) {
         refetch,
     };
 }
-export function useCategoriesWithProductCount() {
-    const [state, setState] = useState({
+function useCategoriesWithProductCount() {
+    const [state, setState] = (0, react_1.useState)({
         categories: [],
         loading: true,
         error: null,
     });
-    useEffect(() => {
+    (0, react_1.useEffect)(() => {
         const fetchCategoriesWithCount = async () => {
             try {
                 setState(prev => ({ ...prev, loading: true, error: null }));
-                const categories = await CategoryService.getCategoriesWithProductCount();
+                const categories = await categories_1.CategoryService.getCategoriesWithProductCount();
                 setState({
                     categories,
                     loading: false,
@@ -255,7 +263,7 @@ export function useCategoriesWithProductCount() {
     const refetch = async () => {
         try {
             setState(prev => ({ ...prev, loading: true, error: null }));
-            const categories = await CategoryService.getCategoriesWithProductCount();
+            const categories = await categories_1.CategoryService.getCategoriesWithProductCount();
             setState({
                 categories,
                 loading: false,
@@ -275,8 +283,8 @@ export function useCategoriesWithProductCount() {
         refetch,
     };
 }
-export function useCategorySearch() {
-    const [state, setState] = useState({
+function useCategorySearch() {
+    const [state, setState] = (0, react_1.useState)({
         categories: [],
         loading: false,
         error: null,
@@ -285,7 +293,7 @@ export function useCategorySearch() {
     const searchCategories = async (searchTerm) => {
         try {
             setState(prev => ({ ...prev, loading: true, error: null, searchTerm }));
-            const categories = await CategoryService.searchCategories(searchTerm);
+            const categories = await categories_1.CategoryService.searchCategories(searchTerm);
             setState(prev => ({
                 ...prev,
                 categories,

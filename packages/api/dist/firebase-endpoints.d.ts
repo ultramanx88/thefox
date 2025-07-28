@@ -7,7 +7,7 @@ export declare const firebaseApi: {
         }>;
         register: (data: RegisterRequest) => Promise<import("@firebase/auth").User>;
         logout: () => Promise<void>;
-        getCurrentUser: () => import("@firebase/auth").User | null;
+        getCurrentUser: () => import("@firebase/auth").User;
         onAuthStateChanged: (callback: (user: any) => void) => import("@firebase/util").Unsubscribe;
     };
     markets: {
@@ -15,7 +15,7 @@ export declare const firebaseApi: {
             category?: string;
             isOpen?: boolean;
         }) => Promise<Market[]>;
-        getMarket: (id: string) => Promise<Market | null>;
+        getMarket: (id: string) => Promise<Market>;
         createMarket: (marketData: {
             name: string;
             description: string;
@@ -36,7 +36,7 @@ export declare const firebaseApi: {
     };
     products: {
         getProducts: (marketId: string, category?: string) => Promise<Product[]>;
-        getProduct: (id: string) => Promise<Product | null>;
+        getProduct: (id: string) => Promise<Product>;
         createProduct: (productData: Omit<Product, "id">) => Promise<any>;
         updateProduct: (id: string, data: Partial<Product>) => Promise<void>;
         searchProducts: (query: string, marketId?: string) => Promise<any>;
@@ -44,7 +44,7 @@ export declare const firebaseApi: {
     };
     orders: {
         getOrders: (userId: string) => Promise<Order[]>;
-        getOrder: (id: string) => Promise<Order | null>;
+        getOrder: (id: string) => Promise<Order>;
         createOrder: (orderData: {
             marketId: string;
             items: Array<{
@@ -69,7 +69,7 @@ export declare const firebaseApi: {
         }) => Promise<any>;
     };
     user: {
-        getProfile: (userId: string) => Promise<User | null>;
+        getProfile: (userId: string) => Promise<User>;
         updateProfile: (userId: string, data: Partial<User>) => Promise<void>;
         uploadAvatar: (userId: string, file: File) => Promise<any>;
         addAddress: (userId: string, address: User["addresses"][0]) => Promise<import("./types").Address[]>;
@@ -94,7 +94,7 @@ export declare const firebaseApi: {
     };
     categories: {
         getCategories: (activeOnly?: boolean) => Promise<Category[]>;
-        getCategory: (id: string) => Promise<Category | null>;
+        getCategory: (id: string) => Promise<Category>;
         createCategory: (categoryData: Omit<Category, "id" | "createdAt" | "updatedAt">) => Promise<string>;
         updateCategory: (id: string, updates: Partial<Category>) => Promise<void>;
         deleteCategory: (id: string) => Promise<void>;

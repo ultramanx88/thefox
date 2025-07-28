@@ -1,14 +1,17 @@
+"use strict";
 /**
  * Automated Reporting Service for Sales and User Data
  * Generates scheduled reports, dashboards, and business intelligence
  */
-import { firebaseAnalyticsService } from './analytics-service';
-import { firebaseLogger, LogCategory } from './logger';
-import { FirestoreService } from './firestore';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.automatedReportingService = exports.AutomatedReportingService = void 0;
+const analytics_service_1 = require("./analytics-service");
+const logger_1 = require("./logger");
+const firestore_1 = require("./firestore");
 // ===========================================
 // AUTOMATED REPORTING SERVICE
 // ===========================================
-export class AutomatedReportingService {
+class AutomatedReportingService {
     constructor() {
         this.reportConfigs = new Map();
         this.generatedReports = new Map();
@@ -37,11 +40,11 @@ export class AutomatedReportingService {
             // Set up default reports
             await this.setupDefaultReports();
             this.isInitialized = true;
-            firebaseLogger.info(LogCategory.ANALYTICS, 'reporting_init', 'Automated Reporting Service initialized');
+            logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'reporting_init', 'Automated Reporting Service initialized');
         }
         catch (error) {
             console.error('Failed to initialize Automated Reporting Service:', error);
-            firebaseLogger.error(LogCategory.ANALYTICS, 'reporting_init', 'Failed to initialize Automated Reporting Service', error);
+            logger_1.firebaseLogger.error(logger_1.LogCategory.ANALYTICS, 'reporting_init', 'Failed to initialize Automated Reporting Service', error);
         }
     }
     // ===========================================
@@ -64,7 +67,7 @@ export class AutomatedReportingService {
         if (reportConfig.enabled) {
             this.scheduleReport(reportConfig);
         }
-        firebaseLogger.info(LogCategory.ANALYTICS, 'report_config_create', `Report configuration created: ${reportConfig.name}`, { configId: reportConfig.id, type: reportConfig.type });
+        logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'report_config_create', `Report configuration created: ${reportConfig.name}`, { configId: reportConfig.id, type: reportConfig.type });
         return reportConfig.id;
     }
     /**
@@ -88,7 +91,7 @@ export class AutomatedReportingService {
         if (updatedConfig.enabled) {
             this.scheduleReport(updatedConfig);
         }
-        firebaseLogger.info(LogCategory.ANALYTICS, 'report_config_update', `Report configuration updated: ${updatedConfig.name}`, { configId, updates });
+        logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'report_config_update', `Report configuration updated: ${updatedConfig.name}`, { configId, updates });
     }
     /**
      * Delete report configuration
@@ -103,8 +106,8 @@ export class AutomatedReportingService {
         // Remove from memory
         this.reportConfigs.delete(configId);
         // Remove from Firestore
-        await FirestoreService.delete('reportConfigs', configId);
-        firebaseLogger.info(LogCategory.ANALYTICS, 'report_config_delete', `Report configuration deleted: ${config.name}`, { configId });
+        await firestore_1.FirestoreService.delete('reportConfigs', configId);
+        logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'report_config_delete', `Report configuration deleted: ${config.name}`, { configId });
     }
     // ===========================================
     // REPORT GENERATION
@@ -118,7 +121,7 @@ export class AutomatedReportingService {
             throw new Error(`Report configuration not found: ${configId}`);
         }
         const period = customPeriod || this.calculateReportPeriod(config.schedule);
-        firebaseLogger.info(LogCategory.ANALYTICS, 'report_generate', `Generating report: ${config.name}`, { configId, period });
+        logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'report_generate', `Generating report: ${config.name}`, { configId, period });
         try {
             let reportData;
             let summary;
@@ -173,11 +176,11 @@ export class AutomatedReportingService {
             if (config.recipients.length > 0) {
                 await this.sendReportToRecipients(report, config.recipients);
             }
-            firebaseLogger.info(LogCategory.ANALYTICS, 'report_generated', `Report generated successfully: ${config.name}`, { reportId: report.id, configId, recordCount: summary.totalRecords });
+            logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'report_generated', `Report generated successfully: ${config.name}`, { reportId: report.id, configId, recordCount: summary.totalRecords });
             return report;
         }
         catch (error) {
-            firebaseLogger.error(LogCategory.ANALYTICS, 'report_generate', `Failed to generate report: ${config.name}`, error, { configId });
+            logger_1.firebaseLogger.error(logger_1.LogCategory.ANALYTICS, 'report_generate', `Failed to generate report: ${config.name}`, error, { configId });
             throw error;
         }
     }
@@ -188,10 +191,10 @@ export class AutomatedReportingService {
      * Generate sales report
      */
     async generateSalesReport(period, filters) {
-        const salesAnalytics = firebaseAnalyticsService.generateSalesReport('daily', // This would be determined by period length
+        const salesAnalytics = analytics_service_1.firebaseAnalyticsService.generateSalesReport('daily', // This would be determined by period length
         period.startDate, period.endDate);
         // Add additional sales data from Firestore
-        const ordersQuery = await FirestoreService.query('orders', [
+        const ordersQuery = await firestore_1.FirestoreService.query('orders', [
             { field: 'createdAt', operator: '>=', value: period.startDate },
             { field: 'createdAt', operator: '<=', value: period.endDate },
         ], 'createdAt', 'desc');
@@ -211,9 +214,9 @@ export class AutomatedReportingService {
      * Generate users report
      */
     async generateUsersReport(period, filters) {
-        const userReport = firebaseAnalyticsService.generateUserReport(period.startDate, period.endDate);
+        const userReport = analytics_service_1.firebaseAnalyticsService.generateUserReport(period.startDate, period.endDate);
         // Add additional user data from Firestore
-        const usersQuery = await FirestoreService.query('users', [
+        const usersQuery = await firestore_1.FirestoreService.query('users', [
             { field: 'createdAt', operator: '>=', value: period.startDate },
             { field: 'createdAt', operator: '<=', value: period.endDate },
         ], 'createdAt', 'desc');
@@ -233,7 +236,7 @@ export class AutomatedReportingService {
      * Generate orders report
      */
     async generateOrdersReport(period, filters) {
-        const ordersQuery = await FirestoreService.query('orders', [
+        const ordersQuery = await firestore_1.FirestoreService.query('orders', [
             { field: 'createdAt', operator: '>=', value: period.startDate },
             { field: 'createdAt', operator: '<=', value: period.endDate },
         ], 'createdAt', 'desc');
@@ -248,7 +251,7 @@ export class AutomatedReportingService {
      * Generate products report
      */
     async generateProductsReport(period, filters) {
-        const productsQuery = await FirestoreService.query('products');
+        const productsQuery = await firestore_1.FirestoreService.query('products');
         // Get product performance data
         const productPerformance = await this.calculateProductPerformance(productsQuery, period);
         return {
@@ -260,7 +263,7 @@ export class AutomatedReportingService {
      * Generate delivery report
      */
     async generateDeliveryReport(period, filters) {
-        const deliveriesQuery = await FirestoreService.query('deliveries', [
+        const deliveriesQuery = await firestore_1.FirestoreService.query('deliveries', [
             { field: 'createdAt', operator: '>=', value: period.startDate },
             { field: 'createdAt', operator: '<=', value: period.endDate },
         ], 'createdAt', 'desc');
@@ -302,8 +305,8 @@ export class AutomatedReportingService {
         };
         this.dashboards.set(newDashboard.id, newDashboard);
         // Persist to Firestore
-        await FirestoreService.create('dashboards', newDashboard);
-        firebaseLogger.info(LogCategory.ANALYTICS, 'dashboard_create', `Dashboard created: ${newDashboard.name}`, { dashboardId: newDashboard.id });
+        await firestore_1.FirestoreService.create('dashboards', newDashboard);
+        logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'dashboard_create', `Dashboard created: ${newDashboard.name}`, { dashboardId: newDashboard.id });
         return newDashboard.id;
     }
     /**
@@ -321,8 +324,8 @@ export class AutomatedReportingService {
         };
         this.dashboards.set(dashboardId, updatedDashboard);
         // Persist to Firestore
-        await FirestoreService.update('dashboards', dashboardId, updatedDashboard);
-        firebaseLogger.info(LogCategory.ANALYTICS, 'dashboard_update', `Dashboard updated: ${updatedDashboard.name}`, { dashboardId });
+        await firestore_1.FirestoreService.update('dashboards', dashboardId, updatedDashboard);
+        logger_1.firebaseLogger.info(logger_1.LogCategory.ANALYTICS, 'dashboard_update', `Dashboard updated: ${updatedDashboard.name}`, { dashboardId });
     }
     /**
      * Get dashboard data
@@ -355,7 +358,7 @@ export class AutomatedReportingService {
      * Generate business intelligence insights
      */
     async generateBusinessIntelligence() {
-        const dashboardData = firebaseAnalyticsService.generateDashboardData();
+        const dashboardData = analytics_service_1.firebaseAnalyticsService.generateDashboardData();
         const insights = await this.generateInsights(dashboardData);
         const predictions = await this.generatePredictions(dashboardData);
         const alerts = await this.generateAlerts(dashboardData);
@@ -373,7 +376,7 @@ export class AutomatedReportingService {
      */
     async loadReportConfigs() {
         try {
-            const configs = await FirestoreService.query('reportConfigs');
+            const configs = await firestore_1.FirestoreService.query('reportConfigs');
             for (const config of configs) {
                 this.reportConfigs.set(config.id, config);
             }
@@ -388,7 +391,7 @@ export class AutomatedReportingService {
      */
     async loadDashboards() {
         try {
-            const dashboards = await FirestoreService.query('dashboards');
+            const dashboards = await firestore_1.FirestoreService.query('dashboards');
             for (const dashboard of dashboards) {
                 this.dashboards.set(dashboard.id, dashboard);
             }
@@ -645,10 +648,10 @@ export class AutomatedReportingService {
         return [];
     }
     async persistReportConfig(config) {
-        await FirestoreService.update('reportConfigs', config.id, config);
+        await firestore_1.FirestoreService.update('reportConfigs', config.id, config);
     }
     async persistReport(report) {
-        await FirestoreService.create('reports', report);
+        await firestore_1.FirestoreService.create('reports', report);
     }
     async sendReportToRecipients(report, recipients) {
         // Implementation would send email/notifications to recipients
@@ -696,5 +699,6 @@ export class AutomatedReportingService {
         };
     }
 }
+exports.AutomatedReportingService = AutomatedReportingService;
 // Export singleton instance
-export const automatedReportingService = AutomatedReportingService.getInstance();
+exports.automatedReportingService = AutomatedReportingService.getInstance();

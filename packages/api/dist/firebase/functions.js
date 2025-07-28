@@ -1,10 +1,13 @@
-import { httpsCallable } from 'firebase/functions';
-import { functions } from './config';
-export class FirebaseFunctionsService {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FirebaseFunctionsService = void 0;
+const functions_1 = require("firebase/functions");
+const config_1 = require("./config");
+class FirebaseFunctionsService {
     // Generic function caller
     static async callFunction(functionName, data) {
         try {
-            const callable = httpsCallable(functions, functionName);
+            const callable = (0, functions_1.httpsCallable)(config_1.functions, functionName);
             const result = await callable(data);
             return result.data;
         }
@@ -64,6 +67,25 @@ export class FirebaseFunctionsService {
     static async deleteUserAccount(userId) {
         return this.callFunction('deleteUserAccount', { userId });
     }
+    // Authentication functions
+    static async createUserWithRole(userData) {
+        return this.callFunction('createUserWithRole', userData);
+    }
+    static async setCustomClaims(userId, claims) {
+        return this.callFunction('setCustomClaims', { userId, claims });
+    }
+    static async verifyUserRole(userId, requiredRole) {
+        return this.callFunction('verifyUserRole', { userId, requiredRole });
+    }
+    static async updateUserStatus(userId, status, reason) {
+        return this.callFunction('updateUserStatus', { userId, status, reason });
+    }
+    static async sendEmailVerification(userId) {
+        return this.callFunction('sendEmailVerification', { userId });
+    }
+    static async verifyEmailToken(token) {
+        return this.callFunction('verifyEmailToken', { token });
+    }
     // Market/Vendor functions
     static async createMarket(marketData) {
         return this.callFunction('createMarket', marketData);
@@ -116,3 +138,4 @@ export class FirebaseFunctionsService {
         return this.callFunction('generateReport', data);
     }
 }
+exports.FirebaseFunctionsService = FirebaseFunctionsService;

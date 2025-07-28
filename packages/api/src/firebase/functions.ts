@@ -123,6 +123,41 @@ export class FirebaseFunctionsService {
     return this.callFunction('deleteUserAccount', { userId });
   }
 
+  // Authentication functions
+  static async createUserWithRole(userData: {
+    email: string;
+    password: string;
+    role: 'customer' | 'driver' | 'vendor';
+    profile: {
+      firstName: string;
+      lastName: string;
+      phone: string;
+      dateOfBirth?: string;
+    };
+  }) {
+    return this.callFunction('createUserWithRole', userData);
+  }
+
+  static async setCustomClaims(userId: string, claims: { [key: string]: any }) {
+    return this.callFunction('setCustomClaims', { userId, claims });
+  }
+
+  static async verifyUserRole(userId: string, requiredRole: string) {
+    return this.callFunction('verifyUserRole', { userId, requiredRole });
+  }
+
+  static async updateUserStatus(userId: string, status: 'pending' | 'active' | 'suspended' | 'rejected', reason?: string) {
+    return this.callFunction('updateUserStatus', { userId, status, reason });
+  }
+
+  static async sendEmailVerification(userId: string) {
+    return this.callFunction('sendEmailVerification', { userId });
+  }
+
+  static async verifyEmailToken(token: string) {
+    return this.callFunction('verifyEmailToken', { token });
+  }
+
   // Market/Vendor functions
   static async createMarket(marketData: {
     name: string;

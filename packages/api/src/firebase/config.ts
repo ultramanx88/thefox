@@ -113,5 +113,10 @@ export { firebaseAnalyticsService } from './analytics-service';
 export { automatedReportingService } from './reporting-service';
 export { dataExportService } from './data-export-service';
 
+// Export registration services
+export { RegistrationService } from './registration';
+export { VerificationService } from './verification';
+export { UserClaimsService } from './user-claims';
+
 export { app, analytics, messaging };
 export default app;

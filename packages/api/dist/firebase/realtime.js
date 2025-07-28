@@ -1,13 +1,49 @@
+"use strict";
 /**
  * Real-time Data Synchronization Service
  * Handles real-time updates, offline support, and data synchronization
  */
-import { onSnapshot, doc, collection, query, enableNetwork, disableNetwork, waitForPendingWrites, clearPersistence } from 'firebase/firestore';
-import { db } from './config';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createConflictResolver = exports.createRealtimeQuery = exports.realtimeSyncService = exports.RealtimeSyncService = void 0;
+const firestore_1 = require("firebase/firestore");
+const config_1 = require("./config");
 // ===========================================
 // REAL-TIME SYNCHRONIZATION SERVICE
 // ===========================================
-export class RealtimeSyncService {
+class RealtimeSyncService {
     constructor() {
         this.subscriptions = new Map();
         this.offlineActions = new Map();
@@ -31,8 +67,8 @@ export class RealtimeSyncService {
     subscribeToDocument(path, callback, errorCallback) {
         const subscriptionId = `doc_${path}_${Date.now()}`;
         try {
-            const docRef = doc(db, path);
-            const unsubscribe = onSnapshot(docRef, (snapshot) => {
+            const docRef = (0, firestore_1.doc)(config_1.db, path);
+            const unsubscribe = (0, firestore_1.onSnapshot)(docRef, (snapshot) => {
                 const data = snapshot.exists()
                     ? { id: snapshot.id, ...snapshot.data() }
                     : null;
@@ -70,11 +106,11 @@ export class RealtimeSyncService {
     subscribeToCollection(collectionPath, constraints = [], callback, errorCallback) {
         const subscriptionId = `col_${collectionPath}_${Date.now()}`;
         try {
-            const collectionRef = collection(db, collectionPath);
+            const collectionRef = (0, firestore_1.collection)(config_1.db, collectionPath);
             const q = constraints.length > 0
-                ? query(collectionRef, ...constraints)
+                ? (0, firestore_1.query)(collectionRef, ...constraints)
                 : collectionRef;
-            const unsubscribe = onSnapshot(q, (snapshot) => {
+            const unsubscribe = (0, firestore_1.onSnapshot)(q, (snapshot) => {
                 const data = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
@@ -256,7 +292,7 @@ export class RealtimeSyncService {
             console.log('Network connection restored');
             // Re-enable Firestore network
             try {
-                await enableNetwork(db);
+                await (0, firestore_1.enableNetwork)(config_1.db);
                 // Sync pending offline actions
                 await this.syncOfflineActions();
                 // Emit network status change event
@@ -270,7 +306,7 @@ export class RealtimeSyncService {
             console.log('Network connection lost');
             // Disable Firestore network
             try {
-                await disableNetwork(db);
+                await (0, firestore_1.disableNetwork)(config_1.db);
                 // Emit network status change event
                 this.emitEvent('network:offline', { isOnline: false });
             }
@@ -361,7 +397,7 @@ export class RealtimeSyncService {
      */
     async waitForPendingWrites() {
         try {
-            await waitForPendingWrites(db);
+            await (0, firestore_1.waitForPendingWrites)(config_1.db);
             this.syncStatus.hasPendingWrites = false;
         }
         catch (error) {
@@ -377,7 +413,7 @@ export class RealtimeSyncService {
             // First, make sure all subscriptions are closed
             this.unsubscribeAll();
             // Clear persistence
-            await clearPersistence(db);
+            await (0, firestore_1.clearPersistence)(config_1.db);
             console.log('Offline persistence cleared');
         }
         catch (error) {
@@ -403,7 +439,7 @@ export class RealtimeSyncService {
     }
     async executeCreateAction(action) {
         const { collection: collectionPath, data } = action;
-        const { FirestoreService } = await import('./firestore');
+        const { FirestoreService } = await Promise.resolve().then(() => __importStar(require('./firestore')));
         await FirestoreService.create(collectionPath, data);
         console.log(`Executed create action for ${collectionPath}`, data);
     }
@@ -411,7 +447,7 @@ export class RealtimeSyncService {
         const { collection: collectionPath, documentId, data } = action;
         if (!documentId)
             throw new Error('Document ID required for update action');
-        const { FirestoreService } = await import('./firestore');
+        const { FirestoreService } = await Promise.resolve().then(() => __importStar(require('./firestore')));
         await FirestoreService.update(collectionPath, documentId, data);
         console.log(`Executed update action for ${collectionPath}/${documentId}`, data);
     }
@@ -419,17 +455,20 @@ export class RealtimeSyncService {
         const { collection: collectionPath, documentId } = action;
         if (!documentId)
             throw new Error('Document ID required for delete action');
-        const { FirestoreService } = await import('./firestore');
+        const { FirestoreService } = await Promise.resolve().then(() => __importStar(require('./firestore')));
         await FirestoreService.delete(collectionPath, documentId);
         console.log(`Executed delete action for ${collectionPath}/${documentId}`);
     }
 }
+exports.RealtimeSyncService = RealtimeSyncService;
 // Export singleton instance
-export const realtimeSyncService = new RealtimeSyncService();
+exports.realtimeSyncService = new RealtimeSyncService();
 // Export utility functions
-export const createRealtimeQuery = (collectionPath, constraints = []) => {
+const createRealtimeQuery = (collectionPath, constraints = []) => {
     return { collectionPath, constraints };
 };
-export const createConflictResolver = (strategy, resolver) => {
+exports.createRealtimeQuery = createRealtimeQuery;
+const createConflictResolver = (strategy, resolver) => {
     return { strategy, resolver };
 };
+exports.createConflictResolver = createConflictResolver;

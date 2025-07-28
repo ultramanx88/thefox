@@ -29,8 +29,8 @@ export declare function getFirebaseServices(): {
     db: import("@firebase/firestore").Firestore;
     storage: import("@firebase/storage").FirebaseStorage;
     functions: import("@firebase/functions").Functions;
-    analytics: import("@firebase/analytics").Analytics | null;
-    messaging: import("@firebase/messaging").Messaging | null;
+    analytics: import("@firebase/analytics").Analytics;
+    messaging: import("@firebase/messaging").Messaging;
 };
 /**
  * Check if Firebase is ready

@@ -1,9 +1,12 @@
-import { ref, uploadBytes, uploadBytesResumable, getDownloadURL, deleteObject, listAll, getMetadata, updateMetadata } from 'firebase/storage';
-import { storage } from './config';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.storageService = exports.FirebaseStorageService = exports.STORAGE_PATHS = void 0;
+const storage_1 = require("firebase/storage");
+const config_1 = require("./config");
 // ===========================================
 // STORAGE PATHS CONSTANTS
 // ===========================================
-export const STORAGE_PATHS = {
+exports.STORAGE_PATHS = {
     // User files
     USER_AVATAR: (userId) => `users/${userId}/profile/avatar`,
     USER_DOCUMENTS: (userId) => `users/${userId}/documents`,
@@ -32,7 +35,7 @@ export const STORAGE_PATHS = {
 // ===========================================
 // FIREBASE STORAGE SERVICE
 // ===========================================
-export class FirebaseStorageService {
+class FirebaseStorageService {
     // ===========================================
     // BASIC FILE OPERATIONS
     // ===========================================
@@ -41,7 +44,7 @@ export class FirebaseStorageService {
      */
     async uploadFile(path, file, options = {}) {
         try {
-            const storageRef = ref(storage, `${path}/${file.name || 'file'}`);
+            const storageRef = (0, storage_1.ref)(config_1.storage, `${path}/${file.name || 'file'}`);
             // Set metadata
             const metadata = {
                 contentType: file.type || options.metadata?.contentType,
@@ -53,7 +56,7 @@ export class FirebaseStorageService {
             };
             if (options.onProgress) {
                 // Use resumable upload for progress tracking
-                const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+                const uploadTask = (0, storage_1.uploadBytesResumable)(storageRef, file, metadata);
                 return new Promise((resolve, reject) => {
                     uploadTask.on('state_changed', (snapshot) => {
                         const progress = {
@@ -68,7 +71,7 @@ export class FirebaseStorageService {
                         reject(error);
                     }, async () => {
                         try {
-                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            const downloadURL = await (0, storage_1.getDownloadURL)(uploadTask.snapshot.ref);
                             options.onComplete?.(downloadURL);
                             resolve(downloadURL);
                         }
@@ -80,8 +83,8 @@ export class FirebaseStorageService {
             }
             else {
                 // Simple upload without progress tracking
-                const snapshot = await uploadBytes(storageRef, file, metadata);
-                return await getDownloadURL(snapshot.ref);
+                const snapshot = await (0, storage_1.uploadBytes)(storageRef, file, metadata);
+                return await (0, storage_1.getDownloadURL)(snapshot.ref);
             }
         }
         catch (error) {
@@ -107,8 +110,8 @@ export class FirebaseStorageService {
      */
     async getDownloadURL(path) {
         try {
-            const storageRef = ref(storage, path);
-            return await getDownloadURL(storageRef);
+            const storageRef = (0, storage_1.ref)(config_1.storage, path);
+            return await (0, storage_1.getDownloadURL)(storageRef);
         }
         catch (error) {
             console.error('Error getting download URL:', error);
@@ -120,8 +123,8 @@ export class FirebaseStorageService {
      */
     async deleteFile(path) {
         try {
-            const storageRef = ref(storage, path);
-            await deleteObject(storageRef);
+            const storageRef = (0, storage_1.ref)(config_1.storage, path);
+            await (0, storage_1.deleteObject)(storageRef);
         }
         catch (error) {
             console.error('Error deleting file:', error);
@@ -146,8 +149,8 @@ export class FirebaseStorageService {
      */
     async getFileMetadata(path) {
         try {
-            const storageRef = ref(storage, path);
-            return await getMetadata(storageRef);
+            const storageRef = (0, storage_1.ref)(config_1.storage, path);
+            return await (0, storage_1.getMetadata)(storageRef);
         }
         catch (error) {
             console.error('Error getting file metadata:', error);
@@ -159,8 +162,8 @@ export class FirebaseStorageService {
      */
     async updateFileMetadata(path, metadata) {
         try {
-            const storageRef = ref(storage, path);
-            return await updateMetadata(storageRef, { customMetadata: metadata });
+            const storageRef = (0, storage_1.ref)(config_1.storage, path);
+            return await (0, storage_1.updateMetadata)(storageRef, { customMetadata: metadata });
         }
         catch (error) {
             console.error('Error updating file metadata:', error);
@@ -172,11 +175,11 @@ export class FirebaseStorageService {
      */
     async listFiles(path) {
         try {
-            const storageRef = ref(storage, path);
-            const result = await listAll(storageRef);
+            const storageRef = (0, storage_1.ref)(config_1.storage, path);
+            const result = await (0, storage_1.listAll)(storageRef);
             const fileInfoPromises = result.items.map(async (itemRef) => {
-                const metadata = await getMetadata(itemRef);
-                const downloadURL = await getDownloadURL(itemRef);
+                const metadata = await (0, storage_1.getMetadata)(itemRef);
+                const downloadURL = await (0, storage_1.getDownloadURL)(itemRef);
                 return {
                     name: itemRef.name,
                     fullPath: itemRef.fullPath,
@@ -266,7 +269,7 @@ export class FirebaseStorageService {
             const processedFile = new File([processedImage], `avatar.jpg`, {
                 type: 'image/jpeg',
             });
-            return await this.uploadFile(STORAGE_PATHS.USER_AVATAR(userId), processedFile, options);
+            return await this.uploadFile(exports.STORAGE_PATHS.USER_AVATAR(userId), processedFile, options);
         }
         catch (error) {
             console.error('Error uploading user avatar:', error);
@@ -296,8 +299,8 @@ export class FirebaseStorageService {
                 });
                 // Upload both
                 const [imageURL, thumbnailURL] = await Promise.all([
-                    this.uploadFile(STORAGE_PATHS.PRODUCT_IMAGES(productId), mainFile, options),
-                    this.uploadFile(STORAGE_PATHS.PRODUCT_THUMBNAILS(productId), thumbFile, options),
+                    this.uploadFile(exports.STORAGE_PATHS.PRODUCT_IMAGES(productId), mainFile, options),
+                    this.uploadFile(exports.STORAGE_PATHS.PRODUCT_THUMBNAILS(productId), thumbFile, options),
                 ]);
                 return { imageURL, thumbnailURL };
             });
@@ -327,7 +330,7 @@ export class FirebaseStorageService {
                     type: 'image/jpeg',
                 });
             }));
-            return await this.uploadMultipleFiles(STORAGE_PATHS.MARKET_GALLERY(marketId), processedFiles, options);
+            return await this.uploadMultipleFiles(exports.STORAGE_PATHS.MARKET_GALLERY(marketId), processedFiles, options);
         }
         catch (error) {
             console.error('Error uploading market gallery:', error);
@@ -373,16 +376,16 @@ export class FirebaseStorageService {
      */
     async cleanupTempFiles() {
         try {
-            const tempRef = ref(storage, 'temp');
-            const result = await listAll(tempRef);
+            const tempRef = (0, storage_1.ref)(config_1.storage, 'temp');
+            const result = await (0, storage_1.listAll)(tempRef);
             const now = Date.now();
             const oneDayAgo = now - (24 * 60 * 60 * 1000);
             const deletePromises = result.items.map(async (itemRef) => {
                 try {
-                    const metadata = await getMetadata(itemRef);
+                    const metadata = await (0, storage_1.getMetadata)(itemRef);
                     const createdTime = new Date(metadata.timeCreated).getTime();
                     if (createdTime < oneDayAgo) {
-                        await deleteObject(itemRef);
+                        await (0, storage_1.deleteObject)(itemRef);
                         console.log(`Deleted old temp file: ${itemRef.fullPath}`);
                     }
                 }
@@ -402,15 +405,15 @@ export class FirebaseStorageService {
      */
     async getStorageStats() {
         try {
-            const rootRef = ref(storage);
-            const result = await listAll(rootRef);
+            const rootRef = (0, storage_1.ref)(config_1.storage);
+            const result = await (0, storage_1.listAll)(rootRef);
             let totalFiles = 0;
             let totalSize = 0;
             const filesByType = {};
             const processItems = async (items) => {
                 for (const itemRef of items) {
                     try {
-                        const metadata = await getMetadata(itemRef);
+                        const metadata = await (0, storage_1.getMetadata)(itemRef);
                         totalFiles++;
                         totalSize += metadata.size;
                         const contentType = metadata.contentType || 'unknown';
@@ -424,7 +427,7 @@ export class FirebaseStorageService {
             await processItems(result.items);
             // Process subdirectories recursively
             for (const prefixRef of result.prefixes) {
-                const subResult = await listAll(prefixRef);
+                const subResult = await (0, storage_1.listAll)(prefixRef);
                 await processItems(subResult.items);
             }
             return {
@@ -439,5 +442,6 @@ export class FirebaseStorageService {
         }
     }
 }
+exports.FirebaseStorageService = FirebaseStorageService;
 // Export singleton instance
-export const storageService = new FirebaseStorageService();
+exports.storageService = new FirebaseStorageService();

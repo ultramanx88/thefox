@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Setup Firebase Authentication and user management system
+- [-] 1. Setup Firebase Authentication and user management system
   - Configure Firebase Auth with email/password authentication
   - Set up custom user claims for role-based access control
   - Create user profile creation functions in Firestore

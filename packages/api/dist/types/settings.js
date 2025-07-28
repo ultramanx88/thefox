@@ -1,5 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SettingsErrorType = void 0;
 // Error types
-export var SettingsErrorType;
+var SettingsErrorType;
 (function (SettingsErrorType) {
     SettingsErrorType["VALIDATION_ERROR"] = "VALIDATION_ERROR";
     SettingsErrorType["PERMISSION_DENIED"] = "PERMISSION_DENIED";
@@ -7,4 +10,4 @@ export var SettingsErrorType;
     SettingsErrorType["SYNC_CONFLICT"] = "SYNC_CONFLICT";
     SettingsErrorType["STORAGE_ERROR"] = "STORAGE_ERROR";
     SettingsErrorType["IMAGE_PROCESSING_ERROR"] = "IMAGE_PROCESSING_ERROR";
-})(SettingsErrorType || (SettingsErrorType = {}));
+})(SettingsErrorType || (exports.SettingsErrorType = SettingsErrorType = {}));

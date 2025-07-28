@@ -1,18 +1,21 @@
 #!/usr/bin/env node
+"use strict";
 /**
  * Script to initialize default settings in Firebase
  * Run this script after setting up Firebase to populate default settings
  */
-import { SettingsService } from '../firebase/settings';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.initializeSettings = initializeSettings;
+const settings_1 = require("../firebase/settings");
 async function initializeSettings() {
     try {
         console.log('🚀 Initializing default settings...');
         // Initialize default settings for all roles
-        await SettingsService.initializeDefaultSettings();
+        await settings_1.SettingsService.initializeDefaultSettings();
         console.log('✅ Default settings initialized successfully!');
         // Initialize default mobile appearance config
         console.log('🎨 Initializing default mobile appearance...');
-        await SettingsService.updateMobileAppearanceConfig({
+        await settings_1.SettingsService.updateMobileAppearanceConfig({
             splashScreen: {
                 backgroundColor: '#FFFFFF',
                 logoPosition: 'center',
@@ -42,4 +45,3 @@ async function initializeSettings() {
 if (require.main === module) {
     initializeSettings();
 }
-export { initializeSettings };

@@ -1,20 +1,56 @@
+"use strict";
 /**
  * Comprehensive Logging Service for Firebase Operations
  * Provides structured logging, audit trails, and operation tracking
  */
-import { Timestamp } from 'firebase/firestore';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.firebaseLogger = exports.FirebaseLoggerService = exports.LogCategory = exports.LogLevel = void 0;
+const firestore_1 = require("firebase/firestore");
 // ===========================================
 // LOGGING TYPES AND INTERFACES
 // ===========================================
-export var LogLevel;
+var LogLevel;
 (function (LogLevel) {
     LogLevel["DEBUG"] = "debug";
     LogLevel["INFO"] = "info";
     LogLevel["WARN"] = "warn";
     LogLevel["ERROR"] = "error";
     LogLevel["CRITICAL"] = "critical";
-})(LogLevel || (LogLevel = {}));
-export var LogCategory;
+})(LogLevel || (exports.LogLevel = LogLevel = {}));
+var LogCategory;
 (function (LogCategory) {
     LogCategory["AUTH"] = "auth";
     LogCategory["FIRESTORE"] = "firestore";
@@ -24,11 +60,11 @@ export var LogCategory;
     LogCategory["SECURITY"] = "security";
     LogCategory["PERFORMANCE"] = "performance";
     LogCategory["SYSTEM"] = "system";
-})(LogCategory || (LogCategory = {}));
+})(LogCategory || (exports.LogCategory = LogCategory = {}));
 // ===========================================
 // FIREBASE LOGGER SERVICE
 // ===========================================
-export class FirebaseLoggerService {
+class FirebaseLoggerService {
     constructor() {
         this.logBuffer = [];
         this.auditBuffer = [];
@@ -301,10 +337,10 @@ export class FirebaseLoggerService {
      */
     async persistLogEntry(logEntry) {
         try {
-            const { FirestoreService } = await import('./firestore');
+            const { FirestoreService } = await Promise.resolve().then(() => __importStar(require('./firestore')));
             await FirestoreService.create('logs', {
                 ...logEntry,
-                timestamp: Timestamp.fromDate(logEntry.timestamp),
+                timestamp: firestore_1.Timestamp.fromDate(logEntry.timestamp),
             });
         }
         catch (error) {
@@ -317,10 +353,10 @@ export class FirebaseLoggerService {
      */
     async persistAuditEntry(auditEntry) {
         try {
-            const { FirestoreService } = await import('./firestore');
+            const { FirestoreService } = await Promise.resolve().then(() => __importStar(require('./firestore')));
             await FirestoreService.create('auditLogs', {
                 ...auditEntry,
-                timestamp: Timestamp.fromDate(auditEntry.timestamp),
+                timestamp: firestore_1.Timestamp.fromDate(auditEntry.timestamp),
             });
         }
         catch (error) {
@@ -332,10 +368,10 @@ export class FirebaseLoggerService {
      */
     async persistSecurityEntry(securityEntry) {
         try {
-            const { FirestoreService } = await import('./firestore');
+            const { FirestoreService } = await Promise.resolve().then(() => __importStar(require('./firestore')));
             await FirestoreService.create('securityLogs', {
                 ...securityEntry,
-                timestamp: Timestamp.fromDate(securityEntry.timestamp),
+                timestamp: firestore_1.Timestamp.fromDate(securityEntry.timestamp),
             });
         }
         catch (error) {
@@ -522,5 +558,6 @@ export class FirebaseLoggerService {
         console.log('All logs cleared');
     }
 }
+exports.FirebaseLoggerService = FirebaseLoggerService;
 // Export singleton instance
-export const firebaseLogger = FirebaseLoggerService.getInstance();
+exports.firebaseLogger = FirebaseLoggerService.getInstance();
