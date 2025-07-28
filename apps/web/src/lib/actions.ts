@@ -41,6 +41,76 @@ export async function suggestCategories(
   }
 }
 
+// ===========================================
+// REGISTRATION SCHEMAS AND ACTIONS
+// ===========================================
+
+const customerRegistrationSchema = z.object({
+  firstName: z.string().min(1, 'validation.firstNameRequired'),
+  lastName: z.string().min(1, 'validation.lastNameRequired'),
+  email: z.string().email('validation.invalidEmail'),
+  phone: z.string().min(10, 'validation.phoneRequired'),
+  password: z.string().min(8, 'validation.passwordLength'),
+  confirmPassword: z.string().min(8, 'validation.confirmPasswordRequired'),
+  dateOfBirth: z.string().optional(),
+  acceptTerms: z.boolean().refine(val => val === true, {
+    message: 'validation.acceptTermsRequired',
+  }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'validation.passwordMismatch',
+  path: ["confirmPassword"],
+});
+
+export async function registerCustomer(values: z.infer<typeof customerRegistrationSchema>): Promise<{ success: boolean; message: string; userId?: string }> {
+  const parsed = customerRegistrationSchema.safeParse(values);
+
+  if (!parsed.success) {
+    const errorMessages = parsed.error.issues.map(issue => issue.message).join(' ');
+    return { success: false, message: `Invalid form data: ${errorMessages}` };
+  }
+
+  try {
+    // Import Firebase functions
+    const { httpsCallable } = await import('firebase/functions');
+    const { functions } = await import('@repo/api/firebase/config');
+    
+    // Call Firebase function to register customer
+    const registerCustomerFunction = httpsCallable(functions, 'registerCustomer');
+    
+    const registrationData = {
+      email: parsed.data.email,
+      password: parsed.data.password,
+      firstName: parsed.data.firstName,
+      lastName: parsed.data.lastName,
+      phone: parsed.data.phone,
+      dateOfBirth: parsed.data.dateOfBirth || undefined,
+      acceptTerms: parsed.data.acceptTerms,
+    };
+
+    const result = await registerCustomerFunction(registrationData);
+    const data = result.data as any;
+
+    if (data.success) {
+      return {
+        success: true,
+        message: data.message,
+        userId: data.userId,
+      };
+    } else {
+      return {
+        success: false,
+        message: data.message || 'Registration failed',
+      };
+    }
+  } catch (error: any) {
+    console.error('Customer registration error:', error);
+    return {
+      success: false,
+      message: error.message || 'An unexpected error occurred during registration',
+    };
+  }
+}
+
 const vendorRegistrationSchema = z.object({
   storeName: z.string().min(1, 'validation.storeNameRequired'),
   email: z.string().email('validation.invalidEmail'),
