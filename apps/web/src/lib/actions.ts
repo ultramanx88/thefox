@@ -111,6 +111,102 @@ export async function registerCustomer(values: z.infer<typeof customerRegistrati
   }
 }
 
+const driverRegistrationSchema = z.object({
+  // Personal Information
+  firstName: z.string().min(1, 'validation.firstNameRequired'),
+  lastName: z.string().min(1, 'validation.lastNameRequired'),
+  email: z.string().email('validation.invalidEmail'),
+  phone: z.string().min(10, 'validation.phoneRequired'),
+  password: z.string().min(8, 'validation.passwordLength'),
+  confirmPassword: z.string().min(8, 'validation.confirmPasswordRequired'),
+  dateOfBirth: z.string().min(1, 'validation.dateOfBirthRequired'),
+  nationalId: z.string().min(13, 'validation.nationalIdRequired'),
+  
+  // Vehicle Information
+  vehicleType: z.enum(['motorcycle', 'car', 'truck']),
+  vehicleBrand: z.string().min(1, 'validation.vehicleBrandRequired'),
+  vehicleModel: z.string().min(1, 'validation.vehicleModelRequired'),
+  vehicleYear: z.number().min(2000, 'validation.vehicleYearRequired'),
+  licensePlate: z.string().min(1, 'validation.licensePlateRequired'),
+  
+  // Availability
+  availableAreas: z.array(z.string()).min(1, 'validation.availableAreasRequired'),
+  workingHours: z.any(),
+  
+  // Documents
+  documents: z.object({
+    idCard: z.any(),
+    driverLicense: z.any(),
+    vehicleRegistration: z.any(),
+    profilePhoto: z.any(),
+  }),
+  
+  acceptTerms: z.boolean().refine(val => val === true, {
+    message: 'validation.acceptTermsRequired',
+  }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'validation.passwordMismatch',
+  path: ["confirmPassword"],
+});
+
+export async function registerDriver(values: z.infer<typeof driverRegistrationSchema>): Promise<{ success: boolean; message: string; userId?: string }> {
+  const parsed = driverRegistrationSchema.safeParse(values);
+
+  if (!parsed.success) {
+    const errorMessages = parsed.error.issues.map(issue => issue.message).join(' ');
+    return { success: false, message: `Invalid form data: ${errorMessages}` };
+  }
+
+  try {
+    // Import Firebase functions
+    const { httpsCallable } = await import('firebase/functions');
+    const { functions } = await import('@repo/api/firebase/config');
+    
+    // Call Firebase function to register driver
+    const registerDriverFunction = httpsCallable(functions, 'registerDriver');
+    
+    const registrationData = {
+      email: parsed.data.email,
+      password: parsed.data.password,
+      firstName: parsed.data.firstName,
+      lastName: parsed.data.lastName,
+      phone: parsed.data.phone,
+      dateOfBirth: parsed.data.dateOfBirth,
+      nationalId: parsed.data.nationalId,
+      vehicleType: parsed.data.vehicleType,
+      vehicleBrand: parsed.data.vehicleBrand,
+      vehicleModel: parsed.data.vehicleModel,
+      vehicleYear: parsed.data.vehicleYear,
+      licensePlate: parsed.data.licensePlate,
+      availableAreas: parsed.data.availableAreas,
+      workingHours: parsed.data.workingHours,
+      acceptTerms: parsed.data.acceptTerms,
+    };
+
+    const result = await registerDriverFunction(registrationData);
+    const data = result.data as any;
+
+    if (data.success) {
+      return {
+        success: true,
+        message: data.message,
+        userId: data.userId,
+      };
+    } else {
+      return {
+        success: false,
+        message: data.message || 'Registration failed',
+      };
+    }
+  } catch (error: any) {
+    console.error('Driver registration error:', error);
+    return {
+      success: false,
+      message: error.message || 'An unexpected error occurred during registration',
+    };
+  }
+}
+
 const vendorRegistrationSchema = z.object({
   storeName: z.string().min(1, 'validation.storeNameRequired'),
   email: z.string().email('validation.invalidEmail'),
