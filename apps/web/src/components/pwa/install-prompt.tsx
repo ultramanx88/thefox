@@ -1,109 +1,112 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { X, Download, Smartphone } from 'lucide-react';
-
-interface BeforeInstallPromptEvent extends Event {
-  readonly platforms: string[];
-  readonly userChoice: Promise<{
-    outcome: 'accepted' | 'dismissed';
-    platform: string;
-  }>;
-  prompt(): Promise<void>;
-}
+import { X } from 'lucide-react';
+import { DeviceSpecificInstaller } from './DeviceSpecificInstaller';
+import { isAppInstalled, shouldShowInstallPrompt } from '@/utils/device-detection';
+import { STORAGE_KEYS, DEFAULT_PREFERENCES } from '@/types/pwa-install';
+import type { InstallationPreferences } from '@/types/pwa-install';
 
 export function InstallPrompt() {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
-  const [isStandalone, setIsStandalone] = useState(false);
+  const [installationState, setInstallationState] = useState<'idle' | 'installing' | 'success' | 'error'>('idle');
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    // Check if running on iOS
-    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    setIsIOS(iOS);
-
-    // Check if app is already installed (standalone mode)
-    const standalone = window.matchMedia('(display-mode: standalone)').matches;
-    setIsStandalone(standalone);
-
-    // Listen for the beforeinstallprompt event
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      
-      // Show install prompt if not already installed
-      if (!standalone) {
-        setShowInstallPrompt(true);
-      }
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
-    // Check if user has dismissed the prompt before
-    const dismissed = localStorage.getItem('pwa-install-dismissed');
-    if (dismissed) {
-      const dismissedDate = new Date(dismissed);
-      const now = new Date();
-      const daysSinceDismissed = (now.getTime() - dismissedDate.getTime()) / (1000 * 3600 * 24);
-      
-      // Show again after 7 days
-      if (daysSinceDismissed < 7) {
-        setShowInstallPrompt(false);
-      }
+    // Don't show if already installed
+    if (isAppInstalled()) {
+      return;
     }
 
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
+    // Check user preferences and dismiss history
+    const preferences = getInstallationPreferences();
+    
+    if (shouldShowInstallPrompt(preferences.dismissCount, preferences.lastPromptDate)) {
+      setShowInstallPrompt(true);
+    }
   }, []);
 
-  const handleInstallClick = async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      
-      if (outcome === 'accepted') {
-        console.log('User accepted the install prompt');
-      } else {
-        console.log('User dismissed the install prompt');
-      }
-      
-      setDeferredPrompt(null);
-      setShowInstallPrompt(false);
+  const getInstallationPreferences = (): InstallationPreferences => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEYS.INSTALLATION_PREFERENCES);
+      return stored ? JSON.parse(stored) : DEFAULT_PREFERENCES;
+    } catch {
+      return DEFAULT_PREFERENCES;
     }
+  };
+
+  const updateInstallationPreferences = (updates: Partial<InstallationPreferences>) => {
+    const current = getInstallationPreferences();
+    const updated = { ...current, ...updates };
+    localStorage.setItem(STORAGE_KEYS.INSTALLATION_PREFERENCES, JSON.stringify(updated));
+  };
+
+  const handleInstallStart = () => {
+    setInstallationState('installing');
+    setError('');
+  };
+
+  const handleInstallSuccess = () => {
+    setInstallationState('success');
+    updateInstallationPreferences({
+      permissionGranted: true,
+      lastPromptDate: new Date().toISOString()
+    });
+    
+    // Hide prompt after successful installation
+    setTimeout(() => {
+      setShowInstallPrompt(false);
+    }, 2000);
+  };
+
+  const handleInstallError = (errorMessage: string) => {
+    setInstallationState('error');
+    setError(errorMessage);
+    console.error('PWA Installation failed:', errorMessage);
+  };
+
+  const handleInstallCancel = () => {
+    setInstallationState('idle');
+    updateInstallationPreferences({
+      dismissCount: getInstallationPreferences().dismissCount + 1,
+      lastPromptDate: new Date().toISOString()
+    });
   };
 
   const handleDismiss = () => {
     setShowInstallPrompt(false);
-    localStorage.setItem('pwa-install-dismissed', new Date().toISOString());
+    updateInstallationPreferences({
+      dismissCount: getInstallationPreferences().dismissCount + 1,
+      lastPromptDate: new Date().toISOString()
+    });
   };
 
-  // Don't show if already installed or dismissed
-  if (isStandalone || !showInstallPrompt) {
+  const handleBookmark = () => {
+    // Track bookmark action
+    console.log('User bookmarked the page');
+    handleDismiss();
+  };
+
+  // Don't show if dismissed or already installed
+  if (!showInstallPrompt) {
     return null;
   }
 
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-sm">
       <div className="rounded-lg bg-white p-4 shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0">
-              <Smartphone className="h-6 w-6 text-orange-500" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-                Install theFOX App
-              </h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                {isIOS 
-                  ? 'Tap Share button and "Add to Home Screen"'
-                  : 'Get quick access to your local marketplace'
-                }
-              </p>
-            </div>
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            {installationState === 'success' && (
+              <div className="text-green-600 dark:text-green-400 text-sm font-medium">
+                ✅ Installation successful!
+              </div>
+            )}
+            {installationState === 'error' && (
+              <div className="text-red-600 dark:text-red-400 text-sm">
+                ❌ Installation failed: {error}
+              </div>
+            )}
           </div>
           <button
             onClick={handleDismiss}
@@ -113,18 +116,14 @@ export function InstallPrompt() {
           </button>
         </div>
         
-        {!isIOS && deferredPrompt && (
-          <div className="mt-3">
-            <Button
-              onClick={handleInstallClick}
-              size="sm"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Install App
-            </Button>
-          </div>
-        )}
+        <DeviceSpecificInstaller
+          onInstallStart={handleInstallStart}
+          onInstallSuccess={handleInstallSuccess}
+          onInstallError={handleInstallError}
+          onInstallCancel={handleInstallCancel}
+          onDismiss={handleDismiss}
+          onBookmark={handleBookmark}
+        />
       </div>
     </div>
   );

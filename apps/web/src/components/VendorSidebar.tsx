@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Boxes, LayoutDashboard, ShoppingCart, Clock, Users, Settings } from 'lucide-react';
+import { InstallButton } from '@/components/pwa/InstallButton';
 
 export function VendorSidebar({
   vendorName,
@@ -63,6 +64,20 @@ export function VendorSidebar({
               </Link>
             </SidebarMenuItem>
           ))}
+          
+          {/* PWA Install Button */}
+          <SidebarMenuItem>
+            <div className="px-2 py-1">
+              <InstallButton 
+                variant="secondary" 
+                size="sm" 
+                className="w-full justify-start text-sm"
+                autoHide={true}
+              >
+                {t('installApp')}
+              </InstallButton>
+            </div>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
     </Sidebar>

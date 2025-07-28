@@ -2,6 +2,16 @@
  * TypeScript interfaces for One-Click PWA Installation system
  */
 
+// BeforeInstallPromptEvent interface
+export interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}
+
 // Installation state management
 export type InstallationState = 'idle' | 'requesting-permission' | 'installing' | 'success' | 'error';
 export type PermissionState = 'unknown' | 'granted' | 'denied' | 'dismissed';
