@@ -208,24 +208,109 @@ export async function registerDriver(values: z.infer<typeof driverRegistrationSc
 }
 
 const vendorRegistrationSchema = z.object({
-  storeName: z.string().min(1, 'validation.storeNameRequired'),
+  // Personal Information
+  firstName: z.string().min(1, 'validation.firstNameRequired'),
+  lastName: z.string().min(1, 'validation.lastNameRequired'),
   email: z.string().email('validation.invalidEmail'),
+  phone: z.string().min(10, 'validation.phoneRequired'),
   password: z.string().min(8, 'validation.passwordLength'),
+  confirmPassword: z.string().min(8, 'validation.confirmPasswordRequired'),
+  
+  // Business Information
+  businessName: z.string().min(1, 'validation.businessNameRequired'),
+  businessType: z.enum(['individual', 'company']),
+  taxId: z.string().optional(),
+  alternativePhone: z.string().optional(),
+  
+  // Location Information
+  address: z.string().min(1, 'validation.addressRequired'),
+  district: z.string().min(1, 'validation.districtRequired'),
+  province: z.string().min(1, 'validation.provinceRequired'),
+  postalCode: z.string().min(5, 'validation.postalCodeRequired'),
+  coordinates: z.object({
+    lat: z.number(),
+    lng: z.number(),
+  }),
+  
+  // Business Details
+  categories: z.array(z.string()).min(1, 'validation.categoriesRequired'),
+  description: z.string().min(1, 'validation.descriptionRequired'),
+  operatingHours: z.any(),
+  
+  // Documents
+  documents: z.object({
+    businessLicense: z.any().optional(),
+    idCard: z.any(),
+    bankBook: z.any(),
+    storePhotos: z.array(z.any()),
+  }),
+  
+  acceptTerms: z.boolean().refine(val => val === true, {
+    message: 'validation.acceptTermsRequired',
+  }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'validation.passwordMismatch',
+  path: ["confirmPassword"],
 });
 
-export async function registerVendor(values: z.infer<typeof vendorRegistrationSchema>): Promise<{ success: boolean; message: string }> {
+export async function registerVendor(values: z.infer<typeof vendorRegistrationSchema>): Promise<{ success: boolean; message: string; userId?: string }> {
   const parsed = vendorRegistrationSchema.safeParse(values);
 
   if (!parsed.success) {
-      const errorMessages = parsed.error.issues.map(issue => issue.message).join(' ');
+    const errorMessages = parsed.error.issues.map(issue => issue.message).join(' ');
     return { success: false, message: `Invalid form data: ${errorMessages}` };
   }
-  
-  // TODO: Implement actual registration logic (e.g., save to database, create auth user)
-  console.log('Registering vendor:', parsed.data);
 
-  // For now, we'll just simulate a successful registration
-  return { success: true, message: 'registrationSuccess' };
+  try {
+    // Import Firebase functions
+    const { httpsCallable } = await import('firebase/functions');
+    const { functions } = await import('@repo/api/firebase/config');
+    
+    // Call Firebase function to register vendor
+    const registerVendorFunction = httpsCallable(functions, 'registerVendor');
+    
+    const registrationData = {
+      email: parsed.data.email,
+      password: parsed.data.password,
+      firstName: parsed.data.firstName,
+      lastName: parsed.data.lastName,
+      phone: parsed.data.phone,
+      businessName: parsed.data.businessName,
+      businessType: parsed.data.businessType,
+      taxId: parsed.data.taxId,
+      address: parsed.data.address,
+      district: parsed.data.district,
+      province: parsed.data.province,
+      postalCode: parsed.data.postalCode,
+      coordinates: parsed.data.coordinates,
+      categories: parsed.data.categories,
+      description: parsed.data.description,
+      operatingHours: parsed.data.operatingHours,
+      acceptTerms: parsed.data.acceptTerms,
+    };
+
+    const result = await registerVendorFunction(registrationData);
+    const data = result.data as any;
+
+    if (data.success) {
+      return {
+        success: true,
+        message: data.message,
+        userId: data.userId,
+      };
+    } else {
+      return {
+        success: false,
+        message: data.message || 'Registration failed',
+      };
+    }
+  } catch (error: any) {
+    console.error('Vendor registration error:', error);
+    return {
+      success: false,
+      message: error.message || 'An unexpected error occurred during registration',
+    };
+  }
 }
 
 
