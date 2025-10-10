@@ -1,6 +1,9 @@
 const { getDefaultConfig } = require('expo/metro-config');
 const path = require('path');
 
+// Set environment variable for Expo Router
+process.env.EXPO_ROUTER_APP_ROOT = './app';
+
 // Find the project and workspace directories
 const projectRoot = __dirname;
 const monorepoRoot = path.resolve(projectRoot, '../..');

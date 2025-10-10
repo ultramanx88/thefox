@@ -1,5 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { useApi } from '../../src/hooks/useApi';
+import * as SecureStore from 'expo-secure-store';
+import { useRouter } from 'expo-router';
 
 const menuItems = [
   { id: '1', title: 'Edit Profile', icon: 'person-outline', color: '#ff6b35' },
@@ -13,6 +17,27 @@ const menuItems = [
 ];
 
 export default function ProfileTab() {
+  const { get, loading } = useApi();
+  const [user, setUser] = useState<{ display_name?: string | null; email: string } | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await get('/me');
+        setUser({ display_name: (data as any)?.display_name, email: (data as any)?.email });
+      } catch {
+        setUser(null);
+      }
+    })();
+  }, [get]);
+
+  const logout = async () => {
+    await SecureStore.deleteItemAsync('auth_token');
+    await SecureStore.deleteItemAsync('refresh_token');
+    Alert.alert('ออกจากระบบ', 'คุณได้ออกจากระบบแล้ว');
+    router.replace('/login');
+  };
   const renderMenuItem = (item: typeof menuItems[0]) => (
     <TouchableOpacity key={item.id} style={styles.menuItem}>
       <View style={styles.menuItemLeft}>
@@ -31,9 +56,9 @@ export default function ProfileTab() {
         <View style={styles.avatarContainer}>
           <Ionicons name="person" size={40} color="#fff" />
         </View>
-        <Text style={styles.userName}>John Doe</Text>
-        <Text style={styles.userEmail}>john.doe@example.com</Text>
-        <Text style={styles.userPhone}>+66 12 345 6789</Text>
+        <Text style={styles.userName}>{user?.display_name || 'Guest'}</Text>
+        <Text style={styles.userEmail}>{user?.email || 'ไม่ได้เข้าสู่ระบบ'}</Text>
+        {!user && <Text style={styles.userPhone}>โปรดเข้าสู่ระบบ</Text>}
       </View>
 
       <View style={styles.statsContainer}>
@@ -57,7 +82,7 @@ export default function ProfileTab() {
         {menuItems.map(renderMenuItem)}
       </View>
 
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity style={styles.logoutButton} onPress={logout} disabled={loading}>
         <Ionicons name="log-out-outline" size={20} color="#f44336" />
         <Text style={styles.logoutText}>Sign Out</Text>
       </TouchableOpacity>

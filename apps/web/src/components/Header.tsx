@@ -1,217 +1,95 @@
 'use client';
 
 import { usePathname, useRouter, Link } from '@/navigation';
-import { ShoppingCart, Store, User, Menu, Globe, Settings, Truck, Languages, BookOpen, Wallet, Box } from 'lucide-react';
+import { ShoppingCart, Menu, Leaf, Phone, MapPin } from 'lucide-react';
 import { Button } from './ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuPortal,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { cn } from '@/lib/utils';
-import { useTranslations, useLocale } from 'next-intl';
-import React, { useTransition } from 'react';
-import { InstallButton } from './pwa/InstallButton';
+import React from 'react';
 
 export function Header() {
-  const t = useTranslations('Header');
   const pathname = usePathname();
-  const router = useRouter();
-  const locale = useLocale();
-  const [isPending, startTransition] = useTransition();
-  const [communicationLang, setCommunicationLang] = React.useState('th');
-
   const navLinks = [
-    { href: '/', label: t('marketplace') },
-    { href: '/register/customer', label: t('registerAsCustomer') },
-    { href: '/register/vendor', label: t('becomeAVendor') },
-    { href: '/register/shopper', label: t('becomeADriver') },
+    { href: '/', label: 'หน้าแรก' },
+    { href: '/vendors', label: 'ร้านค้า' },
+    { href: '/products/new', label: 'สินค้าใหม่' },
   ];
 
-  function onSelectLocale(nextLocale: string) {
-    startTransition(() => {
-      router.replace(pathname, {locale: nextLocale});
-    });
-  }
-
-  const LanguageSwitcher = () => (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" disabled={isPending}>
-          <Globe className="h-5 w-5" />
-          <span className="sr-only">Change language</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuRadioGroup value={locale} onValueChange={onSelectLocale}>
-            <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="th">ไทย</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="zh">中文</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="ja">日本語</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="ko">한국어</DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-
   const NavLinks = ({ className }: { className?: string }) => (
-    <nav className={cn('flex items-center space-x-4 lg:space-x-6', className)}>
+    <nav className={cn('flex items-center gap-6 text-sm font-medium', className)}>
       {navLinks.map((link) => (
-        <Button
+        <Link
           key={link.href}
-          variant="ghost"
-          asChild
+          href={link.href as any}
           className={cn(
-            'text-sm font-medium transition-colors hover:text-primary-foreground',
-            pathname === link.href ? 'text-primary' : 'text-muted-foreground'
+            'transition-colors hover:text-emerald-700',
+            pathname === link.href ? 'text-emerald-700' : 'text-gray-600'
           )}
         >
-          {/* TypeScript: next-intl navigation type-safe pathnames workaround */}
-          <Link href={link.href as any}>{link.label}</Link>
-        </Button>
+          {link.label}
+        </Link>
       ))}
     </nav>
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 max-w-screen-2xl items-center">
-        <div className="mr-4 hidden md:flex">
-          {/* TypeScript: next-intl navigation type-safe pathnames workaround */}
-          <Link href={"/" as any} className="mr-6 flex items-center space-x-2">
-            <Box className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline">theFOX</span>
-          </Link>
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
+      <div className="bg-emerald-600 text-white">
+        <div className="container mx-auto flex h-8 items-center justify-between px-4 text-xs">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> 02-123-4567</div>
+            <div className="hidden sm:flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> กรุงเทพฯ</div>
+          </div>
+          <div className="hidden sm:block">ส่งฟรีเมื่อสั่งซื้อครบ 499 บาท</div>
+        </div>
+      </div>
+
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        <div className="flex items-center gap-3">
+          <Leaf className="h-7 w-7 text-emerald-600" />
+          <span className="font-headline text-xl font-bold tracking-tight">theFOX</span>
+        </div>
+
+        <div className="hidden md:block">
           <NavLinks />
         </div>
 
-        <div className="md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left">
-              {/* TypeScript: next-intl navigation type-safe pathnames workaround */}
-              <Link href={"/" as any} className="mr-6 flex items-center space-x-2 mb-4">
-                <Box className="h-6 w-6 text-primary" />
-                <span className="font-bold font-headline">theFOX</span>
-              </Link>
-              <div className="flex flex-col space-y-2">
-                {navLinks.map((link) => (
-                  <Button
-                    key={link.href}
-                    variant="ghost"
-                    asChild
-                    className={cn(
-                      'justify-start',
-                      pathname === link.href
-                        ? 'text-primary bg-accent'
-                        : 'text-muted-foreground'
-                    )}
-                  >
-                    {/* TypeScript: next-intl navigation type-safe pathnames workaround */}
-                    <Link href={link.href as any}>{link.label}</Link>
-                  </Button>
-                ))}
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-
-        <div className="flex flex-1 items-center justify-end space-x-2">
-          <InstallButton variant="secondary" size="sm" />
-          <LanguageSwitcher />
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="hidden sm:inline-flex border-emerald-600 text-emerald-700 hover:bg-emerald-50">เข้าสู่ระบบ</Button>
+          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">สมัครสมาชิก</Button>
           <Button variant="ghost" size="icon">
             <ShoppingCart className="h-5 w-5" />
-            <span className="sr-only">{t('cart')}</span>
+            <span className="sr-only">Cart</span>
           </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://placehold.co/100x100.png" alt="@shadcn" data-ai-hint="user avatar" />
-                  <AvatarFallback>FX</AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{t('guestUser')}</p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    guest@thefox.com
-                  </p>
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left">
+                <div className="flex items-center gap-2 mb-4">
+                  <Leaf className="h-6 w-6 text-emerald-600" />
+                  <span className="font-headline text-lg font-bold">theFOX</span>
                 </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                {/* TypeScript: next-intl navigation type-safe pathnames workaround */}
-                <Link href={"/account/orders" as any}>{t('myOrders')}</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <Languages className="mr-2 h-4 w-4" />
-                  <span>{t('communicationLanguage')}</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuRadioGroup value={communicationLang} onValueChange={setCommunicationLang}>
-                      <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="th">ไทย</DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="zh">中文</DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="ja">日本語</DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="ko">한국어</DropdownMenuRadioItem>
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Store className="mr-2 h-4 w-4" />
-                {/* TypeScript: next-intl navigation type-safe pathnames workaround */}
-                <Link href={"/vendor" as any}>{t('vendorDashboard')}</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Truck className="mr-2 h-4 w-4" />
-                {/* TypeScript: next-intl navigation type-safe pathnames workaround */}
-                <Link href={"/driver/jobs" as any}>{t('driverDashboard')}</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <BookOpen className="mr-2 h-4 w-4" />
-                {/* TypeScript: next-intl navigation type-safe pathnames workaround */}
-                <Link href={"/driver/academy" as any}>{t('driverAcademy')}</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Wallet className="mr-2 h-4 w-4" />
-                {/* TypeScript: next-intl navigation type-safe pathnames workaround */}
-                <Link href={"/driver/settings" as any}>{t('payoutSettings')}</Link>
-              </DropdownMenuItem>
-               <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                {/* TypeScript: next-intl navigation type-safe pathnames workaround */}
-                <Link href={"/admin" as any}>{t('adminDashboard')}</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <span>{t('logout')}</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <div className="flex flex-col gap-3">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href as any}
+                      className={cn(
+                        'px-2 py-2 rounded hover:bg-emerald-50',
+                        pathname === link.href ? 'text-emerald-700' : 'text-gray-700'
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>

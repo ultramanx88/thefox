@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { PWAProvider } from '@/components/pwa/pwa-provider';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://thefox-sp7zz.web.app'),
@@ -74,13 +76,14 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const messages = await getMessages();
   return (
-    <html lang="en" className="h-full">
+    <html lang="th" className="h-full">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -102,12 +105,14 @@ export default function RootLayout({
       <body
         className={cn(
           'font-body antialiased',
-          'bg-background'
+          'bg-white dark:bg-black'
         )}
       >
-        <PWAProvider>
-          {children}
-        </PWAProvider>
+        <NextIntlClientProvider messages={messages} locale="th">
+          <PWAProvider>
+            {children}
+          </PWAProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

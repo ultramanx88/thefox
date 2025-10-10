@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Image } from 'react-native';
 import { Colors } from '@/constants/Colors';
 
 export default function RootLayout() {
@@ -17,6 +18,13 @@ export default function RootLayout() {
             headerTitleStyle: {
               fontWeight: 'bold',
             },
+            headerTitle: () => (
+              <Image 
+                source={require('../assets/thefox_logo.jpg')} 
+                style={{ width: 120, height: 30 }} 
+                resizeMode="contain" 
+              />
+            ),
           }}
         >
           <Stack.Screen

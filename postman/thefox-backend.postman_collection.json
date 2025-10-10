@@ -1,0 +1,225 @@
+{
+  "info": {
+    "name": "theFOX Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "event": [{
+        "listen": "test",
+        "script": {"exec": [
+          "pm.test('status 200', () => pm.response.code === 200);",
+          "pm.test('json has status ok', () => pm.response.json().status === 'ok');"
+        ]}
+      }],
+      "request": { "method": "GET", "url": "{{baseUrl}}/healthz" }
+    },
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json"}],
+        "url": "{{baseUrl}}/auth/register",
+        "body": {"mode":"raw","raw":"{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"displayName\": \"{{displayName}}\"\n}"}
+      }
+    },
+    {
+      "name": "Auth - Login",
+      "event": [{
+        "listen": "test",
+        "script": {
+          "exec": [
+            "const json = pm.response.json();",
+            "pm.collectionVariables.set('accessToken', json.accessToken);",
+            "pm.collectionVariables.set('refreshToken', json.refreshToken);",
+            "pm.test('status 200', () => pm.response.code === 200);",
+            "pm.test('has tokens', () => json.accessToken && json.refreshToken);"
+          ]
+        }
+      }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json"}],
+        "url": "{{baseUrl}}/auth/login",
+        "body": {"mode":"raw","raw":"{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"}
+      }
+    },
+    {
+      "name": "Auth - Me",
+      "event": [{
+        "listen": "test",
+        "script": {"exec": [
+          "pm.test('status 200', () => pm.response.code === 200);",
+          "const j = pm.response.json();",
+          "pm.test('has id/email', () => j.id && j.email);"
+        ]}
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}"}],
+        "url": "{{baseUrl}}/me"
+      }
+    },
+    {
+      "name": "Products - List",
+      "event": [{
+        "listen": "test",
+        "script": {"exec": [
+          "pm.test('status 200', () => pm.response.code === 200);",
+          "pm.test('is array', () => Array.isArray(pm.response.json()));"
+        ]}
+      }],
+      "request": { "method": "GET", "url": "{{baseUrl}}/products?limit=10" }
+    },
+    {
+      "name": "Cart - Add Item",
+      "event": [{
+        "listen": "test",
+        "script": {"exec": [
+          "pm.test('204 no content', () => pm.response.code === 204);"
+        ]}
+      }],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json"},
+          { "key": "Authorization", "value": "Bearer {{accessToken}}"}
+        ],
+        "url": "{{baseUrl}}/cart/items",
+        "body": {"mode":"raw","raw":"{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 1\n}"}
+      }
+    },
+    {
+      "name": "Checkout",
+      "event": [{
+        "listen": "test",
+        "script": {"exec": [
+          "pm.test('status 200', () => pm.response.code === 200);",
+          "const j = pm.response.json();",
+          "pm.collectionVariables.set('orderId', j.id);",
+          "pm.test('has id/status', () => j.id && j.status);"
+        ]}
+      }],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json"},
+          { "key": "Authorization", "value": "Bearer {{accessToken}}"}
+        ],
+        "url": "{{baseUrl}}/checkout",
+        "body": {"mode":"raw","raw":"{}"}
+      }
+    },
+    {
+      "name": "Payments - Create Intent",
+      "event": [{
+        "listen": "test",
+        "script": {"exec": [
+          "pm.test('status 200', () => pm.response.code === 200);",
+          "const j = pm.response.json();",
+          "pm.test('has clientSecret', () => !!j.clientSecret);"
+        ]}
+      }],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json"}
+        ],
+        "url": "{{baseUrl}}/payments/intent",
+        "body": {"mode":"raw","raw":"{\n  \"orderId\": \"{{orderId}}\"\n}"}
+      }
+    },
+    {
+      "name": "Vendor - Memberships",
+      "event": [{
+        "listen": "test",
+        "script": {"exec": [
+          "pm.test('status 200', () => pm.response.code === 200);",
+          "pm.test('is array', () => Array.isArray(pm.response.json()));"
+        ]}
+      }],
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "Bearer {{accessToken}}"} ],
+        "url": "{{baseUrl}}/vendor/memberships"
+      }
+    },
+    {
+      "name": "Vendor - Orders",
+      "event": [{
+        "listen": "test",
+        "script": {"exec": [
+          "pm.test('status 200', () => pm.response.code === 200);",
+          "pm.test('is array', () => Array.isArray(pm.response.json()));"
+        ]}
+      }],
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "Bearer {{accessToken}}"} ],
+        "url": "{{baseUrl}}/vendor/orders?vendorId={{vendorId}}"
+      }
+    },
+    {
+      "name": "Vendor - Add Member",
+      "event": [{
+        "listen": "test",
+        "script": {"exec": [
+          "pm.test('204 no content', () => pm.response.code === 204);"
+        ]}
+      }],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json"},
+          { "key": "Authorization", "value": "Bearer {{accessToken}}"}
+        ],
+        "url": "{{baseUrl}}/vendor/members",
+        "body": {"mode":"raw","raw":"{\n  \"vendorId\": \"{{vendorId}}\",\n  \"userId\": \"{{memberUserId}}\",\n  \"role\": \"worker\"\n}"}
+      }
+    },
+    {
+      "name": "Partner - Apply",
+      "event": [{
+        "listen": "test",
+        "script": {"exec": [
+          "pm.test('status 200', () => pm.response.code === 200);",
+          "pm.test('has id/status', () => pm.response.json().id && pm.response.json().status);"
+        ]}
+      }],
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json"} ],
+        "url": "{{baseUrl}}/partner/apply",
+        "body": {"mode":"raw","raw":"{\n  \"vehicleType\": \"motorcycle\",\n  \"fullName\": \"Tester\",\n  \"phone\": \"0812345678\",\n  \"nationalId\": \"1234567890123\",\n  \"licenseNumber\": \"A123456\"\n}"}
+      }
+    },
+    {
+      "name": "Partner - Status by userId",
+      "event": [{
+        "listen": "test",
+        "script": {"exec": [
+          "pm.test('status 200', () => pm.response.code === 200);",
+          "pm.test('is array', () => Array.isArray(pm.response.json()));"
+        ]}
+      }],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/partner/status?userId={{userId}}"
+      }
+    }
+  ],
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:3000"},
+    {"key": "email", "value": "test@example.com"},
+    {"key": "password", "value": "P@ssw0rd123"},
+    {"key": "displayName", "value": "Tester"},
+    {"key": "productId", "value": "00000000-0000-0000-0000-000000000000"},
+    {"key": "orderId", "value": "00000000-0000-0000-0000-000000000000"},
+    {"key": "vendorId", "value": "00000000-0000-0000-0000-000000000000"},
+    {"key": "memberUserId", "value": "00000000-0000-0000-0000-000000000000"},
+    {"key": "userId", "value": "00000000-0000-0000-0000-000000000000"}
+  ]
+}
+
+

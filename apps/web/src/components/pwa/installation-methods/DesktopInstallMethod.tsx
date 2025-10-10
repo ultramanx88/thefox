@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, Monitor, Chrome, Firefox } from 'lucide-react';
+import { Download, Monitor, Chrome, Globe } from 'lucide-react';
 import { detectBrowser } from '@/utils/device-detection';
 import type { BeforeInstallPromptEvent } from '@/types/pwa-install';
 
@@ -57,7 +57,7 @@ export function DesktopInstallMethod({
       case 'chrome':
         return <Chrome className="h-4 w-4" />;
       case 'firefox':
-        return <Firefox className="h-4 w-4" />;
+        return <Globe className="h-4 w-4" />;
       default:
         return <Monitor className="h-4 w-4" />;
     }

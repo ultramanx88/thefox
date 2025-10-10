@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'react-native';
 
 export default function TabLayout() {
   return (
@@ -14,6 +15,13 @@ export default function TabLayout() {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        headerTitle: () => (
+          <Image 
+            source={require('../../assets/thefox_logo.jpg')} 
+            style={{ width: 120, height: 30 }} 
+            resizeMode="contain" 
+          />
+        ),
       }}
     >
       <Tabs.Screen
@@ -31,6 +39,24 @@ export default function TabLayout() {
           title: 'Markets',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="storefront" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="delivery"
+        options={{
+          title: 'Delivery',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="bicycle" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="assignments"
+        options={{
+          title: 'Assignments',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="checkbox-outline" size={size} color={color} />
           ),
         }}
       />

@@ -3,9 +3,13 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 export class ApiClient {
   private client: AxiosInstance;
 
-  constructor(baseURL: string = 'https://api.thefox.com') {
+  constructor(baseURL?: string) {
+    const resolvedBaseURL = baseURL
+      || (typeof process !== 'undefined' && (process as any).env?.NEXT_PUBLIC_API_BASE_URL)
+      || (typeof window !== 'undefined' && (window as any).__API_BASE_URL__)
+      || 'http://localhost:3000';
     this.client = axios.create({
-      baseURL,
+      baseURL: resolvedBaseURL,
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
@@ -44,11 +48,12 @@ export class ApiClient {
 
   private async getAuthToken(): Promise<string | null> {
     try {
-      // Import Firebase auth service dynamically to avoid circular dependencies
-      const { FirebaseAuthService } = await import('./firebase/auth');
-      return await FirebaseAuthService.getUserToken();
+      if (typeof window !== 'undefined') {
+        const token = window.localStorage?.getItem('auth_token');
+        if (token) return token;
+      }
+      return null;
     } catch (error) {
-      console.error('Error getting auth token:', error);
       return null;
     }
   }
@@ -67,13 +72,22 @@ export class ApiClient {
   }
 
   private async handleUnauthorized() {
+    // Try refresh token flow once
+    if (typeof window === 'undefined') return;
+    const refreshToken = window.localStorage?.getItem('refresh_token');
+    if (!refreshToken) return;
     try {
-      // Import Firebase auth service dynamically
-      const { FirebaseAuthService } = await import('./firebase/auth');
-      await FirebaseAuthService.signOut();
-      console.log('User signed out due to unauthorized access');
-    } catch (error) {
-      console.error('Error during unauthorized handling:', error);
+      const res = await fetch(`${(this.client.defaults.baseURL || '').replace(/\/$/, '')}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken })
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data?.accessToken) window.localStorage.setItem('auth_token', data.accessToken);
+      if (data?.refreshToken) window.localStorage.setItem('refresh_token', data.refreshToken);
+    } catch {
+      // ignore
     }
   }
 

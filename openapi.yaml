@@ -1,0 +1,90 @@
+openapi: 3.0.3
+info:
+  title: theFOX API
+  version: 0.1.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /healthz:
+    get:
+      summary: Health check
+      responses:
+        '200': { description: OK }
+  /auth/register:
+    post:
+      summary: Register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+                displayName: { type: string }
+      responses:
+        '200': { description: Token }
+  /auth/login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        '200': { description: Token }
+  /auth/refresh:
+    post:
+      summary: Refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken: { type: string }
+      responses:
+        '200': { description: New tokens }
+  /products:
+    get:
+      summary: List products
+      parameters:
+        - in: query
+          name: q
+          schema: { type: string }
+        - in: query
+          name: category
+          schema: { type: string }
+        - in: query
+          name: limit
+          schema: { type: integer }
+      responses:
+        '200': { description: Products }
+  /cart:
+    get:
+      summary: Get cart
+      responses:
+        '200': { description: Cart }
+  /cart/items:
+    post:
+      summary: Add item to cart
+      responses:
+        '204': { description: No Content }
+  /checkout:
+    post:
+      summary: Create order from cart
+      responses:
+        '200': { description: Order }
+  /orders:
+    get:
+      summary: List my orders
+      responses:
+        '200': { description: Orders }
+

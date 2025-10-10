@@ -1,38 +1,45 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Link } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors } from '@/constants/Colors';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Image, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { Asset } from 'expo-asset';
+import * as Font from 'expo-font';
 
-export default function HomeScreen() {
-  const insets = useSafeAreaInsets();
+export default function AppEntry() {
+  const router = useRouter();
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync();
+    (async () => {
+      try {
+        // Preload assets (splash/icon) and fonts if any
+        await Promise.all([
+          Asset.fromModule(require('../assets/splash.png')).downloadAsync(),
+          Asset.fromModule(require('../assets/icon.png')).downloadAsync(),
+          Asset.fromModule(require('../assets/thefox_logo.jpg')).downloadAsync(),
+          // Example: preload a font file if you add one
+          // Font.loadAsync({ SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf') })
+        ]);
+      } catch (e) {
+        // no-op; proceed even if some assets fail to cache
+      } finally {
+        setReady(true);
+        await SplashScreen.hideAsync();
+      }
+    })();
+  }, []);
+
+  const handleLogoPress = useCallback(() => {
+    router.replace('/login'); // Navigate to login when logo is pressed
+  }, [router]);
+
   return (
     <View style={styles.container}>
-      <StatusBar style="light" backgroundColor={Colors.primary} />
-      
-      <View style={[styles.header, { paddingTop: insets.top + 20 }]}>
-        <Text style={styles.title}>theFOX</Text>
-        <Text style={styles.subtitle}>Your Market, Delivered</Text>
-      </View>
-
-      <View style={styles.content}>
-        <Text style={styles.description}>
-          Your local marketplace, connected. Discover fresh ingredients from local markets, 
-          delivered directly to your doorstep.
-        </Text>
-
-        <Link href="/(tabs)" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Get Started</Text>
-          </TouchableOpacity>
-        </Link>
-      </View>
-
-      <View style={[styles.footer, { paddingBottom: insets.bottom + 20 }]}>
-        <Text style={styles.footerText}>
-          Welcome to the native theFOX experience
-        </Text>
-      </View>
+      <TouchableOpacity onPress={handleLogoPress} style={styles.logoContainer}>
+        <Image source={require('../assets/thefox_logo.jpg')} style={styles.logo} resizeMode="contain" />
+      </TouchableOpacity>
+      <ActivityIndicator color="#ff6b35" style={{ marginTop: 16 }} />
     </View>
   );
 }
@@ -40,56 +47,16 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
-  },
-  header: {
-    backgroundColor: Colors.primary,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
+    backgroundColor: '#ffffff',
     alignItems: 'center',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: Colors.white,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: Colors.white,
-    opacity: 0.9,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 40,
     justifyContent: 'center',
   },
-  description: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: Colors.text,
-    textAlign: 'center',
-    marginBottom: 40,
-  },
-  button: {
-    backgroundColor: Colors.primary,
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 8,
+  logoContainer: {
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  buttonText: {
-    color: Colors.white,
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  footer: {
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 12,
-    color: Colors.textLight,
+  logo: {
+    width: '70%',
+    height: 200,
   },
 });
