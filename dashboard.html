@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>theFOX Monitoring Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: #ff6b35;
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card h3 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .status.healthy {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-label {
+            font-weight: 500;
+        }
+        
+        .metric-value {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+        }
+        
+        .chart {
+            height: 200px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #e55a2b;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .refresh {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .refresh:hover {
+            background: #f8f9fa;
+        }
+        
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>theFOX Monitoring Dashboard</h1>
+    </div>
+    
+    <div class="container">
+        <div class="grid">
+            <div class="card">
+                <h3>Service Status</h3>
+                <div class="metric">
+                    <span class="metric-label">Web App</span>
+                    <span class="status healthy" id="web-status">Healthy</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Mobile App</span>
+                    <span class="status healthy" id="mobile-status">Healthy</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">API</span>
+                    <span class="status healthy" id="api-status">Healthy</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Database</span>
+                    <span class="status healthy" id="db-status">Healthy</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Performance Metrics</h3>
+                <div class="metric">
+                    <span class="metric-label">Response Time</span>
+                    <span class="metric-value" id="response-time">0.45s</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">CPU Usage</span>
+                    <span class="metric-value" id="cpu-usage">45%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Memory Usage</span>
+                    <span class="metric-value" id="memory-usage">1.2GB</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Active Instances</span>
+                    <span class="metric-value" id="instances">3</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Request Statistics</h3>
+                <div class="metric">
+                    <span class="metric-label">Total Requests</span>
+                    <span class="metric-value" id="total-requests">12,345</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Success Rate</span>
+                    <span class="metric-value" id="success-rate">99.8%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Error Rate</span>
+                    <span class="metric-value" id="error-rate">0.2%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Uptime</span>
+                    <span class="metric-value" id="uptime">99.9%</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Response Time Chart</h3>
+                <div class="chart" id="response-chart">
+                    Chart will be loaded here
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Error Logs</h3>
+                <div id="error-logs">
+                    <div class="metric">
+                        <span class="metric-label">No recent errors</span>
+                        <span class="status healthy">Clean</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>System Resources</h3>
+                <div class="metric">
+                    <span class="metric-label">Disk Usage</span>
+                    <span class="metric-value" id="disk-usage">2.1GB / 10GB</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Network I/O</span>
+                    <span class="metric-value" id="network-io">125MB/s</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Database Size</span>
+                    <span class="metric-value" id="db-size">45MB</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <a href="#" class="btn btn-primary" onclick="refreshData()">Refresh Data</a>
+            <a href="#" class="btn btn-secondary" onclick="viewLogs()">View Logs</a>
+            <a href="#" class="btn btn-secondary" onclick="viewMetrics()">View Metrics</a>
+        </div>
+    </div>
+    
+    <div class="refresh" onclick="refreshData()" title="Refresh">
+        ↻
+    </div>
+    
+    <script>
+        // Mock data for demonstration
+        const mockData = {
+            webStatus: 'healthy',
+            mobileStatus: 'healthy',
+            apiStatus: 'healthy',
+            dbStatus: 'healthy',
+            responseTime: '0.45s',
+            cpuUsage: '45%',
+            memoryUsage: '1.2GB',
+            instances: 3,
+            totalRequests: '12,345',
+            successRate: '99.8%',
+            errorRate: '0.2%',
+            uptime: '99.9%',
+            diskUsage: '2.1GB / 10GB',
+            networkIo: '125MB/s',
+            dbSize: '45MB'
+        };
+        
+        function updateDashboard() {
+            // Update status indicators
+            document.getElementById('web-status').textContent = mockData.webStatus;
+            document.getElementById('mobile-status').textContent = mockData.mobileStatus;
+            document.getElementById('api-status').textContent = mockData.apiStatus;
+            document.getElementById('db-status').textContent = mockData.dbStatus;
+            
+            // Update metrics
+            document.getElementById('response-time').textContent = mockData.responseTime;
+            document.getElementById('cpu-usage').textContent = mockData.cpuUsage;
+            document.getElementById('memory-usage').textContent = mockData.memoryUsage;
+            document.getElementById('instances').textContent = mockData.instances;
+            document.getElementById('total-requests').textContent = mockData.totalRequests;
+            document.getElementById('success-rate').textContent = mockData.successRate;
+            document.getElementById('error-rate').textContent = mockData.errorRate;
+            document.getElementById('uptime').textContent = mockData.uptime;
+            document.getElementById('disk-usage').textContent = mockData.diskUsage;
+            document.getElementById('network-io').textContent = mockData.networkIo;
+            document.getElementById('db-size').textContent = mockData.dbSize;
+        }
+        
+        function refreshData() {
+            document.body.classList.add('loading');
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Update mock data with random variations
+                mockData.responseTime = (Math.random() * 0.5 + 0.2).toFixed(2) + 's';
+                mockData.cpuUsage = Math.floor(Math.random() * 30 + 30) + '%';
+                mockData.memoryUsage = (Math.random() * 0.5 + 1.0).toFixed(1) + 'GB';
+                mockData.instances = Math.floor(Math.random() * 3 + 2);
+                mockData.totalRequests = (Math.floor(Math.random() * 1000 + 12000)).toLocaleString();
+                
+                updateDashboard();
+                document.body.classList.remove('loading');
+            }, 1000);
+        }
+        
+        function viewLogs() {
+            alert('Logs view would open here');
+        }
+        
+        function viewMetrics() {
+            alert('Metrics view would open here');
+        }
+        
+        // Initialize dashboard
+        updateDashboard();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(refreshData, 30000);
+    </script>
+</body>
+</html>

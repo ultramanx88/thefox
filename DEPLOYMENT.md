@@ -1,252 +1,239 @@
-# 🚀 Git-Based Deployment Guide
+# theFOX Deployment Guide
 
-คู่มือการ deploy แบบ Git-driven สำหรับโปรเจกต์ TheFox
+This guide explains how to deploy theFOX application to Google Cloud using Docker.
 
-## 📋 Overview
+## Architecture
 
-โปรเจกต์นี้ใช้ **Git เป็นตัวหลัก** ในการควบคุม deployment ไปยัง Firebase โดยมี workflow ดังนี้:
+The application consists of three main components:
+- **Web App**: Next.js application (Port 3000)
+- **Mobile App**: Expo web build (Port 8080)
+- **Backend API**: Rust application (Port 3001)
+- **Nginx**: Reverse proxy and load balancer (Port 80)
 
-- **Git Commits** → Auto deploy to staging
-- **Git Tags** → Deploy to production/staging
-- **Git Branches** → Deploy to specific environments
-- **Pull Requests** → Preview deployments
+## Prerequisites
 
-## 🔧 Setup
+1. **Google Cloud Account**: Sign up at [Google Cloud Console](https://console.cloud.google.com/)
+2. **gcloud CLI**: Install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install)
+3. **Docker**: Install [Docker](https://docs.docker.com/get-docker/)
 
-### 1. Install Git Hooks
+## Quick Start
+
+### 1. Setup Google Cloud Project
+
 ```bash
-./scripts/setup-git-hooks.sh
+# Login to Google Cloud
+gcloud auth login
+
+# Create a new project (optional)
+gcloud projects create your-project-id
+
+# Set the project
+gcloud config set project your-project-id
 ```
 
-### 2. Prerequisites
-- Node.js (version 22+)
-- Git configured with proper commit message format
+### 2. Deploy to Google Cloud
 
-## 🚀 Git-Based Deployment Workflows
-
-### 1. Auto Staging Deployment
 ```bash
-# Push to main branch → Auto deploy to staging
-git add .
-git commit -m "feat: add new feature"
-git push origin main
-```
-- ✅ Automatic staging deployment
-- ✅ Quality checks (lint, typecheck)
-- ✅ Build verification
+# Make the deploy script executable
+chmod +x deploy.sh
 
-### 2. Production Deployment via Tags
+# Edit the PROJECT_ID in deploy.sh
+nano deploy.sh
+
+# Deploy the application
+./deploy.sh
+```
+
+### 3. Access the Application
+
+After deployment, you'll get URLs for:
+- **Web App**: `https://your-service-url.run.app/`
+- **Mobile App**: `https://your-service-url.run.app/mobile/`
+- **API**: `https://your-service-url.run.app/api/`
+
+## Manual Deployment
+
+### Using Docker Compose (Local Testing)
+
 ```bash
-# Create version tag → Deploy to production
-git tag v1.0.0
-git push origin v1.0.0
+# Build and run locally
+docker-compose up --build
 
-# Or create release tag
-git tag release-prod-$(date +%Y%m%d)
-git push origin --tags
+# Access the application
+# Web: http://localhost:3000
+# Mobile: http://localhost:8080
+# API: http://localhost:3001
 ```
 
-### 3. Staging Deployment via Tags
+### Using Google Cloud Build
+
 ```bash
-# Create staging tag → Deploy to staging
-git tag v1.0.0-beta
-git push origin v1.0.0-beta
+# Submit build
+gcloud builds submit --config cloudbuild.yaml
 
-# Or create staging release tag
-git tag release-staging-$(date +%Y%m%d)
-git push origin --tags
+# Deploy to Cloud Run
+gcloud run deploy thefox \
+  --image gcr.io/your-project-id/thefox:latest \
+  --region asia-southeast1 \
+  --platform managed \
+  --allow-unauthenticated \
+  --port 80 \
+  --memory 2Gi \
+  --cpu 2
 ```
 
-### 4. Branch-Based Deployment
+## Configuration
+
+### Environment Variables
+
+The application uses the following environment variables:
+
+- `NODE_ENV`: Set to `production` for production builds
+- `PORT`: Port for the web application (default: 3000)
+- `DATABASE_URL`: SQLite database path (default: `sqlite:///app/data/thefox.db`)
+
+### Database
+
+The application uses SQLite for data storage. The database file is stored in `/app/data/thefox.db` and is persisted using Docker volumes.
+
+### Nginx Configuration
+
+Nginx is configured to:
+- Serve static files with caching
+- Proxy API requests to the backend
+- Proxy mobile app requests to Expo
+- Proxy web app requests to Next.js
+- Apply rate limiting and security headers
+
+## Monitoring and Logs
+
+### View Logs
+
 ```bash
-# Deploy to production via branch
-git checkout -b deploy/production
-git push origin deploy/production
+# View all logs
+gcloud run services logs tail thefox --region asia-southeast1
 
-# Deploy to staging via branch
-git checkout -b deploy/staging
-git push origin deploy/staging
-
-# Hotfix deployment
-git checkout -b hotfix/critical-bug-fix
-git push origin hotfix/critical-bug-fix
+# View specific service logs
+gcloud run services logs tail thefox --region asia-southeast1 --filter="resource.type=cloud_run_revision"
 ```
 
-## 🏷️ Git Tag Patterns
+### Health Check
 
-### Production Tags
-- `v1.0.0` - Semantic version tags
-- `v2.1.3` - Major.Minor.Patch format
-- `release-prod-*` - Production release tags
+The application provides a health check endpoint at `/health` that returns `200 OK` when all services are running.
 
-### Staging Tags
-- `v1.0.0-beta` - Pre-release versions
-- `v1.0.0-alpha` - Alpha versions
-- `release-staging-*` - Staging release tags
+## Scaling
 
-## 🌿 Git Branch Patterns
+### Automatic Scaling
 
-### Deployment Branches
-- `deploy/production` - Production deployment
-- `deploy/staging` - Staging deployment
-- `hotfix/*` - Emergency production fixes
+Cloud Run automatically scales based on:
+- **CPU utilization**: Default threshold is 60%
+- **Concurrent requests**: Default is 100 requests per instance
+- **Memory usage**: Monitored but not used for scaling decisions
 
-### Development Branches
-- `main` - Auto-deploy to staging
-- `feature/*` - Feature development
-- `bugfix/*` - Bug fixes
+### Manual Scaling
 
-## 📝 Commit Message Format
-
-Git hooks จะตรวจสอบ commit message format:
-
-```
-<type>(<scope>): <description>
-
-Types:
-- feat: New feature
-- fix: Bug fix
-- docs: Documentation
-- style: Code style changes
-- refactor: Code refactoring
-- test: Tests
-- chore: Maintenance
-- deploy: Deployment related
-```
-
-### Examples:
 ```bash
-git commit -m "feat(auth): add user login functionality"
-git commit -m "fix: resolve Firebase connection issue"
-git commit -m "deploy: release version 1.2.0"
+# Set minimum instances
+gcloud run services update thefox \
+  --region asia-southeast1 \
+  --min-instances 2
+
+# Set maximum instances
+gcloud run services update thefox \
+  --region asia-southeast1 \
+  --max-instances 20
 ```
 
-## 🔄 Deployment Flow Examples
+## Security
 
-### Feature Development to Production
-```bash
-# 1. Develop feature
-git checkout -b feature/user-profile
-git commit -m "feat(profile): add user profile page"
-git push origin feature/user-profile
+### HTTPS
 
-# 2. Create PR → Preview deployment
-# 3. Merge to main → Staging deployment
-git checkout main
-git merge feature/user-profile
-git push origin main
+All traffic is automatically encrypted with HTTPS when using Cloud Run.
 
-# 4. Test in staging, then deploy to production
-git tag v1.1.0
-git push origin v1.1.0
-```
+### Security Headers
 
-### Hotfix Deployment
-```bash
-# 1. Create hotfix branch
-git checkout -b hotfix/payment-bug
-git commit -m "fix(payment): resolve payment processing error"
+The application includes security headers:
+- `X-Frame-Options: SAMEORIGIN`
+- `X-Content-Type-Options: nosniff`
+- `X-XSS-Protection: 1; mode=block`
+- `Referrer-Policy: strict-origin-when-cross-origin`
 
-# 2. Push hotfix → Auto production deployment
-git push origin hotfix/payment-bug
+### Rate Limiting
 
-# 3. Merge back to main
-git checkout main
-git merge hotfix/payment-bug
-git push origin main
-```
+- **API**: 10 requests per second per IP
+- **Web**: 30 requests per second per IP
 
-## 🎯 Deployment Triggers
-
-| Action | Environment | Components | Auto Deploy |
-|--------|-------------|------------|-------------|
-| Push to `main` | Staging | Hosting only | ✅ |
-| Create `v*.*.*` tag | Production | Hosting + Functions | ✅ |
-| Create `v*.*.*-*` tag | Staging | Hosting only | ✅ |
-| Push to `deploy/production` | Production | Hosting + Functions | ✅ |
-| Push to `deploy/staging` | Staging | Hosting only | ✅ |
-| Push to `hotfix/*` | Production | Hosting + Functions | ✅ |
-| Create Pull Request | Preview | Hosting only | ✅ |
-
-## 🔍 Monitoring & Debugging
-
-### Check Deployment Status
-```bash
-# View recent deployments
-git log --oneline --grep="deploy"
-
-# Check tags
-git tag -l
-
-# View deployment workflows
-# GitHub → Actions tab
-```
-
-### Local Testing
-```bash
-# Run full CI pipeline locally
-npm run ci
-
-# Test build process
-npm run build:all
-```
-
-## 📊 Best Practices
-
-### Git Workflow
-1. **Always use descriptive commit messages**
-2. **Test locally before pushing**
-3. **Use staging for testing before production**
-4. **Create tags for production releases**
-5. **Use hotfix branches for emergency fixes**
-
-### Deployment Safety
-1. **Staging first, production second**
-2. **Monitor deployment status**
-3. **Keep deployment history via Git tags**
-4. **Use semantic versioning**
-5. **Document deployment decisions**
-
-## 🚨 Emergency Procedures
-
-### Rollback Production
-```bash
-# Find previous working tag
-git tag -l | grep "v" | sort -V
-
-# Deploy previous version
-git tag v1.0.1-rollback
-git push origin v1.0.1-rollback
-```
-
-### Quick Hotfix
-```bash
-# Create and deploy hotfix immediately
-git checkout -b hotfix/emergency-fix
-git commit -m "fix: emergency production fix"
-git push origin hotfix/emergency-fix
-# → Auto deploys to production
-```
-
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
-1. **Deployment failed**: Check GitHub Actions logs
-2. **Tag not deploying**: Verify tag format matches patterns
-3. **Branch not deploying**: Check branch name matches patterns
-4. **Build errors**: Run `npm run ci` locally first
+
+1. **Build fails**: Check that all dependencies are properly installed
+2. **Service won't start**: Check logs for specific error messages
+3. **Database issues**: Ensure the database file is writable
 
 ### Debug Commands
+
 ```bash
-# Check current branch and status
-git status
-git branch -a
+# Check service status
+gcloud run services describe thefox --region asia-southeast1
 
-# View recent commits
-git log --oneline -10
+# View recent logs
+gcloud run services logs read thefox --region asia-southeast1 --limit 50
 
-# Check remote tags
-git ls-remote --tags origin
+# Check build logs
+gcloud builds list --limit 5
 ```
 
-Git-based deployment ทำให้การ deploy มีความโปร่งใส ติดตามได้ และควบคุมได้ง่ายผ่าน Git workflow ที่คุ้นเคย!
+## Cost Optimization
+
+### Resource Limits
+
+- **Memory**: 2GB (adjust based on usage)
+- **CPU**: 2 cores (adjust based on usage)
+- **Max Instances**: 10 (adjust based on traffic)
+
+### Monitoring Costs
+
+```bash
+# View current costs
+gcloud billing budgets list
+
+# Set up billing alerts
+gcloud alpha billing budgets create \
+  --billing-account=YOUR_BILLING_ACCOUNT \
+  --budget-amount=100USD \
+  --display-name="theFOX Budget"
+```
+
+## Updates
+
+### Rolling Updates
+
+To update the application:
+
+```bash
+# Build new image
+gcloud builds submit --config cloudbuild.yaml
+
+# The new version will automatically be deployed
+```
+
+### Rollback
+
+```bash
+# List revisions
+gcloud run revisions list --service thefox --region asia-southeast1
+
+# Rollback to previous revision
+gcloud run services update-traffic thefox \
+  --region asia-southeast1 \
+  --to-revisions REVISION_NAME=100
+```
+
+## Support
+
+For issues and questions:
+1. Check the logs first
+2. Review this documentation
+3. Check the GitHub repository issues
+4. Contact the development team

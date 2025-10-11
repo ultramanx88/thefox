@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  thefox-app:
+    build: .
+    ports:
+      - "80:80"
+      - "3000:3000"
+      - "3001:3001"
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=sqlite:///app/data/thefox.db
+    volumes:
+      - thefox_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  thefox_data:
+    driver: local
