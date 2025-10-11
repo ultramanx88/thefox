@@ -48,9 +48,9 @@ jobs:
     - name: Setup Google Cloud CLI
       uses: google-github-actions/setup-gcloud@v1
       with:
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-    
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+        project_id: thefox-474800
+
     - name: Configure Docker
       run: gcloud auth configure-docker
     
@@ -76,7 +76,7 @@ jobs:
       uses: google-github-actions/setup-gcloud@v1
       with:
         service_account_key: ${{ secrets.GCP_SA_KEY }}
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        project_id: thefox-474800
     
     - name: Deploy to Cloud Run
       run: |
