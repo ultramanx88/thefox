@@ -2,9 +2,9 @@ name: Deploy to Google Cloud
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, main ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, main ]
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID || 'thefox-474800' }}
@@ -67,7 +67,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
     
     steps:
     - uses: actions/checkout@v3
