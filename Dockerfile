@@ -62,12 +62,16 @@ RUN mkdir -p /var/log/nginx /var/log/supervisor /app/data
 # Set permissions
 RUN chmod +x /app/start.sh /app/backend/thefox-backend
 
-# Expose ports
-EXPOSE 80 3000 8080
+# Set environment variables for Cloud Run
+ENV PORT=8080
+ENV NODE_ENV=production
+
+# Expose port (Cloud Run uses PORT environment variable)
+EXPOSE $PORT
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:80/health || exit 1
+    CMD curl -f http://localhost:$PORT/ || exit 1
 
 # Start services
 CMD ["/app/start.sh"]

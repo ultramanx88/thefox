@@ -85,14 +85,14 @@ jobs:
           --region $REGION \
           --platform managed \
           --allow-unauthenticated \
-          --port 80 \
+          --port 8080 \
           --memory 2Gi \
           --cpu 2 \
           --max-instances 10 \
           --min-instances 1 \
           --concurrency 100 \
           --timeout 300s \
-          --set-env-vars NODE_ENV=production,PORT=80
+          --set-env-vars NODE_ENV=production,PORT=8080
     
     - name: Get service URL
       run: |
