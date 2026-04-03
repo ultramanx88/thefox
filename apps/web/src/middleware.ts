@@ -1,32 +1,46 @@
-import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-
-const locales = new Set(['th', 'en', 'zh', 'ja', 'ko']);
+import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const url = new URL(request.url);
-  const segments = url.pathname.split('/').filter(Boolean);
+  const token = request.cookies.get('auth-token')?.value;
+  const { pathname } = request.nextUrl;
 
-  if (segments.length === 0) return NextResponse.next();
+  // Protected routes that require authentication
+  const protectedRoutes = ['/account', '/checkout', '/orders'];
+  
+  // Auth routes that should redirect if already logged in
+  const authRoutes = ['/auth/login', '/auth/register'];
 
-  // If path starts with a locale (or multiple locale segments), redirect to root
-  if (locales.has(segments[0])) {
-    if (segments.length === 1) {
-      url.pathname = '/';
-      return NextResponse.redirect(url);
-    }
-    // e.g. /th/en/... or /en/th
-    if (segments.slice(0, 2).every((s) => locales.has(s))) {
-      url.pathname = '/';
-      return NextResponse.redirect(url);
-    }
+  // Check if current path is protected
+  const isProtectedRoute = protectedRoutes.some(route => 
+    pathname.startsWith(route)
+  );
+
+  // Check if current path is auth route
+  const isAuthRoute = authRoutes.some(route => 
+    pathname.startsWith(route)
+  );
+
+  // Redirect to login if accessing protected route without token
+  if (isProtectedRoute && !token) {
+    const loginUrl = new URL('/auth/login', request.url);
+    loginUrl.searchParams.set('redirect', pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Redirect to home if accessing auth routes with valid token
+  if (isAuthRoute && token) {
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|icons|manifest.json|sw.js|workbox-).*)'],
+  matcher: [
+    '/account/:path*',
+    '/checkout/:path*', 
+    '/orders/:path*',
+    '/auth/:path*'
+  ]
 };
-
-

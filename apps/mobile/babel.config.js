@@ -7,6 +7,8 @@ module.exports = function (api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
+      // Ensure expo-router transforms process.env.EXPO_ROUTER_APP_ROOT into a static string for web bundling
+      'expo-router/babel',
       [
         'module-resolver',
         {

@@ -1,0 +1,48 @@
+{
+  "common": {
+    "loading": "กำลังโหลด...",
+    "error": "เกิดข้อผิดพลาด",
+    "success": "สำเร็จ",
+    "cancel": "ยกเลิก",
+    "confirm": "ยืนยัน",
+    "save": "บันทึก",
+    "edit": "แก้ไข",
+    "delete": "ลบ",
+    "search": "ค้นหา",
+    "filter": "กรอง",
+    "sort": "เรียงลำดับ",
+    "next": "ถัดไป",
+    "previous": "ก่อนหน้า",
+    "close": "ปิด"
+  },
+  "wallet": {
+    "title": "กระเป๋าเงินคนขับ",
+    "balance": "ยอดเงินคงเหลือ",
+    "totalEarnings": "รายได้รวม",
+    "todayEarnings": "รายได้วันนี้",
+    "pendingWithdrawals": "รอถอน",
+    "withdraw": "ถอนเงิน",
+    "withdrawAmount": "จำนวนเงิน",
+    "minWithdrawal": "จำนวนเงินขั้นต่ำในการถอน {{amount}} บาท",
+    "insufficientBalance": "ยอดเงินไม่เพียงพอ",
+    "withdrawSuccess": "คำขอถอนเงินถูกส่งแล้ว",
+    "quickActions": "การดำเนินการด่วน",
+    "recentTransactions": "ธุรกรรมล่าสุด",
+    "earningsReport": "รายงานรายได้"
+  },
+  "review": {
+    "title": "รีวิวและคะแนน",
+    "writeReview": "เขียนรีวิว",
+    "allReviews": "รีวิวทั้งหมด",
+    "rating": "ให้คะแนน",
+    "comment": "ความคิดเห็น",
+    "submitReview": "ส่งรีวิว",
+    "reviewSuccess": "รีวิวถูกส่งเรียบร้อยแล้ว",
+    "ratingRequired": "กรุณาให้คะแนน",
+    "commentTooShort": "กรุณาเขียนรีวิวอย่างน้อย 10 ตัวอักษร",
+    "helpful": "มีประโยชน์",
+    "reviews": "รีวิว",
+    "shareExperience": "แบ่งปันประสบการณ์ของคุณ",
+    "characterCount": "{{current}}/{{max}} ตัวอักษร (ขั้นต่ำ {{min}} ตัวอักษร)"
+  }
+}

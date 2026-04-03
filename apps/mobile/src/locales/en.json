@@ -1,0 +1,48 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close"
+  },
+  "wallet": {
+    "title": "Driver Wallet",
+    "balance": "Balance",
+    "totalEarnings": "Total Earnings",
+    "todayEarnings": "Today's Earnings",
+    "pendingWithdrawals": "Pending Withdrawals",
+    "withdraw": "Withdraw",
+    "withdrawAmount": "Amount",
+    "minWithdrawal": "Minimum withdrawal amount {{amount}} THB",
+    "insufficientBalance": "Insufficient balance",
+    "withdrawSuccess": "Withdrawal request submitted",
+    "quickActions": "Quick Actions",
+    "recentTransactions": "Recent Transactions",
+    "earningsReport": "Earnings Report"
+  },
+  "review": {
+    "title": "Reviews & Ratings",
+    "writeReview": "Write Review",
+    "allReviews": "All Reviews",
+    "rating": "Rating",
+    "comment": "Comment",
+    "submitReview": "Submit Review",
+    "reviewSuccess": "Review submitted successfully",
+    "ratingRequired": "Please provide a rating",
+    "commentTooShort": "Please write at least 10 characters",
+    "helpful": "Helpful",
+    "reviews": "Reviews",
+    "shareExperience": "Share your experience",
+    "characterCount": "{{current}}/{{max}} characters (minimum {{min}} characters)"
+  }
+}

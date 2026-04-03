@@ -4,6 +4,8 @@ import { cn } from '@/lib/utils';
 import { PWAProvider } from '@/components/pwa/pwa-provider';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import { QueryProvider } from '@/components/providers/QueryProvider';
+import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://thefox-sp7zz.web.app'),
@@ -109,9 +111,12 @@ export default async function RootLayout({
         )}
       >
         <NextIntlClientProvider messages={messages} locale="th">
-          <PWAProvider>
-            {children}
-          </PWAProvider>
+          <QueryProvider>
+            <PWAProvider>
+              {children}
+              <Toaster />
+            </PWAProvider>
+          </QueryProvider>
         </NextIntlClientProvider>
       </body>
     </html>

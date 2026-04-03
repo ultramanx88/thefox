@@ -1,0 +1,9 @@
+{
+  "name": "@thefox/shared",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "redis": "^4.6.8",
+    "amqplib": "^0.10.3"
+  }
+}

@@ -4,7 +4,7 @@
     "slug": "thefox",
     "version": "1.0.0",
     "orientation": "portrait",
-    "sdkVersion": "53.0.0",
+    "sdkVersion": "54.0.0",
     "icon": "./assets/thefox_logo.jpg",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,9 +13,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.thefox.mobile",
@@ -47,126 +45,16 @@
     },
     "plugins": [
       "expo-router",
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Allow theFOX to access your camera to scan QR codes and take photos."
-        }
-      ],
-      [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "Allow theFOX to use your location to show nearby markets and track deliveries."
-        }
-      ],
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/thefox_logo.jpg",
-          "color": "#ff6b35",
-          "sounds": [
-            "./assets/notification-sound.wav"
-          ]
-        }
-      ]
+      ["expo-camera", { "cameraPermission": "Allow theFOX to access your camera to scan QR codes and take photos." }],
+      ["expo-location", { "locationAlwaysAndWhenInUsePermission": "Allow theFOX to use your location to show nearby markets and track deliveries." }],
+      ["expo-notifications", { "icon": "./assets/thefox_logo.jpg", "color": "#ff6b35", "sounds": ["./assets/notification-sound.wav"] }]
     ],
     "scheme": "thefox",
     "extra": {
-      "router": {
-        "origin": false
-      },
+      "router": { "origin": false },
       "API_BASE_URL": "http://localhost:3000",
-      "eas": {
-        "projectId": "b87322ef-46fe-4aa6-845e-d16f7c55ce90"
-      }
+      "eas": { "projectId": "b87322ef-46fe-4aa6-845e-d16f7c55ce90" }
     },
-    "env": {
-      "EXPO_ROUTER_APP_ROOT": "./app"
-    },
-    "expo": {
-      "name": "theFOX",
-      "slug": "thefox",
-      "version": "1.0.0",
-      "orientation": "portrait",
-      "sdkVersion": "53.0.0",
-      "icon": "./assets/thefox_logo.jpg",
-      "userInterfaceStyle": "automatic",
-      "newArchEnabled": true,
-      "splash": {
-        "image": "./assets/thefox_logo.jpg",
-        "resizeMode": "contain",
-        "backgroundColor": "#ffffff"
-      },
-      "assetBundlePatterns": [
-        "**/*"
-      ],
-      "ios": {
-        "supportsTablet": true,
-        "bundleIdentifier": "com.thefox.mobile",
-        "buildNumber": "1",
-        "infoPlist": {
-          "NSCameraUsageDescription": "This app uses camera to scan QR codes and take photos of products",
-          "NSLocationWhenInUseUsageDescription": "This app uses location to show nearby markets and track deliveries",
-          "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses location to show nearby markets and track deliveries"
-        }
-      },
-      "android": {
-        "adaptiveIcon": {
-          "foregroundImage": "./assets/thefox_logo.jpg",
-          "backgroundColor": "#ffffff"
-        },
-        "package": "com.thefox.mobile",
-        "versionCode": 1,
-        "permissions": [
-          "CAMERA",
-          "ACCESS_FINE_LOCATION",
-          "ACCESS_COARSE_LOCATION",
-          "RECEIVE_BOOT_COMPLETED",
-          "VIBRATE"
-        ]
-      },
-      "web": {
-        "favicon": "./assets/thefox_logo.jpg",
-        "bundler": "metro"
-      },
-      "plugins": [
-        "expo-router",
-        [
-          "expo-camera",
-          {
-            "cameraPermission": "Allow theFOX to access your camera to scan QR codes and take photos."
-          }
-        ],
-        [
-          "expo-location",
-          {
-            "locationAlwaysAndWhenInUsePermission": "Allow theFOX to use your location to show nearby markets and track deliveries."
-          }
-        ],
-        [
-          "expo-notifications",
-          {
-            "icon": "./assets/thefox_logo.jpg",
-            "color": "#ff6b35",
-            "sounds": [
-              "./assets/notification-sound.wav"
-            ]
-          }
-        ]
-      ],
-      "scheme": "thefox",
-      "extra": {
-        "router": {
-          "origin": false
-        },
-        "API_BASE_URL": "http://localhost:3000",
-        "eas": {
-          "projectId": "b87322ef-46fe-4aa6-845e-d16f7c55ce90"
-        }
-      },
-      "env": {
-        "EXPO_ROUTER_APP_ROOT": "./app"
-      }
-    }
+    "env": { "EXPO_ROUTER_APP_ROOT": "./app" }
   }
 }

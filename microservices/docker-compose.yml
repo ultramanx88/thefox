@@ -1,0 +1,432 @@
+version: '3.8'
+
+services:
+  # Databases
+  # Optimized Databases with Master-Replica
+  postgres-user-master:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_REPLICATION_USER: replicator
+      POSTGRES_REPLICATION_PASSWORD: replicator_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - user_master_data:/var/lib/postgresql/data
+      - ./database/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./database/init-master.sql:/docker-entrypoint-initdb.d/init-master.sql
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+
+  postgres-user-replica:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      PGUSER: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - user_replica_data:/var/lib/postgresql/data
+      - ./database/setup-replica.sh:/docker-entrypoint-initdb.d/setup-replica.sh
+    depends_on:
+      - postgres-user-master
+
+  # PgBouncer Connection Pooler
+  pgbouncer-user:
+    image: pgbouncer/pgbouncer:latest
+    environment:
+      DATABASES_HOST: postgres-user-master
+      DATABASES_PORT: 5432
+      DATABASES_USER: postgres
+      DATABASES_PASSWORD: password
+      DATABASES_DBNAME: user_db
+      POOL_MODE: transaction
+      MAX_CLIENT_CONN: 1000
+      DEFAULT_POOL_SIZE: 25
+    ports:
+      - "6432:5432"
+    depends_on:
+      - postgres-user-master
+
+  # Query Cache
+  redis-query-cache:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_query_cache:/data
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru
+
+  postgres-user:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5440:5432"
+    volumes:
+      - user_data:/var/lib/postgresql/data
+
+  postgres-product:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: product_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - product_data:/var/lib/postgresql/data
+
+  postgres-order:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: order_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5434:5432"
+    volumes:
+      - order_data:/var/lib/postgresql/data
+
+  # Redis Cluster for Caching
+  redis-1:
+    image: redis:7-alpine
+    command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    ports:
+      - "7001:6379"
+    volumes:
+      - redis1_data:/data
+
+  redis-2:
+    image: redis:7-alpine
+    command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    ports:
+      - "7002:6379"
+    volumes:
+      - redis2_data:/data
+
+  redis-3:
+    image: redis:7-alpine
+    command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    ports:
+      - "7003:6379"
+    volumes:
+      - redis3_data:/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  postgres-payment:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5435:5432"
+    volumes:
+      - payment_data:/var/lib/postgresql/data
+
+  # Kafka Cluster
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+
+  kafka-1:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    volumes:
+      - kafka1_data:/var/lib/kafka/data
+
+  kafka-2:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9093:9092"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    volumes:
+      - kafka2_data:/var/lib/kafka/data
+
+  kafka-3:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9094:9092"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    volumes:
+      - kafka3_data:/var/lib/kafka/data
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
+  # Monitoring Stack
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    volumes:
+      - jaeger_data:/tmp
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+
+  # Services
+  user-service:
+    build: ./user-service
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres-user:5432/user_db
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=your-secret-key
+    depends_on:
+      - postgres-user
+      - redis
+
+  product-service:
+    build: ./product-service
+    ports:
+      - "3002:3002"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres-product:5432/product_db
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres-product
+      - redis
+
+  order-service:
+    build: ./order-service
+    ports:
+      - "3003:3003"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres-order:5432/order_db
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres-order
+      - redis
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "3004:3004"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres-payment:5432/payment_db
+      - REDIS_URL=redis://redis:6379
+      - STRIPE_SECRET_KEY=sk_test_...
+    depends_on:
+      - postgres-payment
+      - redis
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "3005:3005"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - FIREBASE_PROJECT_ID=your-project
+      - EMAIL_USER=your-email@gmail.com
+      - TWILIO_SID=your-twilio-sid
+    depends_on:
+      - redis
+
+  database-service:
+    build: ./database-service
+    ports:
+      - "3012:3012"
+    environment:
+      - DB_MASTER_HOST=pgbouncer-user
+      - DB_REPLICA_HOST=postgres-user-replica
+    depends_on:
+      - postgres-user-master
+      - postgres-user-replica
+      - pgbouncer-user
+      - redis-query-cache
+
+  monitoring-service:
+    build: ./monitoring-service
+    ports:
+      - "3011:3011"
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch-logs:9200
+      - JAEGER_HOST=jaeger
+    depends_on:
+      - jaeger
+      - elasticsearch-logs
+
+  event-streaming-service:
+    build: ./event-streaming-service
+    ports:
+      - "3010:3010"
+    environment:
+      - KAFKA_BROKER_1=kafka-1:9092
+      - KAFKA_BROKER_2=kafka-2:9092
+      - KAFKA_BROKER_3=kafka-3:9092
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - redis
+
+  security-service:
+    build: ./security-service
+    ports:
+      - "3009:3009"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - ALLOWED_ORIGINS=http://localhost:3000,https://yourdomain.com
+    depends_on:
+      - redis
+
+  cache-service:
+    build: ./cache-service
+    ports:
+      - "3008:3008"
+    environment:
+      - REDIS_1_HOST=redis-1
+      - REDIS_2_HOST=redis-2
+      - REDIS_3_HOST=redis-3
+    depends_on:
+      - redis-1
+      - redis-2
+      - redis-3
+
+  search-service:
+    build: ./search-service
+    ports:
+      - "3007:3007"
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - elasticsearch
+      - redis
+
+  analytics-service:
+    build: ./analytics-service
+    ports:
+      - "3006:3006"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - CLICKHOUSE_URL=http://clickhouse:8123
+    depends_on:
+      - redis
+      - clickhouse
+
+  # API Gateway
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:80"
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+      - payment-service
+      - notification-service
+      - analytics-service
+      - search-service
+      - cache-service
+      - security-service
+      - event-streaming-service
+      - monitoring-service
+      - database-service
+
+volumes:
+  user_data:
+  user_master_data:
+  user_replica_data:
+  product_data:
+  order_data:
+  payment_data:
+  clickhouse_data:
+  elasticsearch_data:
+  elasticsearch_logs_data:
+  redis1_data:
+  redis2_data:
+  redis3_data:
+  redis_query_cache:
+  zookeeper_data:
+  kafka1_data:
+  kafka2_data:
+  kafka3_data:
+  prometheus_data:
+  grafana_data:
+  jaeger_data:

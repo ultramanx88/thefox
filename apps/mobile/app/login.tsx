@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Image, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/Colors';
+import { mobileApiClient } from '../src/lib/api-client';
+import { mobileStore } from '../src/lib/store';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -20,16 +22,24 @@ export default function LoginScreen() {
 
     setLoading(true);
     try {
-      // TODO: Implement actual login logic
-      // For now, just navigate to main app
-      setTimeout(() => {
-        setLoading(false);
+      const response = await mobileApiClient.login(email, password);
+      
+      if (response.user) {
+        mobileStore.setUser(response.user);
         router.replace('/(tabs)');
-      }, 1000);
+      } else {
+        Alert.alert('ข้อผิดพลาด', 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+      }
     } catch (error) {
+      console.error('Login error:', error);
+      Alert.alert('ข้อผิดพลาด', 'ไม่สามารถเข้าสู่ระบบได้ กรุณาลองใหม่อีกครั้ง');
+    } finally {
       setLoading(false);
-      Alert.alert('ข้อผิดพลาด', 'ไม่สามารถเข้าสู่ระบบได้');
     }
+  };
+
+  const handleGuestLogin = () => {
+    router.replace('/(tabs)');
   };
 
   const handleRegister = () => {
@@ -82,9 +92,18 @@ export default function LoginScreen() {
           onPress={handleLogin}
           disabled={loading}
         >
-          <Text style={styles.loginButtonText}>
-            {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
-          </Text>
+          {loading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.loginButtonText}>เข้าสู่ระบบ</Text>
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.guestButton} 
+          onPress={handleGuestLogin}
+        >
+          <Text style={styles.guestButtonText}>เข้าใช้งานแบบไม่ต้องสมัคร</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
@@ -172,6 +191,19 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   registerButtonText: {
+    color: Colors.primary,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  guestButton: {
+    borderWidth: 1,
+    borderColor: Colors.primary,
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  guestButtonText: {
     color: Colors.primary,
     fontSize: 16,
     fontWeight: '600',

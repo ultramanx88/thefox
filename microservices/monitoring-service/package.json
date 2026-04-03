@@ -1,0 +1,20 @@
+{
+  "name": "monitoring-service",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "prom-client": "^14.2.0",
+    "express-prom-bundle": "^6.6.0",
+    "jaeger-client": "^3.19.0",
+    "opentracing": "^0.14.7",
+    "winston": "^3.10.0",
+    "winston-elasticsearch": "^0.17.4",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "axios": "^1.5.0"
+  }
+}

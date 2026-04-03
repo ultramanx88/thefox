@@ -1,0 +1,62 @@
+{
+  "mappings": {
+    "properties": {
+      "name": {
+        "type": "text",
+        "analyzer": "standard",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "standard"
+      },
+      "description_vector": {
+        "type": "dense_vector",
+        "dims": 384
+      },
+      "brand": {
+        "type": "keyword"
+      },
+      "category": {
+        "type": "keyword"
+      },
+      "price": {
+        "type": "float"
+      },
+      "tags": {
+        "type": "keyword"
+      },
+      "popularity": {
+        "type": "integer"
+      },
+      "rating": {
+        "type": "float"
+      },
+      "created_at": {
+        "type": "date"
+      },
+      "suggest": {
+        "type": "completion",
+        "analyzer": "simple",
+        "preserve_separators": true,
+        "preserve_position_increments": true,
+        "max_input_length": 50
+      }
+    }
+  },
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "thai_analyzer": {
+          "type": "custom",
+          "tokenizer": "thai",
+          "filter": ["lowercase", "stop"]
+        }
+      }
+    }
+  }
+}
