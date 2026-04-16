@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
-      "@mobile/*": ["apps/mobile/src/*"]
+      "@mobile/*": ["./apps/mobile/src/*"]
     }
   }
 }

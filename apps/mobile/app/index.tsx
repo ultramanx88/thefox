@@ -1,62 +1,89 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, Image, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
-import { Asset } from 'expo-asset';
-import * as Font from 'expo-font';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
+import WebViewBridge, { type WebViewBridgeRef } from '../src/components/WebViewBridge';
+import type { QueuePayload } from '@repo/shared';
 
-export default function AppEntry() {
-  const router = useRouter();
-  const [ready, setReady] = useState(false);
+SplashScreen.preventAutoHideAsync();
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
+
+export default function AppShell() {
+  const bridgeRef = useRef<WebViewBridgeRef>(null);
+  const [webReady, setWebReady] = useState(false);
+
+  // Register push notification token and send to web via bridge
   useEffect(() => {
-    SplashScreen.preventAutoHideAsync();
     (async () => {
-      try {
-        // Preload assets (splash/icon) and fonts if any
-        await Promise.all([
-          Asset.fromModule(require('../assets/splash.png')).downloadAsync(),
-          Asset.fromModule(require('../assets/icon.png')).downloadAsync(),
-          Asset.fromModule(require('../assets/thefox_logo.jpg')).downloadAsync(),
-          // Example: preload a font file if you add one
-          // Font.loadAsync({ SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf') })
-        ]);
-      } catch (e) {
-        // no-op; proceed even if some assets fail to cache
-      } finally {
-        setReady(true);
-        await SplashScreen.hideAsync();
-      }
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== 'granted') return;
+
+      const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+      if (!projectId) return;
+
+      const { data: token } = await Notifications.getExpoPushTokenAsync({ projectId });
+      // Wait until WebView is ready before sending token
+      const interval = setInterval(() => {
+        if (bridgeRef.current) {
+          bridgeRef.current.sendToWeb({ type: 'AUTH_TOKEN', payload: { token } });
+          clearInterval(interval);
+        }
+      }, 500);
     })();
   }, []);
 
-  const handleLogoPress = useCallback(() => {
-    router.replace('/login'); // Navigate to login when logo is pressed
-  }, [router]);
+  const handleWebReady = useCallback(() => {
+    setWebReady(true);
+    SplashScreen.hideAsync();
+  }, []);
+
+  const handleQueueCreated = useCallback(async (payload: QueuePayload) => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'คิวของคุณถูกสร้างแล้ว',
+        body: `คิวหมายเลข #${payload.number} — ${payload.branchId}`,
+        data: payload,
+      },
+      trigger: null, // immediate
+    });
+  }, []);
+
+  const handleOrderChanged = useCallback(
+    async (payload: { orderId: string; status: string }) => {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: 'อัปเดตสถานะออเดอร์',
+          body: `ออเดอร์ ${payload.orderId} — ${payload.status}`,
+          data: payload,
+        },
+        trigger: null,
+      });
+    },
+    []
+  );
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={handleLogoPress} style={styles.logoContainer}>
-        <Image source={require('../assets/thefox_logo.jpg')} style={styles.logo} resizeMode="contain" />
-      </TouchableOpacity>
-      <ActivityIndicator color="#ff6b35" style={{ marginTop: 16 }} />
+      <WebViewBridge
+        ref={bridgeRef}
+        onLoad={handleWebReady}
+        onQueueCreated={handleQueueCreated}
+        onOrderChanged={handleOrderChanged}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logo: {
-    width: '70%',
-    height: 200,
-  },
+  container: { flex: 1, backgroundColor: '#fff' },
 });

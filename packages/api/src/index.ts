@@ -1,6 +1,3 @@
-// Export Firebase services
-export * from './firebase';
-
 // Export services
 export { RegistrationService } from './services/RegistrationService';
 export { VerificationService } from './services/VerificationService';

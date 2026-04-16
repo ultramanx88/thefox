@@ -15,30 +15,19 @@
     "test": "echo 'No tests configured for mobile app'"
   },
   "dependencies": {
-    "@expo/metro-runtime": "^6.1.2",
-    "@react-native-async-storage/async-storage": "2.1.2",
-    "@react-native/virtualized-lists": "^0.82.0",
-    "babel-plugin-module-resolver": "^5.0.2",
+    "@repo/shared": "file:../../packages/shared",
     "babel-preset-expo": "^54.0.4",
     "expo": "54.0.13",
-    "expo-asset": "^12.0.9",
-    "expo-camera": "~16.1.11",
     "expo-constants": "^18.0.9",
-    "expo-font": "^14.0.9",
-    "expo-location": "~18.1.6",
     "expo-notifications": "~0.31.4",
     "expo-router": "~5.1.7",
-    "expo-secure-store": "~14.2.4",
     "expo-splash-screen": "^31.0.10",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
     "react-native": "0.79.5",
     "react-native-gesture-handler": "~2.24.0",
-    "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
-    "react-native-web": "^0.20.0",
-    "socket.io-client": "^4.8.1",
-    "ui": "file:../../packages/ui"
+    "react-native-webview": "^13.12.5"
   },
   "devDependencies": {
     "@types/react": "^19.2.2"

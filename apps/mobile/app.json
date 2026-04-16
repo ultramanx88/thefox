@@ -36,7 +36,12 @@
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
         "RECEIVE_BOOT_COMPLETED",
-        "VIBRATE"
+        "VIBRATE",
+        "BLUETOOTH",
+        "BLUETOOTH_ADMIN",
+        "BLUETOOTH_CONNECT",
+        "BLUETOOTH_SCAN",
+        "USB_PERMISSION"
       ]
     },
     "web": {
@@ -45,9 +50,7 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-camera", { "cameraPermission": "Allow theFOX to access your camera to scan QR codes and take photos." }],
-      ["expo-location", { "locationAlwaysAndWhenInUsePermission": "Allow theFOX to use your location to show nearby markets and track deliveries." }],
-      ["expo-notifications", { "icon": "./assets/thefox_logo.jpg", "color": "#ff6b35", "sounds": ["./assets/notification-sound.wav"] }]
+      ["expo-notifications", { "icon": "./assets/thefox_logo.jpg", "color": "#ff6b35" }]
     ],
     "scheme": "thefox",
     "extra": {

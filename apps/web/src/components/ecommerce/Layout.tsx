@@ -6,7 +6,7 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export function Layout({ children }: LayoutProps) {
+export function EcommerceLayout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <EcommerceHeader />
