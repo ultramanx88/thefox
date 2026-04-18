@@ -137,3 +137,33 @@ export interface RegisterRequest {
 
 // Re-export settings types
 export * from './types/settings';
+
+// ─── Queue ───────────────────────────────────────────────────────────────────
+
+export type QueueStatus = 'waiting' | 'called' | 'serving' | 'done' | 'skipped';
+
+export interface Queue {
+  id: string;
+  branchId: string;
+  branchName: string;
+  number: number;
+  status: QueueStatus;
+  customerName?: string;
+  customerPhone?: string;
+  counter?: string;
+  note?: string;
+  createdAt: string;
+  calledAt?: string;
+  servedAt?: string;
+  doneAt?: string;
+}
+
+export interface QueueBranch {
+  id: string;
+  name: string;
+  currentNumber: number;  // last issued number
+  callingNumber?: number; // currently being called
+  isOpen: boolean;
+  counters: string[];     // ['A', 'B', 'C']
+  avgWaitMinutes: number;
+}

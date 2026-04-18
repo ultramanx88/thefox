@@ -54,6 +54,13 @@ export interface QueuePayload {
   status: 'waiting' | 'called' | 'serving' | 'done';
 }
 
+export interface QueueCalledPayload {
+  queueId: string;
+  number: number;
+  branchName: string;
+  counter: string;
+}
+
 export interface DeviceInfoPayload {
   platform: 'ios' | 'android';
   version: string;
