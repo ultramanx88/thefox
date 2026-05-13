@@ -1,0 +1,5 @@
+{
+  "name": "theFOX",
+  "description": "Your local marketplace, connected. Discover fresh ingredients from local markets, delivered directly to your doorstep.",
+  "requestFramePermissions": ["geolocation"]
+}
