@@ -1,6 +1,6 @@
 # theFOX Production Migration
 
-This migration keeps the current Expo/Firebase prototype in place while a production stack is introduced beside it.
+This migration retires the previous prototype backend and moves the product onto a single production stack. Legacy client-side backend services are no longer part of the runtime, auth, data, or deployment path.
 
 ## Target Stack
 
@@ -8,14 +8,15 @@ This migration keeps the current Expo/Firebase prototype in place while a produc
 - API: Fastify, TypeScript, Zod contracts
 - Data: PostgreSQL with Prisma
 - Cache and queues: Redis
-- Mobile: Expo workspace in `apps/mobile`, consuming the shared API contract
+- Auth: Expo AuthSession and web/PWA login flows backed by Fastify auth endpoints
+- Mobile: Expo workspace in `apps/mobile`, consuming the shared API/auth contract
 - Deploy: Docker-first, with Cloudflare in front
 
 ## Migration Steps
 
 1. Establish the monorepo baseline: `apps/web`, `apps/api`, `packages/shared`.
-2. Move product catalog UI from the prototype into `apps/web`.
-3. Replace Firebase client reads with API endpoints.
+2. Move product catalog UI into `apps/web` and keep all production web code there.
+3. Remove legacy client reads, rules, config, and prototype entrypoints.
 4. Add authentication, user roles, vendors, products, carts, and orders in PostgreSQL.
 5. Add CI checks for typecheck, build, Prisma migration validation, and audit.
 6. Add production deploy compose files, backups, monitoring, and rollback notes.

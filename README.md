@@ -1,20 +1,32 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# theFOX
 
-# Run and deploy your AI Studio app
+Mobile-first fresh goods marketplace built on a production monorepo.
 
-This contains everything you need to run your app locally.
+The previous backend prototype has been retired from this codebase. Runtime data, auth, and deployment should use the production stack only: Next.js, Expo, Fastify, PostgreSQL, Redis, Prisma, shared Zod contracts, Docker, and Cloudflare/Nginx at the edge.
 
-View your app in AI Studio: https://ai.studio/apps/746890a7-0f4c-499a-acee-17f81700a5e2
+## Workspaces
 
-## Run Locally
+- `apps/web`: Next.js PWA/web app
+- `apps/api`: Fastify API and Prisma schema
+- `apps/mobile`: Expo mobile app
+- `packages/shared`: shared Zod contracts and TypeScript types
 
-**Prerequisites:**  Node.js
+## Local Start
 
+```bash
+npm install
+docker compose up -d postgres redis
+npm run dev:api
+npm run dev:web
+npm run dev:mobile
+```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Production
+
+```bash
+npm run typecheck
+npm run build
+npm run deploy:thefox-app
+```
+
+Auth direction: Expo AuthSession and web/PWA login flows backed by Fastify auth endpoints. Do not reintroduce legacy client-side backend services.

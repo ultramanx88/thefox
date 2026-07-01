@@ -6,11 +6,11 @@ product
 
 ## Users
 
-theFOX serves Thai customers buying fresh local goods online, plus the vendor and operations teams who need a trustworthy production path for catalog, cart, order, and delivery workflows. Users are often comparing everyday grocery items quickly, checking stock and units, and expecting the interface to feel reliable enough for real orders rather than prototype browsing.
+theFOX serves Thai customers buying fresh local goods online, plus the vendor and operations teams who need a trustworthy production path for catalog, cart, order, and delivery workflows. Users are often comparing everyday grocery items quickly, checking stock and units, and expecting the interface to feel reliable enough for real orders rather than demo browsing.
 
 ## Product Purpose
 
-theFOX is a fresh local goods marketplace being migrated from an Expo/Firebase prototype into a production stack with Next.js, Fastify, PostgreSQL, Redis, shared Zod contracts, Docker deployment, and Cloudflare in front. Success means customers can confidently browse and order fresh goods while the team can scale vendors, roles, inventory, carts, orders, audit trails, and deployment operations without rewriting the foundation.
+theFOX is a fresh local goods marketplace built on a production stack with Next.js, Expo, Fastify, PostgreSQL, Redis, shared Zod contracts, Docker deployment, and Cloudflare in front. Auth should run through Expo AuthSession and Fastify auth endpoints, with no legacy client-side backend dependency. Success means customers can confidently browse and order fresh goods while the team can scale vendors, roles, inventory, carts, orders, audit trails, and deployment operations without rewriting the foundation.
 
 ## Brand Personality
 

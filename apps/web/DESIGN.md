@@ -80,6 +80,12 @@ components:
     textColor: "{colors.muted}"
     rounded: "{rounded.dock}"
     height: "66px"
+  auth-sheet:
+    backgroundColor: "{colors.light-surface}"
+    textColor: "{colors.ink}"
+    rounded: "28px"
+    mobileBehavior: "bottom-sheet"
+    desktopBehavior: "centered-modal"
   theme-switcher:
     backgroundColor: "{colors.light-surface}"
     textColor: "{colors.muted}"
@@ -102,6 +108,7 @@ The system supports both light and dark themes. Light mode should feel clean, fa
 - Black and silver brand palette with no green brand accent.
 - Built-in light/dark theme preview control for design tuning before deeper flows are built.
 - Clear delivery marketplace signals: ETA, distance, rating, stock, unit, and quick add.
+- Auth entry points from notification, cart, orders, and account actions using LINE, Google, and Apple providers.
 - Light/dark theme parity using the same tokens.
 - Product UI discipline: familiar controls, strong focus states, compact cards, and no decorative excess.
 
@@ -192,6 +199,13 @@ Elevation uses crisp surfaces, borders, and soft app shadows. Light mode has gen
 ### Navigation
 - **Style:** Mobile bottom dock with four primary tabs. Active tab uses black/white contrast, inactive tabs use muted text.
 - **Desktop:** Bottom nav can hide when wider product navigation exists.
+- **Auth Entry:** Notifications, quick add, orders, and account can open the auth sheet when the user is anonymous.
+
+### Auth Sheet
+- **Style:** Mobile bottom sheet with a short grabber; desktop centered modal using the same surface tokens.
+- **Providers:** LINE, Google, Apple. Provider marks stay black/silver/neutral even when the underlying brand is green.
+- **Behavior:** Scrim tap, close button, Escape key, provider loading state, ready state for the future Fastify `/auth/oauth/exchange` endpoint.
+- **Copy:** Thai-first, task-aware by entry point, and explicit that the flow is Expo AuthSession + Fastify rather than any legacy client backend.
 
 ### Theme Switcher
 - **Style:** Compact two-option segmented control for Light and Dark preview.
