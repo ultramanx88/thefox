@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: thefox
+      POSTGRES_USER: thefox
+      POSTGRES_PASSWORD: thefox-dev-password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U thefox -d thefox"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mobile:
+    profiles: ["mobile"]
+    build:
+      context: .
+      dockerfile: apps/mobile/Dockerfile
+    environment:
+      EXPO_PUBLIC_API_URL: ${EXPO_PUBLIC_API_URL:-http://localhost:4000}
+      REACT_NATIVE_PACKAGER_HOSTNAME: ${REACT_NATIVE_PACKAGER_HOSTNAME:-localhost}
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "8081:8081"
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
+    volumes:
+      - ./apps/mobile:/workspace/apps/mobile
+      - ./packages/shared:/workspace/packages/shared
+      - mobile-node-modules:/workspace/node_modules
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres-data:
+  redis-data:
+  mobile-node-modules:

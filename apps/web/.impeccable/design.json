@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-01T00:00:00+07:00",
+  "title": "Design System: theFOX Web",
+  "extensions": {
+    "colorMeta": {
+      "fox-black": {
+        "role": "neutral",
+        "displayName": "Fox Black",
+        "canonical": "#101010",
+        "tonalRamp": ["#050505", "#0f0f10", "#141416", "#1b1c1f", "#101010"]
+      },
+      "light-system": {
+        "role": "neutral",
+        "displayName": "Light System",
+        "canonical": "#f7f7f5",
+        "tonalRamp": ["#ffffff", "#f7f7f5", "#ededeb", "#5d5f63"]
+      },
+      "polished-silver": {
+        "role": "primary",
+        "displayName": "Polished Silver",
+        "canonical": "#c7cbd1",
+        "tonalRamp": ["#eef0f3", "#c7cbd1", "#9da3ad", "#707681"]
+      },
+      "semantic": {
+        "role": "semantic",
+        "displayName": "Semantic States",
+        "canonical": "#2f7d50",
+        "tonalRamp": ["#2f7d50", "#a16500", "#c43737"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero strip headlines only; product UI starts from phone-scale fixed sizes."
+      },
+      "body": {
+        "displayName": "Thai Body",
+        "purpose": "Readable Thai marketplace descriptions and delivery helper copy."
+      },
+      "label": {
+        "displayName": "Operational Label",
+        "purpose": "ETA, rating, category, stock, and metadata chips."
+      }
+    },
+    "elevation": {
+      "soft-card-shadow": {
+        "boxShadow": "0 16px 40px rgba(16, 16, 16, 0.08)",
+        "purpose": "Light-mode marketplace cards and search shell."
+      },
+      "dock-shadow": {
+        "boxShadow": "0 -18px 46px rgba(16, 16, 16, 0.14)",
+        "purpose": "Mobile bottom navigation dock."
+      }
+    },
+    "motion": {
+      "fast-state": {
+        "duration": "160ms",
+        "easing": "ease",
+        "purpose": "Button hover and simple state transitions."
+      }
+    },
+    "breakpoints": {
+      "tablet": "720px",
+      "desktop": "1040px"
+    },
+    "rules": [
+      "Do not use green as the brand accent, CTA, active nav, or category color.",
+      "Borrow delivery-app workflow patterns from LINE MAN and Grab, not their palette.",
+      "Use black and silver as theFOX identity in both light and dark themes.",
+      "Design from 320px mobile width first.",
+      "Do not rely on color alone for stock, role, order, warning, or error states."
+    ],
+    "components": {
+      "search": {
+        "selector": ".fox-search",
+        "states": ["default", "focus-visible"],
+        "missingStates": ["disabled", "loading"]
+      },
+      "service-chip": {
+        "selector": ".fox-chip",
+        "states": ["default", "active", "focus-visible"],
+        "missingStates": ["disabled"]
+      },
+      "product-card": {
+        "selector": ".fox-product-card",
+        "anatomy": ["image", "category", "rating", "name", "merchant", "eta", "distance", "stock", "price", "unit", "quick add"]
+      },
+      "bottom-nav": {
+        "selector": ".fox-bottom-nav",
+        "anatomy": ["home", "search", "orders", "account"]
+      },
+      "theme-switcher": {
+        "selector": ".fox-theme-switcher",
+        "anatomy": ["light", "dark"],
+        "states": ["default", "checked", "focus-visible"]
+      }
+    }
+  }
+}
