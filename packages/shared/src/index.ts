@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const RoleSchema = z.enum(['customer', 'vendor', 'admin', 'superadmin']);
+export const RoleSchema = z.enum(['customer', 'vendor', 'driver', 'admin', 'superadmin']);
 
 export const AuthProviderSchema = z.enum(['line', 'google', 'apple']);
 

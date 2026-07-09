@@ -42,7 +42,7 @@ type AuthSessionPayload = {
   displayName: string;
   pictureUrl: string | null;
   email: string | null;
-  role: 'customer' | 'vendor' | 'admin' | 'superadmin';
+  role: 'customer' | 'vendor' | 'driver' | 'admin' | 'superadmin';
   issuedAt: string;
 };
 
@@ -75,7 +75,7 @@ const lineConfig = {
   channelId: process.env.LINE_CHANNEL_ID,
   channelSecret: process.env.LINE_CHANNEL_SECRET,
   redirectUri: process.env.LINE_REDIRECT_URI ?? 'http://localhost:4000/v1/auth/line/callback',
-  webSuccessUrl: process.env.WEB_AUTH_SUCCESS_URL ?? 'http://localhost:3000/inside',
+  webSuccessUrl: process.env.WEB_AUTH_SUCCESS_URL ?? 'http://localhost:3000/auth/continue',
   webFailureUrl: process.env.WEB_AUTH_FAILURE_URL ?? 'http://localhost:3000/?auth=failed'
 };
 
@@ -83,7 +83,7 @@ const googleConfig = {
   clientId: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   redirectUri: process.env.GOOGLE_REDIRECT_URI ?? 'http://localhost:4000/v1/auth/google/callback',
-  webSuccessUrl: process.env.WEB_AUTH_SUCCESS_URL ?? 'http://localhost:3000/inside',
+  webSuccessUrl: process.env.WEB_AUTH_SUCCESS_URL ?? 'http://localhost:3000/auth/continue',
   webFailureUrl: process.env.WEB_AUTH_FAILURE_URL ?? 'http://localhost:3000/?auth=failed'
 };
 

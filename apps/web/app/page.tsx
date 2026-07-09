@@ -5,6 +5,7 @@ import {
   Bell,
   Bike,
   ChevronRight,
+  Clock3,
   Loader2,
   Moon,
   Home,
@@ -94,6 +95,16 @@ const rails = [
   { label: 'ค่าส่งเริ่มต้น', value: '฿12' },
   { label: 'ร้านเปิดอยู่', value: '42' },
   { label: 'เฉลี่ยส่งถึง', value: '24 นาที' }
+];
+
+const heroHighlights = ['ส่งวันนี้', 'ร้านใกล้คุณ', 'วัตถุดิบพร้อมใช้', 'เช็คเวลาก่อนสั่ง'];
+
+const orderSteps = ['รับออเดอร์', 'ร้านจัดของ', 'คนขับเข้ารับ', 'ส่งถึงครัว'];
+
+const workspaceLinks = [
+  { href: '/vendor', label: 'สำหรับร้านค้า' },
+  { href: '/driver', label: 'สำหรับคนขับ' },
+  { href: '/admin', label: 'สำหรับทีมงาน' }
 ];
 
 const loginCopy: Record<LoginReason, { eyebrow: string; title: string; body: string }> = {
@@ -236,8 +247,12 @@ export default function HomePage() {
         <div className="fox-hero-strip">
           <div>
             <p className="fox-kicker">THEFOX MARKET</p>
-            <h1>ของสดใกล้บ้าน ส่งเร็วแบบแอปเดลิเวอรี</h1>
-            <p>สั่งง่ายแบบแอปเดลิเวอรี แต่บุคลิกเป็น black-silver modern สำหรับแบรนด์หัวจิ้งจอกสีเงิน</p>
+            <h1>วัตถุดิบสดจากร้านใกล้บ้าน</h1>
+            <div className="fox-hero-highlights" aria-label="Marketplace benefits">
+              {heroHighlights.map((highlight) => (
+                <span key={highlight}>{highlight}</span>
+              ))}
+            </div>
           </div>
           <div className="fox-delivery-badge">
             <Bike size={22} />
@@ -307,11 +322,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="fox-trust-panel" aria-label="Production trust">
-        <ShieldCheck size={20} />
+      <section className="fox-order-status" aria-label="Order confidence">
+        <div className="fox-order-status__head">
+          <span>
+            <ShieldCheck size={18} />
+          </span>
+          <div>
+            <strong>ออเดอร์ชัดเจนทุกขั้น</strong>
+            <p>ร้านยืนยันสินค้า คนขับรับงาน และติดตามสถานะได้ใน flow เดียว</p>
+          </div>
+        </div>
+        <div className="fox-order-steps" aria-label="Order status steps">
+          {orderSteps.map((step, index) => (
+            <div key={step} className="fox-order-step">
+              <span>{index === 0 ? <ReceiptText size={14} /> : index === 3 ? <MapPin size={14} /> : <Clock3 size={14} />}</span>
+              <strong>{step}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="fox-workspace-links" aria-label="Partner and team workspaces">
+        <span>เข้าสู่ workspace</span>
         <div>
-          <strong>พร้อมต่อระบบจริง</strong>
-          <p>สินค้า คำสั่งซื้อ และ role จะต่อเข้ากับ API, PostgreSQL และ audit trail โดยใช้ shared schema เดียวกัน</p>
+          {workspaceLinks.map((link) => (
+            <a key={link.href} href={link.href}>
+              {link.label}
+            </a>
+          ))}
         </div>
       </section>
 
