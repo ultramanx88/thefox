@@ -1887,6 +1887,75 @@ img {
   line-height: 1.5;
 }
 
+.fox-task-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.fox-task-card {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid var(--fox-line);
+  border-radius: var(--fox-radius-md);
+  padding: 12px;
+  background: var(--fox-bg-soft);
+}
+
+.fox-task-card > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.fox-task-card span {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--fox-line-strong);
+  border-radius: 12px;
+  background: var(--fox-surface);
+  color: var(--fox-text);
+}
+
+.fox-task-card small {
+  color: var(--fox-text-muted);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-align: right;
+}
+
+.fox-task-card h3 {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.22;
+}
+
+.fox-task-card p {
+  margin: 0;
+  color: var(--fox-text-muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.fox-task-card strong {
+  display: inline-flex;
+  width: max-content;
+  max-width: 100%;
+  min-height: 28px;
+  align-items: center;
+  border: 1px solid var(--fox-line-strong);
+  border-radius: 999px;
+  padding: 0 9px;
+  background: var(--fox-surface);
+  color: var(--fox-text);
+  font-size: 0.74rem;
+  font-weight: 900;
+}
+
 .fox-vendor-context {
   display: grid;
   gap: 10px;
@@ -2258,6 +2327,10 @@ img {
 
   .fox-roadmap-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .fox-task-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .fox-vendor-context {

@@ -1,4 +1,16 @@
-import { Boxes, Building2, ChartNoAxesCombined, Route, ShieldCheck, Truck } from 'lucide-react';
+import {
+  Boxes,
+  Building2,
+  ChartNoAxesCombined,
+  ClipboardCheck,
+  Gauge,
+  KeyRound,
+  Route,
+  ShieldAlert,
+  ShieldCheck,
+  Truck,
+  Workflow
+} from 'lucide-react';
 import { AdminConsole } from './admin-console';
 import { RoleGuard } from '@/components/auth/role-guard';
 
@@ -26,6 +38,44 @@ const adminRoadmap = [
     title: 'Settlement Reports',
     status: 'After orders',
     body: 'คำนวณ cost, margin, platform fee, payout และยอดที่ tenant ต้องชำระ'
+  }
+];
+
+const readinessTasks = [
+  {
+    icon: Workflow,
+    track: 'UX + Business',
+    title: 'Tenant & Branch approval flow',
+    status: 'Build next',
+    body: 'สร้าง tenant, ผูก owner/member, อนุมัติ branch, ระบุ operating status และบันทึก audit ทุก transition'
+  },
+  {
+    icon: ShieldAlert,
+    track: 'Pentest',
+    title: 'Workspace route and auth test',
+    status: 'Gate before mutations',
+    body: 'ทดสอบ admin/vendor/driver subdomain, cookie domain, CORS, role bypass, unauthenticated access และ audit trail'
+  },
+  {
+    icon: Gauge,
+    track: 'Performance',
+    title: 'Admin API and page budget',
+    status: 'Baseline now',
+    body: 'วัด latency ของ auth/me, admin/users, audit logs, cache behavior, bundle size และ cold response หลัง deploy'
+  },
+  {
+    icon: KeyRound,
+    track: 'Hardening',
+    title: 'Mutation protection',
+    status: 'Before create/edit',
+    body: 'เพิ่ม CSRF/signed mutation token, rate limit, superadmin-only destructive action และ structured audit metadata'
+  },
+  {
+    icon: ClipboardCheck,
+    track: 'QA',
+    title: 'Operational acceptance checklist',
+    status: 'Pair with UX',
+    body: 'ทุก task card ต้องมี expected state, error state, audit event, rollback note และ production verification command'
   }
 ];
 
@@ -71,6 +121,34 @@ export default function AdminPage() {
                 </div>
                 <h3>{title}</h3>
                 <p>{body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="fox-roadmap-panel fox-task-board" aria-label="Security and operations task board">
+          <div className="fox-roadmap-panel__head">
+            <div>
+              <h2>Next Task Board: UX, Pentest, Performance</h2>
+              <p>ก่อนเปิด workflow ที่เปลี่ยนข้อมูลจริง ให้ track งาน security และ performance เดินคู่กับ UX/business logic เพื่อไม่ให้ระบบสวยแต่เปราะ</p>
+            </div>
+            <span>
+              <ShieldAlert size={16} />
+              Production gate
+            </span>
+          </div>
+          <div className="fox-task-grid">
+            {readinessTasks.map(({ icon: Icon, track, title, status, body }) => (
+              <article key={title} className="fox-task-card">
+                <div>
+                  <span>
+                    <Icon size={18} />
+                  </span>
+                  <small>{track}</small>
+                </div>
+                <h3>{title}</h3>
+                <p>{body}</p>
+                <strong>{status}</strong>
               </article>
             ))}
           </div>

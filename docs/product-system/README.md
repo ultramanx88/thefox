@@ -24,6 +24,7 @@ theFOX is not a generic delivery clone. It is an inventory-first delivery platfo
 | [orders-delivery.md](orders-delivery.md) | Customer order flow, dispatch modes, rider/driver jobs, delivery proof |
 | [accounting-settlement.md](accounting-settlement.md) | Cost, margin, fees, commission, tenant settlement, platform receivables |
 | [reporting-analytics.md](reporting-analytics.md) | Stock reports, sales reports, operational analytics, export needs |
+| [security-performance-readiness.md](security-performance-readiness.md) | Pentest, route/auth hardening, performance budgets, mutation readiness |
 | [ux-workflow-roadmap.md](ux-workflow-roadmap.md) | Screen order, swipe-card workflows, admin/vendor/customer/driver UX sequence |
 
 ## Planning Rule

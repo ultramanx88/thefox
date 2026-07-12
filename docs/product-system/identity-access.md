@@ -63,6 +63,7 @@ Audit records should capture:
 
 - Add CSRF protection or signed mutation token for role/admin mutations.
 - Add rate limiting for auth and admin mutation endpoints.
+- Run the route/auth/CORS pentest checklist in [Security and performance readiness](security-performance-readiness.md).
 - Expand audit helper usage to tenant, branch, stock, delivery, and settlement actions.
 - Add admin audit filters by action, actor, target, tenant, branch, and date range.
 - Add superadmin recovery/bootstrap documentation.
