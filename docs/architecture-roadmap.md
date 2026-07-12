@@ -34,7 +34,7 @@ Principles:
 | `vendor.thefox.app` | Vendor partner workspace | Current web host route |
 | `driver.thefox.app` | Driver web fallback and onboarding | Current web host route, deeper app later |
 
-Initial implementation keeps one Next.js deployment and routes by both path and host. The web subdomains proxy to the same web container, then Next middleware maps workspace hostnames to their workspace route.
+Initial implementation keeps one Next.js deployment and routes by both path and host. The web subdomains proxy to the same web container, then Next proxy routing maps workspace hostnames to their workspace route. Production root-domain workspace paths redirect to their canonical workspace subdomain.
 
 Recommended route mapping before subdomains:
 
