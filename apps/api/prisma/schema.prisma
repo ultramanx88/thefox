@@ -29,6 +29,7 @@ enum TenantStatus {
 }
 
 enum BranchStatus {
+  pending
   active
   paused
   closed
@@ -87,7 +88,7 @@ model Branch {
   tenant    Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   name      String
   slug      String
-  status    BranchStatus @default(active)
+  status    BranchStatus @default(pending)
   address   String?
   latitude  Decimal?     @db.Decimal(10, 7)
   longitude Decimal?     @db.Decimal(10, 7)

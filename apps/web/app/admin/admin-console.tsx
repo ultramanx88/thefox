@@ -1,9 +1,26 @@
 'use client';
 
+import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { Activity, AlertTriangle, CheckCircle2, DatabaseZap, History, RefreshCcw, Search, ShieldCheck, UsersRound } from 'lucide-react';
+import {
+  Activity,
+  AlertTriangle,
+  Building2,
+  CheckCircle2,
+  DatabaseZap,
+  History,
+  Plus,
+  RefreshCcw,
+  Search,
+  ShieldCheck,
+  Store,
+  UserPlus,
+  UsersRound
+} from 'lucide-react';
 
 type Role = 'customer' | 'vendor' | 'driver' | 'admin' | 'superadmin';
+type TenantStatus = 'pending' | 'active' | 'suspended';
+type BranchStatus = 'pending' | 'active' | 'paused' | 'closed';
 
 type AdminUser = {
   id: string;
@@ -65,10 +82,48 @@ type AdminMe = {
   };
 };
 
+type AdminTenant = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  status: TenantStatus;
+  createdAt: string;
+  updatedAt: string;
+  memberships: Array<{
+    id: string;
+    role: string;
+    createdAt: string;
+    user: {
+      id: string;
+      email: string | null;
+      displayName: string | null;
+      role: Role;
+    };
+  }>;
+  branches: Array<{
+    id: string;
+    name: string;
+    slug: string;
+    status: BranchStatus;
+    address: string | null;
+    createdAt: string;
+    updatedAt: string;
+  }>;
+  _count: {
+    branches: number;
+    memberships: number;
+    products: number;
+  };
+};
+
 type LoadState = 'loading' | 'ready' | 'error';
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 const roles: Role[] = ['customer', 'vendor', 'driver', 'admin', 'superadmin'];
+const tenantStatuses: TenantStatus[] = ['pending', 'active', 'suspended'];
+const branchStatuses: BranchStatus[] = ['pending', 'active', 'paused', 'closed'];
+const membershipRoles = ['owner', 'admin', 'member'];
 
 const roleLabels: Record<Role, string> = {
   customer: 'Customer',
@@ -88,6 +143,19 @@ function formatDateTime(value: string) {
 
 function roleClassName(role: Role) {
   return `fox-role-pill fox-role-pill--${role}`;
+}
+
+function statusClassName(status: TenantStatus | BranchStatus) {
+  return `fox-status-pill fox-status-pill--${status}`;
+}
+
+function slugify(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-{2,}/g, '-');
 }
 
 async function fetchJson<T>(path: string, init?: RequestInit) {
@@ -110,11 +178,18 @@ async function fetchJson<T>(path: string, init?: RequestInit) {
 export function AdminConsole() {
   const [admin, setAdmin] = useState<AdminMe | null>(null);
   const [users, setUsers] = useState<AdminUser[]>([]);
+  const [tenants, setTenants] = useState<AdminTenant[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [state, setState] = useState<LoadState>('loading');
   const [query, setQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<Role | 'all'>('all');
   const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
+  const [selectedTenantId, setSelectedTenantId] = useState('');
+  const [updatingTenantId, setUpdatingTenantId] = useState<string | null>(null);
+  const [updatingBranchId, setUpdatingBranchId] = useState<string | null>(null);
+  const [tenantForm, setTenantForm] = useState({ name: '', slug: '', description: '', ownerUserId: '', ownerRole: 'owner' });
+  const [branchForm, setBranchForm] = useState({ tenantId: '', name: '', slug: '', address: '' });
+  const [membershipForm, setMembershipForm] = useState({ tenantId: '', userId: '', role: 'member' });
   const [notice, setNotice] = useState<{ tone: 'success' | 'error'; message: string } | null>(null);
 
   const loadAdminData = async () => {
@@ -122,14 +197,19 @@ export function AdminConsole() {
     setNotice(null);
 
     try {
-      const [adminPayload, usersPayload, auditPayload] = await Promise.all([
+      const [adminPayload, usersPayload, tenantsPayload, auditPayload] = await Promise.all([
         fetchJson<AdminMe>('/v1/admin/me'),
         fetchJson<{ data: AdminUser[] }>('/v1/admin/users'),
+        fetchJson<{ data: AdminTenant[] }>('/v1/admin/tenants'),
         fetchJson<{ data: AuditLog[] }>('/v1/admin/audit-logs')
       ]);
 
       setAdmin(adminPayload);
       setUsers(usersPayload.data);
+      setTenants(tenantsPayload.data);
+      setSelectedTenantId((current) => current || tenantsPayload.data[0]?.id || '');
+      setBranchForm((current) => ({ ...current, tenantId: current.tenantId || tenantsPayload.data[0]?.id || '' }));
+      setMembershipForm((current) => ({ ...current, tenantId: current.tenantId || tenantsPayload.data[0]?.id || '' }));
       setAuditLogs(auditPayload.data);
       setState('ready');
     } catch (error) {
@@ -163,14 +243,32 @@ export function AdminConsole() {
     const adminCount = users.filter((user) => user.role === 'admin' || user.role === 'superadmin').length;
     const vendorCount = users.filter((user) => user.role === 'vendor').length;
     const driverCount = users.filter((user) => user.role === 'driver').length;
+    const pendingBranchCount = tenants.reduce((count, tenant) => count + tenant.branches.filter((branch) => branch.status === 'pending').length, 0);
 
     return [
       { label: 'Users', value: users.length.toString(), detail: 'บัญชีในระบบ', icon: UsersRound },
       { label: 'Privileged', value: adminCount.toString(), detail: 'admin/superadmin', icon: ShieldCheck },
-      { label: 'Vendors', value: vendorCount.toString(), detail: 'partner roles', icon: DatabaseZap },
-      { label: 'Drivers', value: driverCount.toString(), detail: 'delivery roles', icon: Activity }
+      { label: 'Tenants', value: tenants.length.toString(), detail: `${pendingBranchCount} pending branch`, icon: DatabaseZap },
+      { label: 'Drivers', value: driverCount.toString(), detail: `${vendorCount} vendor roles`, icon: Activity }
     ];
-  }, [users]);
+  }, [tenants, users]);
+
+  const selectedTenant = useMemo(() => tenants.find((tenant) => tenant.id === selectedTenantId) ?? tenants[0], [selectedTenantId, tenants]);
+
+  const memberCandidates = useMemo(
+    () => users.filter((user) => !selectedTenant?.memberships.some((membership) => membership.user.id === user.id)),
+    [selectedTenant, users]
+  );
+
+  const refreshTenantsAndAudit = async () => {
+    const [tenantsPayload, auditPayload] = await Promise.all([
+      fetchJson<{ data: AdminTenant[] }>('/v1/admin/tenants'),
+      fetchJson<{ data: AuditLog[] }>('/v1/admin/audit-logs')
+    ]);
+
+    setTenants(tenantsPayload.data);
+    setAuditLogs(auditPayload.data);
+  };
 
   const updateRole = async (user: AdminUser, nextRole: Role) => {
     if (user.role === nextRole) {
@@ -204,6 +302,118 @@ export function AdminConsole() {
       });
     } finally {
       setUpdatingUserId(null);
+    }
+  };
+
+  const createTenant = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setNotice(null);
+
+    try {
+      const payload = {
+        ...tenantForm,
+        slug: tenantForm.slug || slugify(tenantForm.name),
+        ownerUserId: tenantForm.ownerUserId || undefined,
+        description: tenantForm.description || undefined
+      };
+      const result = await fetchJson<{ tenant: AdminTenant }>('/v1/admin/tenants', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+
+      setTenantForm({ name: '', slug: '', description: '', ownerUserId: '', ownerRole: 'owner' });
+      setSelectedTenantId(result.tenant.id);
+      setBranchForm((current) => ({ ...current, tenantId: result.tenant.id }));
+      setMembershipForm((current) => ({ ...current, tenantId: result.tenant.id }));
+      setNotice({ tone: 'success', message: `สร้าง tenant ${result.tenant.name} แล้ว และรออนุมัติ` });
+      await refreshTenantsAndAudit();
+    } catch (error) {
+      setNotice({ tone: 'error', message: error instanceof Error ? error.message : 'สร้าง tenant ไม่สำเร็จ' });
+    }
+  };
+
+  const updateTenantStatus = async (tenant: AdminTenant, status: TenantStatus) => {
+    if (tenant.status === status) {
+      return;
+    }
+
+    setUpdatingTenantId(tenant.id);
+    setNotice(null);
+
+    try {
+      await fetchJson<{ tenant: Pick<AdminTenant, 'id' | 'name' | 'slug' | 'status' | 'updatedAt'> }>(`/v1/admin/tenants/${tenant.id}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status })
+      });
+      setNotice({ tone: 'success', message: `อัปเดต ${tenant.name} เป็น ${status} แล้ว` });
+      await refreshTenantsAndAudit();
+    } catch (error) {
+      setNotice({ tone: 'error', message: error instanceof Error ? error.message : 'อัปเดต tenant status ไม่สำเร็จ' });
+    } finally {
+      setUpdatingTenantId(null);
+    }
+  };
+
+  const createMembership = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setNotice(null);
+
+    try {
+      await fetchJson<{ membership: AdminTenant['memberships'][number] }>(`/v1/admin/tenants/${membershipForm.tenantId}/memberships`, {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: membershipForm.userId,
+          role: membershipForm.role
+        })
+      });
+      setMembershipForm((current) => ({ ...current, userId: '', role: 'member' }));
+      setNotice({ tone: 'success', message: 'ผูก member เข้า tenant แล้ว' });
+      await loadAdminData();
+    } catch (error) {
+      setNotice({ tone: 'error', message: error instanceof Error ? error.message : 'ผูก member ไม่สำเร็จ' });
+    }
+  };
+
+  const createBranch = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setNotice(null);
+
+    try {
+      await fetchJson<{ branch: AdminTenant['branches'][number] }>(`/v1/admin/tenants/${branchForm.tenantId}/branches`, {
+        method: 'POST',
+        body: JSON.stringify({
+          ...branchForm,
+          slug: branchForm.slug || slugify(branchForm.name),
+          address: branchForm.address || undefined
+        })
+      });
+      setBranchForm((current) => ({ ...current, name: '', slug: '', address: '' }));
+      setNotice({ tone: 'success', message: 'สร้าง branch แล้ว และรอ approval' });
+      await refreshTenantsAndAudit();
+    } catch (error) {
+      setNotice({ tone: 'error', message: error instanceof Error ? error.message : 'สร้าง branch ไม่สำเร็จ' });
+    }
+  };
+
+  const updateBranchStatus = async (branch: AdminTenant['branches'][number], status: BranchStatus) => {
+    if (branch.status === status) {
+      return;
+    }
+
+    setUpdatingBranchId(branch.id);
+    setNotice(null);
+
+    try {
+      await fetchJson<{ branch: AdminTenant['branches'][number] }>(`/v1/admin/branches/${branch.id}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status })
+      });
+      setNotice({ tone: 'success', message: `อัปเดต branch ${branch.name} เป็น ${status} แล้ว` });
+      await refreshTenantsAndAudit();
+    } catch (error) {
+      setNotice({ tone: 'error', message: error instanceof Error ? error.message : 'อัปเดต branch status ไม่สำเร็จ' });
+    } finally {
+      setUpdatingBranchId(null);
     }
   };
 
@@ -344,6 +554,273 @@ export function AdminConsole() {
                 ))}
           </div>
         </aside>
+      </section>
+
+      <section className="fox-admin-tenant-board" aria-label="Tenant and branch approval flow">
+        <div className="fox-admin-panel fox-admin-panel--tenant-create">
+          <div className="fox-admin-panel__head">
+            <div>
+              <h2>Tenant & Branch Approval</h2>
+              <p>สร้าง tenant, ผูก owner/member, สร้าง branch แบบ pending และอนุมัติ operating status พร้อม audit</p>
+            </div>
+            <Building2 size={19} />
+          </div>
+
+          <form className="fox-admin-form" onSubmit={(event) => void createTenant(event)}>
+            <label>
+              Tenant name
+              <input
+                value={tenantForm.name}
+                onChange={(event) =>
+                  setTenantForm((current) => ({
+                    ...current,
+                    name: event.target.value,
+                    slug: current.slug || slugify(event.target.value)
+                  }))
+                }
+                placeholder="เช่น SROS Fresh Supply"
+                required
+              />
+            </label>
+            <label>
+              Slug
+              <input
+                value={tenantForm.slug}
+                onChange={(event) => setTenantForm((current) => ({ ...current, slug: slugify(event.target.value) }))}
+                placeholder="sros-fresh-supply"
+                required
+              />
+            </label>
+            <label>
+              Owner
+              <select value={tenantForm.ownerUserId} onChange={(event) => setTenantForm((current) => ({ ...current, ownerUserId: event.target.value }))}>
+                <option value="">เลือกภายหลัง</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.displayName ?? user.email ?? user.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Owner role
+              <select value={tenantForm.ownerRole} onChange={(event) => setTenantForm((current) => ({ ...current, ownerRole: event.target.value }))}>
+                {membershipRoles.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="fox-admin-form__wide">
+              Description
+              <input
+                value={tenantForm.description}
+                onChange={(event) => setTenantForm((current) => ({ ...current, description: event.target.value }))}
+                placeholder="ขอบเขตธุรกิจ พื้นที่ให้บริการ หรือ operational note"
+              />
+            </label>
+            <button type="submit">
+              <Plus size={16} />
+              Create tenant
+            </button>
+          </form>
+        </div>
+
+        <div className="fox-admin-panel fox-admin-panel--tenant-list">
+          <div className="fox-admin-panel__head">
+            <div>
+              <h2>Tenants</h2>
+              <p>เลือก tenant เพื่อจัดการ member, branch และ operating status</p>
+            </div>
+            <span>{tenants.length} tenants</span>
+          </div>
+
+          <div className="fox-tenant-list">
+            {state === 'loading'
+              ? Array.from({ length: 3 }, (_, index) => <div key={index} className="fox-admin-skeleton fox-admin-skeleton--compact" />)
+              : tenants.map((tenant) => (
+                  <button
+                    key={tenant.id}
+                    type="button"
+                    className={`fox-tenant-item ${selectedTenant?.id === tenant.id ? 'fox-tenant-item--active' : ''}`}
+                    onClick={() => {
+                      setSelectedTenantId(tenant.id);
+                      setBranchForm((current) => ({ ...current, tenantId: tenant.id }));
+                      setMembershipForm((current) => ({ ...current, tenantId: tenant.id }));
+                    }}
+                  >
+                    <span>
+                      <strong>{tenant.name}</strong>
+                      <small>{tenant.slug}</small>
+                    </span>
+                    <span className={statusClassName(tenant.status)}>{tenant.status}</span>
+                  </button>
+                ))}
+          </div>
+        </div>
+
+        <div className="fox-admin-panel fox-admin-panel--tenant-detail">
+          {selectedTenant ? (
+            <>
+              <div className="fox-admin-panel__head">
+                <div>
+                  <h2>{selectedTenant.name}</h2>
+                  <p>{selectedTenant.description ?? 'No tenant description yet'}</p>
+                </div>
+                <span className={statusClassName(selectedTenant.status)}>{selectedTenant.status}</span>
+              </div>
+
+              <div className="fox-tenant-status-actions" aria-label="Tenant status controls">
+                {tenantStatuses.map((status) => (
+                  <button
+                    key={status}
+                    type="button"
+                    disabled={updatingTenantId === selectedTenant.id || selectedTenant.status === status}
+                    onClick={() => void updateTenantStatus(selectedTenant, status)}
+                  >
+                    {status}
+                  </button>
+                ))}
+              </div>
+
+              <div className="fox-tenant-detail-grid">
+                <section>
+                  <div className="fox-console-section-head">
+                    <h3>Owner / Members</h3>
+                    <span>{selectedTenant.memberships.length}</span>
+                  </div>
+                  <div className="fox-member-list">
+                    {selectedTenant.memberships.map((membership) => (
+                      <article key={membership.id}>
+                        <UserPlus size={16} />
+                        <div>
+                          <strong>{membership.user.displayName ?? membership.user.email ?? membership.user.id}</strong>
+                          <p>
+                            {membership.role} · {membership.user.role}
+                          </p>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+
+                  <form className="fox-admin-form fox-admin-form--inline" onSubmit={(event) => void createMembership(event)}>
+                    <label>
+                      Add member
+                      <select
+                        value={membershipForm.userId}
+                        onChange={(event) => setMembershipForm((current) => ({ ...current, userId: event.target.value, tenantId: selectedTenant.id }))}
+                        required
+                      >
+                        <option value="">เลือก user</option>
+                        {memberCandidates.map((user) => (
+                          <option key={user.id} value={user.id}>
+                            {user.displayName ?? user.email ?? user.id}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      Role
+                      <select value={membershipForm.role} onChange={(event) => setMembershipForm((current) => ({ ...current, role: event.target.value }))}>
+                        {membershipRoles.map((role) => (
+                          <option key={role} value={role}>
+                            {role}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <button type="submit" disabled={!membershipForm.userId}>
+                      <UserPlus size={16} />
+                      Add
+                    </button>
+                  </form>
+                </section>
+
+                <section>
+                  <div className="fox-console-section-head">
+                    <h3>Branches</h3>
+                    <span>{selectedTenant.branches.length}</span>
+                  </div>
+                  <div className="fox-branch-list">
+                    {selectedTenant.branches.map((branch) => (
+                      <article key={branch.id}>
+                        <span>
+                          <Store size={16} />
+                        </span>
+                        <div>
+                          <strong>{branch.name}</strong>
+                          <p>
+                            {branch.slug}
+                            {branch.address ? ` · ${branch.address}` : ''}
+                          </p>
+                        </div>
+                        <select
+                          value={branch.status}
+                          disabled={updatingBranchId === branch.id}
+                          onChange={(event) => void updateBranchStatus(branch, event.target.value as BranchStatus)}
+                          aria-label={`Update branch status for ${branch.name}`}
+                        >
+                          {branchStatuses.map((status) => (
+                            <option key={status} value={status}>
+                              {status}
+                            </option>
+                          ))}
+                        </select>
+                      </article>
+                    ))}
+                  </div>
+
+                  <form className="fox-admin-form fox-admin-form--branch" onSubmit={(event) => void createBranch(event)}>
+                    <label>
+                      Branch name
+                      <input
+                        value={branchForm.name}
+                        onChange={(event) =>
+                          setBranchForm((current) => ({
+                            ...current,
+                            tenantId: selectedTenant.id,
+                            name: event.target.value,
+                            slug: current.slug || slugify(event.target.value)
+                          }))
+                        }
+                        placeholder="เช่น นิมมาน"
+                        required
+                      />
+                    </label>
+                    <label>
+                      Slug
+                      <input
+                        value={branchForm.slug}
+                        onChange={(event) => setBranchForm((current) => ({ ...current, tenantId: selectedTenant.id, slug: slugify(event.target.value) }))}
+                        placeholder="nimman"
+                        required
+                      />
+                    </label>
+                    <label className="fox-admin-form__wide">
+                      Address
+                      <input
+                        value={branchForm.address}
+                        onChange={(event) => setBranchForm((current) => ({ ...current, tenantId: selectedTenant.id, address: event.target.value }))}
+                        placeholder="ที่อยู่หรือ operating area"
+                      />
+                    </label>
+                    <button type="submit">
+                      <Plus size={16} />
+                      Create branch
+                    </button>
+                  </form>
+                </section>
+              </div>
+            </>
+          ) : (
+            <div className="fox-empty-state">
+              <Building2 size={22} />
+              <strong>ยังไม่มี tenant</strong>
+              <p>สร้าง tenant แรกเพื่อเริ่ม approval flow และ branch operating status</p>
+            </div>
+          )}
+        </div>
       </section>
     </>
   );

@@ -3,7 +3,7 @@ import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
-import { PrismaClient, type Prisma, type UserRole } from '@prisma/client';
+import { PrismaClient, type BranchStatus, type Prisma, type TenantStatus, type UserRole } from '@prisma/client';
 import { ProductSchema, RoleSchema } from '@thefox/shared';
 
 type LineTokenResponse = {
@@ -42,6 +42,41 @@ type AdminUpdateUserRoleParams = {
 };
 
 type AdminUpdateUserRoleBody = {
+  role?: unknown;
+};
+
+type AdminCreateTenantBody = {
+  name?: unknown;
+  slug?: unknown;
+  description?: unknown;
+  ownerUserId?: unknown;
+  ownerRole?: unknown;
+};
+
+type AdminTenantParams = {
+  tenantId: string;
+};
+
+type AdminUpdateTenantStatusBody = {
+  status?: unknown;
+};
+
+type AdminCreateBranchBody = {
+  name?: unknown;
+  slug?: unknown;
+  address?: unknown;
+};
+
+type AdminBranchParams = {
+  branchId: string;
+};
+
+type AdminUpdateBranchStatusBody = {
+  status?: unknown;
+};
+
+type AdminCreateMembershipBody = {
+  userId?: unknown;
   role?: unknown;
 };
 
@@ -119,6 +154,27 @@ const superadminEmails = [
 ]
   .map((email) => email.trim().toLowerCase())
   .filter(Boolean);
+
+const tenantStatuses = new Set<TenantStatus>(['pending', 'active', 'suspended']);
+const branchStatuses = new Set<BranchStatus>(['pending', 'active', 'paused', 'closed']);
+const vendorMembershipRoles = new Set(['owner', 'admin', 'member']);
+
+function normalizeText(value: unknown) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function normalizeOptionalText(value: unknown) {
+  const text = normalizeText(value);
+  return text ? text : null;
+}
+
+function normalizeSlug(value: unknown) {
+  return normalizeText(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-{2,}/g, '-');
+}
 
 function parseCookies(cookieHeader: string | undefined) {
   return Object.fromEntries(
@@ -830,6 +886,597 @@ app.get('/v1/admin/users', async (request, reply) => {
 
   return {
     data: users
+  };
+});
+
+app.get('/v1/admin/tenants', async (request, reply) => {
+  const user = await requireRole(request, reply, ['admin', 'superadmin'], {
+    action: 'admin.tenants.list',
+    resourceType: 'tenant'
+  });
+
+  if (!user) {
+    return;
+  }
+
+  const tenants = await prisma.tenant.findMany({
+    orderBy: {
+      createdAt: 'desc'
+    },
+    take: 100,
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      description: true,
+      status: true,
+      createdAt: true,
+      updatedAt: true,
+      memberships: {
+        orderBy: {
+          createdAt: 'asc'
+        },
+        select: {
+          id: true,
+          role: true,
+          createdAt: true,
+          user: {
+            select: {
+              id: true,
+              email: true,
+              displayName: true,
+              role: true
+            }
+          }
+        }
+      },
+      branches: {
+        orderBy: {
+          createdAt: 'desc'
+        },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          status: true,
+          address: true,
+          createdAt: true,
+          updatedAt: true
+        }
+      },
+      _count: {
+        select: {
+          branches: true,
+          memberships: true,
+          products: true
+        }
+      }
+    }
+  });
+
+  return {
+    data: tenants
+  };
+});
+
+app.post('/v1/admin/tenants', async (request, reply) => {
+  const user = await requireRole(request, reply, ['admin', 'superadmin'], {
+    action: 'admin.tenant.create.attempt',
+    resourceType: 'tenant'
+  });
+
+  if (!user) {
+    return;
+  }
+
+  const body = request.body as AdminCreateTenantBody;
+  const name = normalizeText(body.name);
+  const slug = normalizeSlug(body.slug || body.name);
+  const description = normalizeOptionalText(body.description);
+  const ownerUserId = normalizeText(body.ownerUserId);
+  const ownerRole = normalizeText(body.ownerRole) || 'owner';
+
+  if (!name || !slug) {
+    return reply.code(400).send({
+      error: 'INVALID_TENANT',
+      message: 'Tenant name and slug are required'
+    });
+  }
+
+  if (ownerUserId && !vendorMembershipRoles.has(ownerRole)) {
+    return reply.code(400).send({
+      error: 'INVALID_MEMBERSHIP_ROLE',
+      message: 'Owner role must be owner, admin, or member'
+    });
+  }
+
+  const ownerUser = ownerUserId
+    ? await prisma.user.findUnique({
+        where: {
+          id: ownerUserId
+        },
+        select: {
+          id: true,
+          role: true
+        }
+      })
+    : null;
+
+  if (ownerUserId && !ownerUser) {
+    return reply.code(404).send({ error: 'OWNER_NOT_FOUND' });
+  }
+
+  const tenant = await prisma.$transaction(async (tx) => {
+    const createdTenant = await tx.tenant.create({
+      data: {
+        name,
+        slug,
+        description,
+        status: 'pending'
+      }
+    });
+
+    if (ownerUser) {
+      await tx.vendorMembership.create({
+        data: {
+          tenantId: createdTenant.id,
+          userId: ownerUser.id,
+          role: ownerRole
+        }
+      });
+
+      if (ownerUser.role === 'customer') {
+        await tx.user.update({
+          where: {
+            id: ownerUser.id
+          },
+          data: {
+            role: 'vendor'
+          }
+        });
+      }
+    }
+
+    return tx.tenant.findUniqueOrThrow({
+      where: {
+        id: createdTenant.id
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        memberships: {
+          select: {
+            id: true,
+            role: true,
+            createdAt: true,
+            user: {
+              select: {
+                id: true,
+                email: true,
+                displayName: true,
+                role: true
+              }
+            }
+          }
+        },
+        branches: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            status: true,
+            address: true,
+            createdAt: true,
+            updatedAt: true
+          }
+        },
+        _count: {
+          select: {
+            branches: true,
+            memberships: true,
+            products: true
+          }
+        }
+      }
+    });
+  });
+
+  await writeAuditLog(request, {
+    actor: user,
+    action: 'admin.tenant.create',
+    resourceType: 'tenant',
+    resourceId: tenant.id,
+    metadata: {
+      name: tenant.name,
+      slug: tenant.slug,
+      status: tenant.status,
+      ownerUserId: ownerUserId || null,
+      ownerRole: ownerUserId ? ownerRole : null
+    }
+  });
+
+  return reply.code(201).send({
+    tenant
+  });
+});
+
+app.patch('/v1/admin/tenants/:tenantId/status', async (request, reply) => {
+  const params = request.params as AdminTenantParams;
+  const user = await requireRole(request, reply, ['admin', 'superadmin'], {
+    action: 'admin.tenant_status.update.attempt',
+    resourceType: 'tenant',
+    resourceId: params.tenantId
+  });
+
+  if (!user) {
+    return;
+  }
+
+  const body = request.body as AdminUpdateTenantStatusBody;
+  const nextStatus = normalizeText(body.status) as TenantStatus;
+
+  if (!tenantStatuses.has(nextStatus)) {
+    return reply.code(400).send({
+      error: 'INVALID_TENANT_STATUS',
+      message: 'Tenant status must be pending, active, or suspended'
+    });
+  }
+
+  const existingTenant = await prisma.tenant.findUnique({
+    where: {
+      id: params.tenantId
+    },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      status: true
+    }
+  });
+
+  if (!existingTenant) {
+    return reply.code(404).send({ error: 'TENANT_NOT_FOUND' });
+  }
+
+  const tenant = await prisma.tenant.update({
+    where: {
+      id: existingTenant.id
+    },
+    data: {
+      status: nextStatus
+    },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      status: true,
+      updatedAt: true
+    }
+  });
+
+  await writeAuditLog(request, {
+    actor: user,
+    action: 'admin.tenant_status.update',
+    resourceType: 'tenant',
+    resourceId: tenant.id,
+    metadata: {
+      name: tenant.name,
+      slug: tenant.slug,
+      previousStatus: existingTenant.status,
+      nextStatus: tenant.status
+    }
+  });
+
+  return {
+    tenant
+  };
+});
+
+app.post('/v1/admin/tenants/:tenantId/memberships', async (request, reply) => {
+  const params = request.params as AdminTenantParams;
+  const user = await requireRole(request, reply, ['admin', 'superadmin'], {
+    action: 'admin.tenant_membership.create.attempt',
+    resourceType: 'tenant',
+    resourceId: params.tenantId
+  });
+
+  if (!user) {
+    return;
+  }
+
+  const body = request.body as AdminCreateMembershipBody;
+  const targetUserId = normalizeText(body.userId);
+  const role = normalizeText(body.role) || 'member';
+
+  if (!targetUserId || !vendorMembershipRoles.has(role)) {
+    return reply.code(400).send({
+      error: 'INVALID_MEMBERSHIP',
+      message: 'Membership requires userId and role owner, admin, or member'
+    });
+  }
+
+  const [tenant, targetUser] = await Promise.all([
+    prisma.tenant.findUnique({
+      where: {
+        id: params.tenantId
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true
+      }
+    }),
+    prisma.user.findUnique({
+      where: {
+        id: targetUserId
+      },
+      select: {
+        id: true,
+        email: true,
+        displayName: true,
+        role: true
+      }
+    })
+  ]);
+
+  if (!tenant) {
+    return reply.code(404).send({ error: 'TENANT_NOT_FOUND' });
+  }
+
+  if (!targetUser) {
+    return reply.code(404).send({ error: 'USER_NOT_FOUND' });
+  }
+
+  const membership = await prisma.$transaction(async (tx) => {
+    await tx.vendorMembership.upsert({
+      where: {
+        tenantId_userId: {
+          tenantId: tenant.id,
+          userId: targetUser.id
+        }
+      },
+      create: {
+        tenantId: tenant.id,
+        userId: targetUser.id,
+        role
+      },
+      update: {
+        role
+      },
+      select: {
+        id: true,
+        role: true,
+        createdAt: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            displayName: true,
+            role: true
+          }
+        }
+      }
+    });
+
+    if (targetUser.role === 'customer') {
+      await tx.user.update({
+        where: {
+          id: targetUser.id
+        },
+        data: {
+          role: 'vendor'
+        }
+      });
+    }
+
+    return tx.vendorMembership.findUniqueOrThrow({
+      where: {
+        tenantId_userId: {
+          tenantId: tenant.id,
+          userId: targetUser.id
+        }
+      },
+      select: {
+        id: true,
+        role: true,
+        createdAt: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            displayName: true,
+            role: true
+          }
+        }
+      }
+    });
+  });
+
+  await writeAuditLog(request, {
+    actor: user,
+    action: 'admin.tenant_membership.upsert',
+    resourceType: 'tenant',
+    resourceId: tenant.id,
+    metadata: {
+      tenantName: tenant.name,
+      tenantSlug: tenant.slug,
+      memberUserId: targetUser.id,
+      memberEmail: targetUser.email,
+      previousUserRole: targetUser.role,
+      membershipRole: role
+    }
+  });
+
+  return reply.code(201).send({
+    membership
+  });
+});
+
+app.post('/v1/admin/tenants/:tenantId/branches', async (request, reply) => {
+  const params = request.params as AdminTenantParams;
+  const user = await requireRole(request, reply, ['admin', 'superadmin'], {
+    action: 'admin.branch.create.attempt',
+    resourceType: 'tenant',
+    resourceId: params.tenantId
+  });
+
+  if (!user) {
+    return;
+  }
+
+  const body = request.body as AdminCreateBranchBody;
+  const name = normalizeText(body.name);
+  const slug = normalizeSlug(body.slug || body.name);
+  const address = normalizeOptionalText(body.address);
+
+  if (!name || !slug) {
+    return reply.code(400).send({
+      error: 'INVALID_BRANCH',
+      message: 'Branch name and slug are required'
+    });
+  }
+
+  const tenant = await prisma.tenant.findUnique({
+    where: {
+      id: params.tenantId
+    },
+    select: {
+      id: true,
+      name: true,
+      slug: true
+    }
+  });
+
+  if (!tenant) {
+    return reply.code(404).send({ error: 'TENANT_NOT_FOUND' });
+  }
+
+  const branch = await prisma.branch.create({
+    data: {
+      tenantId: tenant.id,
+      name,
+      slug,
+      address,
+      status: 'pending'
+    },
+    select: {
+      id: true,
+      tenantId: true,
+      name: true,
+      slug: true,
+      status: true,
+      address: true,
+      createdAt: true,
+      updatedAt: true
+    }
+  });
+
+  await writeAuditLog(request, {
+    actor: user,
+    action: 'admin.branch.create',
+    resourceType: 'branch',
+    resourceId: branch.id,
+    metadata: {
+      tenantId: tenant.id,
+      tenantName: tenant.name,
+      tenantSlug: tenant.slug,
+      name: branch.name,
+      slug: branch.slug,
+      status: branch.status
+    }
+  });
+
+  return reply.code(201).send({
+    branch
+  });
+});
+
+app.patch('/v1/admin/branches/:branchId/status', async (request, reply) => {
+  const params = request.params as AdminBranchParams;
+  const user = await requireRole(request, reply, ['admin', 'superadmin'], {
+    action: 'admin.branch_status.update.attempt',
+    resourceType: 'branch',
+    resourceId: params.branchId
+  });
+
+  if (!user) {
+    return;
+  }
+
+  const body = request.body as AdminUpdateBranchStatusBody;
+  const nextStatus = normalizeText(body.status) as BranchStatus;
+
+  if (!branchStatuses.has(nextStatus)) {
+    return reply.code(400).send({
+      error: 'INVALID_BRANCH_STATUS',
+      message: 'Branch status must be pending, active, paused, or closed'
+    });
+  }
+
+  const existingBranch = await prisma.branch.findUnique({
+    where: {
+      id: params.branchId
+    },
+    select: {
+      id: true,
+      tenantId: true,
+      name: true,
+      slug: true,
+      status: true,
+      tenant: {
+        select: {
+          name: true,
+          slug: true
+        }
+      }
+    }
+  });
+
+  if (!existingBranch) {
+    return reply.code(404).send({ error: 'BRANCH_NOT_FOUND' });
+  }
+
+  const branch = await prisma.branch.update({
+    where: {
+      id: existingBranch.id
+    },
+    data: {
+      status: nextStatus
+    },
+    select: {
+      id: true,
+      tenantId: true,
+      name: true,
+      slug: true,
+      status: true,
+      address: true,
+      updatedAt: true
+    }
+  });
+
+  await writeAuditLog(request, {
+    actor: user,
+    action: 'admin.branch_status.update',
+    resourceType: 'branch',
+    resourceId: branch.id,
+    metadata: {
+      tenantId: existingBranch.tenantId,
+      tenantName: existingBranch.tenant.name,
+      tenantSlug: existingBranch.tenant.slug,
+      name: branch.name,
+      slug: branch.slug,
+      previousStatus: existingBranch.status,
+      nextStatus: branch.status
+    }
+  });
+
+  return {
+    branch
   };
 });
 

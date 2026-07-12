@@ -1728,6 +1728,39 @@ img {
   color: var(--fox-text-muted);
 }
 
+.fox-status-pill {
+  display: inline-flex;
+  width: max-content;
+  min-height: 28px;
+  align-items: center;
+  border: 1px solid var(--fox-line-strong);
+  border-radius: 999px;
+  padding: 0 9px;
+  background: var(--fox-bg-soft);
+  color: var(--fox-text);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.fox-status-pill--active {
+  border-color: color-mix(in srgb, var(--fox-success) 48%, var(--fox-line));
+}
+
+.fox-status-pill--pending {
+  border-color: color-mix(in srgb, var(--fox-warning) 48%, var(--fox-line));
+}
+
+.fox-status-pill--suspended,
+.fox-status-pill--closed {
+  border-color: color-mix(in srgb, var(--fox-danger) 42%, var(--fox-line));
+  color: var(--fox-text-muted);
+}
+
+.fox-status-pill--paused {
+  border-color: color-mix(in srgb, var(--fox-silver) 72%, var(--fox-line));
+  color: var(--fox-text-muted);
+}
+
 .fox-audit-list {
   display: grid;
   gap: 8px;
@@ -1778,6 +1811,193 @@ img {
 
 .fox-admin-skeleton--compact {
   min-height: 68px;
+}
+
+.fox-admin-tenant-board {
+  display: grid;
+  gap: 12px;
+}
+
+.fox-admin-form {
+  display: grid;
+  gap: 10px;
+}
+
+.fox-admin-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--fox-text-muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.fox-admin-form input,
+.fox-admin-form select,
+.fox-branch-list select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--fox-line-strong);
+  border-radius: var(--fox-radius-sm);
+  padding: 0 10px;
+  background: var(--fox-bg-soft);
+  color: var(--fox-text);
+  font-weight: 850;
+}
+
+.fox-admin-form input::placeholder {
+  color: var(--fox-text-muted);
+}
+
+.fox-admin-form button,
+.fox-tenant-status-actions button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--fox-line-strong);
+  border-radius: var(--fox-radius-sm);
+  padding: 0 12px;
+  background: var(--fox-surface-inverse);
+  color: var(--fox-accent-contrast);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.fox-admin-form button:disabled,
+.fox-tenant-status-actions button:disabled,
+.fox-branch-list select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.fox-tenant-list,
+.fox-member-list,
+.fox-branch-list {
+  display: grid;
+  gap: 8px;
+}
+
+.fox-tenant-item {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--fox-line);
+  border-radius: var(--fox-radius-md);
+  padding: 10px;
+  background: var(--fox-bg-soft);
+  color: var(--fox-text);
+  text-align: left;
+}
+
+.fox-tenant-item--active {
+  border-color: var(--fox-line-strong);
+  background: var(--fox-surface);
+}
+
+.fox-tenant-item strong,
+.fox-member-list strong,
+.fox-branch-list strong,
+.fox-empty-state strong {
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+
+.fox-tenant-item small,
+.fox-member-list p,
+.fox-branch-list p,
+.fox-empty-state p {
+  margin: 4px 0 0;
+  color: var(--fox-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.fox-tenant-status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.fox-tenant-status-actions button {
+  min-height: 36px;
+  background: var(--fox-bg-soft);
+  color: var(--fox-text);
+}
+
+.fox-tenant-detail-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.fox-tenant-detail-grid section {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.fox-tenant-detail-grid h3 {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.fox-member-list article,
+.fox-branch-list article {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--fox-line);
+  border-radius: var(--fox-radius-md);
+  padding: 10px;
+  background: var(--fox-bg-soft);
+}
+
+.fox-member-list article {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.fox-branch-list article {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.fox-member-list svg,
+.fox-branch-list article > span {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--fox-line-strong);
+  border-radius: 12px;
+  background: var(--fox-surface);
+  color: var(--fox-text);
+}
+
+.fox-admin-form--inline,
+.fox-admin-form--branch {
+  border: 1px solid var(--fox-line);
+  border-radius: var(--fox-radius-md);
+  padding: 10px;
+  background: var(--fox-bg-soft);
+}
+
+.fox-empty-state {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  border: 1px dashed var(--fox-line-strong);
+  border-radius: var(--fox-radius-md);
+  padding: 18px;
+  color: var(--fox-text);
+  text-align: center;
+}
+
+.fox-empty-state svg {
+  color: var(--fox-text-muted);
 }
 
 .fox-roadmap-panel,
@@ -2368,6 +2588,29 @@ img {
   .fox-admin-workbench {
     grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.75fr);
     align-items: start;
+  }
+
+  .fox-admin-tenant-board {
+    grid-template-columns: minmax(280px, 0.75fr) minmax(260px, 0.65fr) minmax(0, 1.6fr);
+    align-items: start;
+  }
+
+  .fox-admin-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fox-admin-form__wide,
+  .fox-admin-form button {
+    grid-column: 1 / -1;
+  }
+
+  .fox-tenant-detail-grid {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  }
+
+  .fox-branch-list article {
+    grid-template-columns: auto minmax(0, 1fr) minmax(116px, 0.36fr);
+    align-items: center;
   }
 
   .fox-admin-table__header,
