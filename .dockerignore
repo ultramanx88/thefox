@@ -9,4 +9,6 @@ node_modules
 npm-debug.log
 .env
 .env.local
+apps/*/.env
+apps/*/.env.local
 coverage

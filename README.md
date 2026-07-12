@@ -30,3 +30,8 @@ npm run deploy:thefox-app
 ```
 
 Auth direction: Expo AuthSession and web/PWA login flows backed by Fastify auth endpoints. Do not reintroduce legacy client-side backend services.
+
+## Planning
+
+- [Architecture roadmap](docs/architecture-roadmap.md)
+- [Product system map](docs/product-system/README.md)

@@ -1,9 +1,10 @@
 import 'dotenv/config';
-import Fastify from 'fastify';
+import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
-import { ProductSchema } from '@thefox/shared';
+import { PrismaClient, type Prisma, type UserRole } from '@prisma/client';
+import { ProductSchema, RoleSchema } from '@thefox/shared';
 
 type LineTokenResponse = {
   access_token: string;
@@ -36,14 +37,31 @@ type GoogleUserInfoResponse = {
   picture?: string;
 };
 
+type AdminUpdateUserRoleParams = {
+  userId: string;
+};
+
+type AdminUpdateUserRoleBody = {
+  role?: unknown;
+};
+
 type AuthSessionPayload = {
   provider: 'line' | 'google';
   providerUserId: string;
+  userId: string;
   displayName: string;
   pictureUrl: string | null;
   email: string | null;
-  role: 'customer' | 'vendor' | 'driver' | 'admin' | 'superadmin';
   issuedAt: string;
+};
+
+type AuthProvider = AuthSessionPayload['provider'];
+type AuthenticatedUser = NonNullable<Awaited<ReturnType<typeof getAuthenticatedUser>>>;
+type AuditContext = {
+  action: string;
+  resourceType?: string;
+  resourceId?: string | undefined;
+  metadata?: Prisma.InputJsonValue;
 };
 
 const app = Fastify({
@@ -51,11 +69,16 @@ const app = Fastify({
     level: process.env.LOG_LEVEL ?? 'info'
   }
 });
+const prisma = new PrismaClient();
 
 await app.register(helmet);
 await app.register(cors, {
   origin: process.env.WEB_ORIGIN?.split(',') ?? ['http://localhost:3000'],
   credentials: true
+});
+
+app.addHook('onClose', async () => {
+  await prisma.$disconnect();
 });
 
 app.get('/health', async () => ({
@@ -68,7 +91,8 @@ const cookieOptions = {
   httpOnly: true,
   path: '/',
   sameSite: 'Lax',
-  secure: process.env.NODE_ENV === 'production'
+  secure: process.env.NODE_ENV === 'production',
+  domain: process.env.AUTH_COOKIE_DOMAIN
 };
 
 const lineConfig = {
@@ -89,6 +113,12 @@ const googleConfig = {
 
 const sessionSecret = process.env.AUTH_SESSION_SECRET;
 const superadminEmail = process.env.THEFOX_SUPERADMIN_EMAIL;
+const superadminEmails = [
+  ...(process.env.THEFOX_SUPERADMIN_EMAILS?.split(',') ?? []),
+  ...(superadminEmail ? [superadminEmail] : [])
+]
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean);
 
 function parseCookies(cookieHeader: string | undefined) {
   return Object.fromEntries(
@@ -105,6 +135,10 @@ function parseCookies(cookieHeader: string | undefined) {
 
 function serializeCookie(name: string, value: string, options: typeof cookieOptions & { maxAge?: number }) {
   const parts = [`${encodeURIComponent(name)}=${encodeURIComponent(value)}`, `Path=${options.path}`, `SameSite=${options.sameSite}`];
+
+  if (options.domain) {
+    parts.push(`Domain=${options.domain}`);
+  }
 
   if (options.httpOnly) {
     parts.push('HttpOnly');
@@ -175,8 +209,241 @@ function decodeJwtPayload(token: string | undefined) {
   return JSON.parse(base64UrlDecode(body)) as { email?: string };
 }
 
-function resolveRole(email: string | null): AuthSessionPayload['role'] {
-  return email && superadminEmail && email.toLowerCase() === superadminEmail.toLowerCase() ? 'superadmin' : 'customer';
+function resolveBootstrapRole(email: string | null): UserRole {
+  return email && superadminEmails.includes(email.toLowerCase()) ? 'superadmin' : 'customer';
+}
+
+function requestIpAddress(request: FastifyRequest) {
+  const forwardedFor = request.headers['x-forwarded-for'];
+
+  if (typeof forwardedFor === 'string' && forwardedFor.trim()) {
+    return forwardedFor.split(',')[0]?.trim() ?? request.ip;
+  }
+
+  return request.ip;
+}
+
+function requestUserAgent(request: FastifyRequest) {
+  const userAgent = request.headers['user-agent'];
+  return Array.isArray(userAgent) ? userAgent.join(' ') : userAgent;
+}
+
+function mergeAuditMetadata(metadata: Prisma.InputJsonValue | undefined, extra: Record<string, Prisma.InputJsonValue>) {
+  return {
+    ...(metadata && typeof metadata === 'object' && !Array.isArray(metadata) ? metadata : {}),
+    ...extra
+  };
+}
+
+async function writeAuditLog(request: FastifyRequest, context: AuditContext & { actor?: Pick<AuthenticatedUser, 'id' | 'role'> | null }) {
+  try {
+    const data: Prisma.AuditLogUncheckedCreateInput = {
+      action: context.action,
+      route: request.url,
+      method: request.method,
+      ipAddress: requestIpAddress(request)
+    };
+    const userAgent = requestUserAgent(request);
+
+    if (context.actor?.id) {
+      data.actorUserId = context.actor.id;
+      data.actorRole = context.actor.role;
+    }
+
+    if (context.resourceType) {
+      data.resourceType = context.resourceType;
+    }
+
+    if (context.resourceId) {
+      data.resourceId = context.resourceId;
+    }
+
+    if (userAgent) {
+      data.userAgent = userAgent;
+    }
+
+    if (context.metadata) {
+      data.metadata = context.metadata;
+    }
+
+    await prisma.auditLog.create({
+      data
+    });
+  } catch (error) {
+    request.log.warn({ error, action: context.action }, 'Failed to write audit log');
+  }
+}
+
+async function upsertAuthenticatedUser(input: {
+  provider: AuthProvider;
+  providerUserId: string;
+  displayName: string;
+  pictureUrl: string | null;
+  email: string | null;
+}) {
+  const bootstrapRole = resolveBootstrapRole(input.email);
+
+  return prisma.$transaction(async (tx) => {
+    const existingAccount = await tx.authAccount.findUnique({
+      where: {
+        provider_providerUserId: {
+          provider: input.provider,
+          providerUserId: input.providerUserId
+        }
+      },
+      include: {
+        user: true
+      }
+    });
+
+    if (existingAccount) {
+      return tx.user.update({
+        where: {
+          id: existingAccount.userId
+        },
+        data: {
+          email: input.email ?? existingAccount.user.email,
+          displayName: input.displayName,
+          photoUrl: input.pictureUrl,
+          role: existingAccount.user.role === 'superadmin' || bootstrapRole === 'superadmin' ? 'superadmin' : existingAccount.user.role
+        }
+      });
+    }
+
+    const existingUser = input.email
+      ? await tx.user.findUnique({
+          where: {
+            email: input.email
+          }
+        })
+      : null;
+
+    const user = existingUser
+      ? await tx.user.update({
+          where: {
+            id: existingUser.id
+          },
+          data: {
+            displayName: input.displayName,
+            photoUrl: input.pictureUrl,
+            role: existingUser.role === 'superadmin' || bootstrapRole === 'superadmin' ? 'superadmin' : existingUser.role
+          }
+        })
+      : await tx.user.create({
+          data: {
+            email: input.email,
+            displayName: input.displayName,
+            photoUrl: input.pictureUrl,
+            role: bootstrapRole
+          }
+        });
+
+    await tx.authAccount.create({
+      data: {
+        provider: input.provider,
+        providerUserId: input.providerUserId,
+        userId: user.id
+      }
+    });
+
+    return user;
+  });
+}
+
+async function getAuthenticatedUser(request: FastifyRequest) {
+  const cookies = parseCookies(request.headers.cookie);
+  const session = cookies.thefox_auth_session ? verifyPayload(cookies.thefox_auth_session) : null;
+
+  if (!session?.userId) {
+    return null;
+  }
+
+  return prisma.user.findUnique({
+    where: {
+      id: session.userId
+    },
+    include: {
+      vendorMemberships: {
+        select: {
+          tenantId: true,
+          role: true
+        }
+      },
+      driverProfile: {
+        select: {
+          id: true,
+          status: true,
+          serviceArea: true
+        }
+      }
+    }
+  });
+}
+
+function userCanAccessRole(user: AuthenticatedUser, allowedRoles: UserRole[]) {
+  return allowedRoles.includes(user.role);
+}
+
+async function requireRole(request: FastifyRequest, reply: FastifyReply, allowedRoles: UserRole[], auditContext?: AuditContext) {
+  const user = await getAuthenticatedUser(request);
+
+  if (!user) {
+    if (auditContext) {
+      await writeAuditLog(request, {
+        ...auditContext,
+        action: `${auditContext.action}.unauthenticated`,
+        metadata: mergeAuditMetadata(auditContext.metadata, {
+          requiredRoles: allowedRoles
+        })
+      });
+    }
+
+    reply.code(401).send({ error: 'UNAUTHENTICATED' });
+    return null;
+  }
+
+  if (!userCanAccessRole(user, allowedRoles)) {
+    if (auditContext) {
+      await writeAuditLog(request, {
+        ...auditContext,
+        actor: user,
+        action: `${auditContext.action}.forbidden`,
+        metadata: mergeAuditMetadata(auditContext.metadata, {
+          requiredRoles: allowedRoles,
+          actualRole: user.role
+        })
+      });
+    }
+
+    reply.code(403).send({ error: 'FORBIDDEN', requiredRoles: allowedRoles });
+    return null;
+  }
+
+  if (auditContext) {
+    await writeAuditLog(request, {
+      ...auditContext,
+      actor: user,
+      metadata: mergeAuditMetadata(auditContext.metadata, {
+        requiredRoles: allowedRoles
+      })
+    });
+  }
+
+  return user;
+}
+
+function serializeApiUser(user: AuthenticatedUser) {
+  return {
+    id: user.id,
+    displayName: user.displayName ?? 'theFOX user',
+    pictureUrl: user.photoUrl,
+    email: user.email,
+    role: user.role,
+    scopes: {
+      tenantMemberships: user.vendorMemberships,
+      driverProfile: user.driverProfile
+    }
+  };
 }
 
 app.get('/v1/auth/line/start', async (request, reply) => {
@@ -258,14 +525,33 @@ app.get('/v1/auth/line/callback', async (request, reply) => {
   const profile = (await profileResponse.json()) as LineProfileResponse;
   const idTokenPayload = decodeJwtPayload(token.id_token);
   const email = idTokenPayload.email ?? null;
-  const session = signPayload({
+  const user = await upsertAuthenticatedUser({
     provider: 'line',
     providerUserId: profile.userId,
     displayName: profile.displayName,
     pictureUrl: profile.pictureUrl ?? null,
+    email
+  });
+  const session = signPayload({
+    provider: 'line',
+    providerUserId: profile.userId,
+    userId: user.id,
+    displayName: profile.displayName,
+    pictureUrl: profile.pictureUrl ?? null,
     email,
-    role: resolveRole(email),
     issuedAt: new Date().toISOString()
+  });
+
+  await writeAuditLog(request, {
+    actor: user,
+    action: 'auth.login',
+    resourceType: 'auth_session',
+    resourceId: user.id,
+    metadata: {
+      provider: 'line',
+      providerUserId: profile.userId,
+      email
+    }
   });
 
   reply.headers({
@@ -360,14 +646,34 @@ app.get('/v1/auth/google/callback', async (request, reply) => {
 
   const profile = (await profileResponse.json()) as GoogleUserInfoResponse;
   const email = profile.email ?? null;
+  const displayName = profile.name ?? profile.email ?? 'Google user';
+  const user = await upsertAuthenticatedUser({
+    provider: 'google',
+    providerUserId: profile.sub,
+    displayName,
+    pictureUrl: profile.picture ?? null,
+    email
+  });
   const session = signPayload({
     provider: 'google',
     providerUserId: profile.sub,
-    displayName: profile.name ?? profile.email ?? 'Google user',
+    userId: user.id,
+    displayName,
     pictureUrl: profile.picture ?? null,
     email,
-    role: resolveRole(email),
     issuedAt: new Date().toISOString()
+  });
+
+  await writeAuditLog(request, {
+    actor: user,
+    action: 'auth.login',
+    resourceType: 'auth_session',
+    resourceId: user.id,
+    metadata: {
+      provider: 'google',
+      providerUserId: profile.sub,
+      email
+    }
   });
 
   reply.headers({
@@ -383,28 +689,290 @@ app.get('/v1/auth/google/callback', async (request, reply) => {
 });
 
 app.get('/v1/auth/me', async (request, reply) => {
-  const cookies = parseCookies(request.headers.cookie);
-  const session = cookies.thefox_auth_session ? verifyPayload(cookies.thefox_auth_session) : null;
+  const user = await getAuthenticatedUser(request);
 
-  if (!session) {
+  if (!user) {
     return reply.code(401).send({ error: 'UNAUTHENTICATED' });
   }
 
   return {
-    user: {
-      provider: session.provider,
-      providerUserId: session.providerUserId,
-      displayName: session.displayName,
-      pictureUrl: session.pictureUrl,
-      email: session.email,
-      role: session.role
+    user: serializeApiUser(user)
+  };
+});
+
+app.post('/v1/auth/logout', async (request, reply) => {
+  const user = await getAuthenticatedUser(request);
+
+  await writeAuditLog(request, {
+    actor: user,
+    action: 'auth.logout',
+    resourceType: 'auth_session',
+    resourceId: user?.id
+  });
+
+  reply.header('Set-Cookie', serializeCookie('thefox_auth_session', '', { ...cookieOptions, maxAge: 1 }));
+  return { ok: true };
+});
+
+app.get('/v1/admin/me', async (request, reply) => {
+  const user = await requireRole(request, reply, ['admin', 'superadmin'], {
+    action: 'admin.workspace.access',
+    resourceType: 'admin_workspace'
+  });
+
+  if (!user) {
+    return;
+  }
+
+  return {
+    user: serializeApiUser(user),
+    permissions: {
+      canReviewTenants: true,
+      canInspectOrders: true,
+      canManageRoles: user.role === 'superadmin'
     }
   };
 });
 
-app.post('/v1/auth/logout', async (_request, reply) => {
-  reply.header('Set-Cookie', serializeCookie('thefox_auth_session', '', { ...cookieOptions, maxAge: 1 }));
-  return { ok: true };
+app.get('/v1/admin/audit-logs', async (request, reply) => {
+  const user = await requireRole(request, reply, ['admin', 'superadmin'], {
+    action: 'admin.audit_logs.list',
+    resourceType: 'audit_log'
+  });
+
+  if (!user) {
+    return;
+  }
+
+  const logs = await prisma.auditLog.findMany({
+    orderBy: {
+      createdAt: 'desc'
+    },
+    take: 50,
+    select: {
+      id: true,
+      actorUserId: true,
+      actorRole: true,
+      action: true,
+      resourceType: true,
+      resourceId: true,
+      route: true,
+      method: true,
+      ipAddress: true,
+      userAgent: true,
+      metadata: true,
+      createdAt: true,
+      actorUser: {
+        select: {
+          email: true,
+          displayName: true
+        }
+      }
+    }
+  });
+
+  return {
+    data: logs
+  };
+});
+
+app.get('/v1/admin/users', async (request, reply) => {
+  const user = await requireRole(request, reply, ['admin', 'superadmin'], {
+    action: 'admin.users.list',
+    resourceType: 'user'
+  });
+
+  if (!user) {
+    return;
+  }
+
+  const users = await prisma.user.findMany({
+    orderBy: {
+      createdAt: 'desc'
+    },
+    take: 100,
+    select: {
+      id: true,
+      email: true,
+      displayName: true,
+      photoUrl: true,
+      role: true,
+      createdAt: true,
+      updatedAt: true,
+      authAccounts: {
+        select: {
+          provider: true,
+          providerUserId: true
+        }
+      },
+      vendorMemberships: {
+        select: {
+          tenantId: true,
+          role: true,
+          tenant: {
+            select: {
+              name: true,
+              slug: true,
+              status: true
+            }
+          }
+        }
+      },
+      driverProfile: {
+        select: {
+          id: true,
+          status: true,
+          serviceArea: true
+        }
+      }
+    }
+  });
+
+  return {
+    data: users
+  };
+});
+
+app.patch('/v1/admin/users/:userId/role', async (request, reply) => {
+  const user = await requireRole(request, reply, ['superadmin'], {
+    action: 'admin.user_role.update.attempt',
+    resourceType: 'user',
+    resourceId: (request.params as AdminUpdateUserRoleParams).userId
+  });
+
+  if (!user) {
+    return;
+  }
+
+  const params = request.params as AdminUpdateUserRoleParams;
+  const body = request.body as AdminUpdateUserRoleBody;
+  const parsedRole = RoleSchema.safeParse(body.role);
+
+  if (!parsedRole.success) {
+    await writeAuditLog(request, {
+      actor: user,
+      action: 'admin.user_role.update.invalid',
+      resourceType: 'user',
+      resourceId: params.userId,
+      metadata: {
+        receivedRole: typeof body.role === 'string' ? body.role : null
+      }
+    });
+
+    return reply.code(400).send({
+      error: 'INVALID_ROLE',
+      message: 'Role must be one of customer, vendor, driver, admin, or superadmin'
+    });
+  }
+
+  const target = await prisma.user.findUnique({
+    where: {
+      id: params.userId
+    },
+    select: {
+      id: true,
+      email: true,
+      displayName: true,
+      role: true
+    }
+  });
+
+  if (!target) {
+    await writeAuditLog(request, {
+      actor: user,
+      action: 'admin.user_role.update.missing_target',
+      resourceType: 'user',
+      resourceId: params.userId,
+      metadata: {
+        nextRole: parsedRole.data
+      }
+    });
+
+    return reply.code(404).send({ error: 'USER_NOT_FOUND' });
+  }
+
+  if (target.id === user.id && target.role === 'superadmin' && parsedRole.data !== 'superadmin') {
+    await writeAuditLog(request, {
+      actor: user,
+      action: 'admin.user_role.update.self_demote_blocked',
+      resourceType: 'user',
+      resourceId: target.id,
+      metadata: {
+        previousRole: target.role,
+        nextRole: parsedRole.data
+      }
+    });
+
+    return reply.code(409).send({
+      error: 'SELF_DEMOTE_BLOCKED',
+      message: 'Superadmin cannot remove their own superadmin role'
+    });
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: {
+      id: target.id
+    },
+    data: {
+      role: parsedRole.data
+    },
+    select: {
+      id: true,
+      email: true,
+      displayName: true,
+      role: true,
+      updatedAt: true
+    }
+  });
+
+  await writeAuditLog(request, {
+    actor: user,
+    action: 'admin.user_role.update',
+    resourceType: 'user',
+    resourceId: updatedUser.id,
+    metadata: {
+      previousRole: target.role,
+      nextRole: updatedUser.role,
+      targetEmail: updatedUser.email,
+      targetDisplayName: updatedUser.displayName
+    }
+  });
+
+  return {
+    user: updatedUser
+  };
+});
+
+app.get('/v1/vendor/me', async (request, reply) => {
+  const user = await requireRole(request, reply, ['vendor', 'admin', 'superadmin'], {
+    action: 'vendor.workspace.access',
+    resourceType: 'vendor_workspace'
+  });
+
+  if (!user) {
+    return;
+  }
+
+  return {
+    user: serializeApiUser(user),
+    memberships: user.vendorMemberships
+  };
+});
+
+app.get('/v1/driver/me', async (request, reply) => {
+  const user = await requireRole(request, reply, ['driver', 'admin', 'superadmin'], {
+    action: 'driver.workspace.access',
+    resourceType: 'driver_workspace'
+  });
+
+  if (!user) {
+    return;
+  }
+
+  return {
+    user: serializeApiUser(user),
+    driverProfile: user.driverProfile
+  };
 });
 
 app.get('/v1/products', async () => {

@@ -37,7 +37,7 @@ export const ProductSchema = z.object({
 
 export const UserProfileSchema = z.object({
   id: z.string().min(1).max(128),
-  email: z.string().email(),
+  email: z.string().email().nullable(),
   displayName: z.string().min(1).max(100).nullable(),
   photoUrl: z.string().url().nullable(),
   role: RoleSchema

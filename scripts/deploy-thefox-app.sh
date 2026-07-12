@@ -16,6 +16,16 @@ API_PORT="${THEFOX_API_PORT:-4120}"
 WEB_ORIGIN="${WEB_ORIGIN:-https://thefox.app,https://www.thefox.app}"
 NEXT_PUBLIC_API_URL="${NEXT_PUBLIC_API_URL:-https://api.thefox.app}"
 THEFOX_SUPERADMIN_EMAIL="${THEFOX_SUPERADMIN_EMAIL:-ultramanx88@gmail.com}"
+THEFOX_SUPERADMIN_EMAILS="${THEFOX_SUPERADMIN_EMAILS:-ultramanx88@gmail.com,logicsforge@gmail.com}"
+AUTH_COOKIE_DOMAIN="${AUTH_COOKIE_DOMAIN:-.thefox.app}"
+LINE_CHANNEL_ID="${LINE_CHANNEL_ID:-2010569167}"
+LINE_CHANNEL_SECRET="${LINE_CHANNEL_SECRET:-}"
+LINE_REDIRECT_URI="${LINE_REDIRECT_URI:-https://api.thefox.app/v1/auth/line/callback}"
+GOOGLE_CLIENT_ID="${GOOGLE_CLIENT_ID:-365347056743-rjqkuqvkg3l4g0crif0hpshia3eqi9qa.apps.googleusercontent.com}"
+GOOGLE_CLIENT_SECRET="${GOOGLE_CLIENT_SECRET:-}"
+GOOGLE_REDIRECT_URI="${GOOGLE_REDIRECT_URI:-https://api.thefox.app/v1/auth/google/callback}"
+WEB_AUTH_SUCCESS_URL="${WEB_AUTH_SUCCESS_URL:-https://thefox.app/auth/continue}"
+WEB_AUTH_FAILURE_URL="${WEB_AUTH_FAILURE_URL:-https://thefox.app/?auth=failed}"
 
 log() {
   printf '[deploy:thefox] %s\n' "$*"
@@ -51,6 +61,8 @@ if [[ "${DEPLOY_SOURCE}" == "local" ]]; then
     --exclude='./coverage' \
     --exclude='./.env' \
     --exclude='./.env.local' \
+    --exclude='./apps/*/.env' \
+    --exclude='./apps/*/.env.local' \
     --exclude='./*.log' \
     -cf - . | ssh "${SSH_TARGET}" "mkdir -p '${REMOTE_APP_DIR}' && LC_ALL=C tar -xf - -C '${REMOTE_APP_DIR}'"
 elif [[ "${DEPLOY_SOURCE}" != "git" ]]; then
@@ -59,7 +71,7 @@ elif [[ "${DEPLOY_SOURCE}" != "git" ]]; then
 fi
 
 ssh "${SSH_TARGET}" \
-  "DEPLOY_SOURCE='${DEPLOY_SOURCE}' REMOTE_ROOT='${REMOTE_ROOT}' REMOTE_APP_DIR='${REMOTE_APP_DIR}' REMOTE_ENV_FILE='${REMOTE_ENV_FILE}' REPO_URL='${REPO_URL}' BRANCH='${BRANCH}' COMPOSE_FILE='${COMPOSE_FILE}' COMPOSE_PROJECT_NAME='${COMPOSE_PROJECT_NAME}' THEFOX_WEB_PORT='${WEB_PORT}' THEFOX_API_PORT='${API_PORT}' WEB_ORIGIN='${WEB_ORIGIN}' NEXT_PUBLIC_API_URL='${NEXT_PUBLIC_API_URL}' THEFOX_SUPERADMIN_EMAIL='${THEFOX_SUPERADMIN_EMAIL}' bash -s" <<'REMOTE_SCRIPT'
+  "DEPLOY_SOURCE='${DEPLOY_SOURCE}' REMOTE_ROOT='${REMOTE_ROOT}' REMOTE_APP_DIR='${REMOTE_APP_DIR}' REMOTE_ENV_FILE='${REMOTE_ENV_FILE}' REPO_URL='${REPO_URL}' BRANCH='${BRANCH}' COMPOSE_FILE='${COMPOSE_FILE}' COMPOSE_PROJECT_NAME='${COMPOSE_PROJECT_NAME}' THEFOX_WEB_PORT='${WEB_PORT}' THEFOX_API_PORT='${API_PORT}' WEB_ORIGIN='${WEB_ORIGIN}' NEXT_PUBLIC_API_URL='${NEXT_PUBLIC_API_URL}' THEFOX_SUPERADMIN_EMAIL='${THEFOX_SUPERADMIN_EMAIL}' THEFOX_SUPERADMIN_EMAILS='${THEFOX_SUPERADMIN_EMAILS}' AUTH_COOKIE_DOMAIN='${AUTH_COOKIE_DOMAIN}' LINE_CHANNEL_ID='${LINE_CHANNEL_ID}' LINE_CHANNEL_SECRET='${LINE_CHANNEL_SECRET}' LINE_REDIRECT_URI='${LINE_REDIRECT_URI}' GOOGLE_CLIENT_ID='${GOOGLE_CLIENT_ID}' GOOGLE_CLIENT_SECRET='${GOOGLE_CLIENT_SECRET}' GOOGLE_REDIRECT_URI='${GOOGLE_REDIRECT_URI}' WEB_AUTH_SUCCESS_URL='${WEB_AUTH_SUCCESS_URL}' WEB_AUTH_FAILURE_URL='${WEB_AUTH_FAILURE_URL}' bash -s" <<'REMOTE_SCRIPT'
 set -Eeuo pipefail
 
 log() {
@@ -118,8 +130,10 @@ if [[ ! -f "${REMOTE_ENV_FILE}" ]]; then
   log "Creating ${REMOTE_ENV_FILE} with a generated database password."
   if command -v openssl >/dev/null 2>&1; then
     db_password="$(openssl rand -hex 32 | tr -d '\n')"
+    auth_secret="$(openssl rand -hex 48 | tr -d '\n')"
   else
     db_password="$(date +%s%N)-change-this-password"
+    auth_secret="$(date +%s%N)$(date +%s%N)$(date +%s%N)"
   fi
   umask 077
   cat >"${REMOTE_ENV_FILE}" <<ENV_FILE
@@ -138,15 +152,50 @@ WEB_ORIGIN=${WEB_ORIGIN}
 NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 LOG_LEVEL=info
 THEFOX_SUPERADMIN_EMAIL=${THEFOX_SUPERADMIN_EMAIL}
+THEFOX_SUPERADMIN_EMAILS=${THEFOX_SUPERADMIN_EMAILS}
+AUTH_SESSION_SECRET=${auth_secret}
+AUTH_COOKIE_DOMAIN=${AUTH_COOKIE_DOMAIN}
+LINE_CHANNEL_ID=${LINE_CHANNEL_ID}
+LINE_CHANNEL_SECRET=${LINE_CHANNEL_SECRET}
+LINE_REDIRECT_URI=${LINE_REDIRECT_URI}
+GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
+WEB_AUTH_SUCCESS_URL=${WEB_AUTH_SUCCESS_URL}
+WEB_AUTH_FAILURE_URL=${WEB_AUTH_FAILURE_URL}
 ENV_FILE
 else
   log "Using existing ${REMOTE_ENV_FILE}."
 fi
 
-if ! grep -q '^THEFOX_SUPERADMIN_EMAIL=' "${REMOTE_ENV_FILE}"; then
-  log "Adding THEFOX_SUPERADMIN_EMAIL to ${REMOTE_ENV_FILE}."
-  printf '\nTHEFOX_SUPERADMIN_EMAIL=%s\n' "${THEFOX_SUPERADMIN_EMAIL}" >>"${REMOTE_ENV_FILE}"
+ensure_env_key() {
+  local key="$1"
+  local value="$2"
+
+  if ! grep -q "^${key}=" "${REMOTE_ENV_FILE}"; then
+    log "Adding ${key} to ${REMOTE_ENV_FILE}."
+    printf '%s=%s\n' "${key}" "${value}" >>"${REMOTE_ENV_FILE}"
+  fi
+}
+
+if command -v openssl >/dev/null 2>&1; then
+  generated_auth_secret="$(openssl rand -hex 48 | tr -d '\n')"
+else
+  generated_auth_secret="$(date +%s%N)$(date +%s%N)$(date +%s%N)"
 fi
+
+ensure_env_key "THEFOX_SUPERADMIN_EMAIL" "${THEFOX_SUPERADMIN_EMAIL}"
+ensure_env_key "THEFOX_SUPERADMIN_EMAILS" "${THEFOX_SUPERADMIN_EMAILS}"
+ensure_env_key "AUTH_SESSION_SECRET" "${generated_auth_secret}"
+ensure_env_key "AUTH_COOKIE_DOMAIN" "${AUTH_COOKIE_DOMAIN}"
+ensure_env_key "LINE_CHANNEL_ID" "${LINE_CHANNEL_ID}"
+ensure_env_key "LINE_CHANNEL_SECRET" "${LINE_CHANNEL_SECRET}"
+ensure_env_key "LINE_REDIRECT_URI" "${LINE_REDIRECT_URI}"
+ensure_env_key "GOOGLE_CLIENT_ID" "${GOOGLE_CLIENT_ID}"
+ensure_env_key "GOOGLE_CLIENT_SECRET" "${GOOGLE_CLIENT_SECRET}"
+ensure_env_key "GOOGLE_REDIRECT_URI" "${GOOGLE_REDIRECT_URI}"
+ensure_env_key "WEB_AUTH_SUCCESS_URL" "${WEB_AUTH_SUCCESS_URL}"
+ensure_env_key "WEB_AUTH_FAILURE_URL" "${WEB_AUTH_FAILURE_URL}"
 
 set -a
 # shellcheck disable=SC1090
