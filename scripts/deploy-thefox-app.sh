@@ -13,7 +13,7 @@ COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.kvm-shared.yml}"
 COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-thefox-app}"
 WEB_PORT="${THEFOX_WEB_PORT:-3120}"
 API_PORT="${THEFOX_API_PORT:-4120}"
-WEB_ORIGIN="${WEB_ORIGIN:-https://thefox.app,https://www.thefox.app}"
+WEB_ORIGIN="${WEB_ORIGIN:-https://thefox.app,https://www.thefox.app,https://admin.thefox.app,https://vendor.thefox.app,https://driver.thefox.app}"
 NEXT_PUBLIC_API_URL="${NEXT_PUBLIC_API_URL:-https://api.thefox.app}"
 THEFOX_SUPERADMIN_EMAIL="${THEFOX_SUPERADMIN_EMAIL:-ultramanx88@gmail.com}"
 THEFOX_SUPERADMIN_EMAILS="${THEFOX_SUPERADMIN_EMAILS:-ultramanx88@gmail.com,logicsforge@gmail.com}"
@@ -43,7 +43,7 @@ require_command tar
 
 log "Deploying theFOX to ${REMOTE_HOST_LABEL} via ${SSH_TARGET}"
 log "Remote app path: ${REMOTE_APP_DIR}"
-log "Public domains: thefox.app, www.thefox.app, api.thefox.app"
+log "Public domains: thefox.app, www.thefox.app, admin.thefox.app, vendor.thefox.app, driver.thefox.app, api.thefox.app"
 log "Local VPS ports: web=${WEB_PORT}, api=${API_PORT}"
 log "Deploy source: ${DEPLOY_SOURCE}"
 
@@ -178,6 +178,51 @@ ensure_env_key() {
   fi
 }
 
+ensure_csv_env_values() {
+  local key="$1"
+  local required_values="$2"
+  local current_value
+  local merged_value
+  local required_value
+
+  if ! grep -q "^${key}=" "${REMOTE_ENV_FILE}"; then
+    log "Adding ${key} to ${REMOTE_ENV_FILE}."
+    printf '%s=%s\n' "${key}" "${required_values}" >>"${REMOTE_ENV_FILE}"
+    return
+  fi
+
+  current_value="$(grep "^${key}=" "${REMOTE_ENV_FILE}" | tail -n 1 | cut -d= -f2-)"
+  merged_value="${current_value}"
+
+  IFS=',' read -ra required_parts <<<"${required_values}"
+  for required_value in "${required_parts[@]}"; do
+    if [[ ",${merged_value}," != *",${required_value},"* ]]; then
+      merged_value="${merged_value},${required_value}"
+    fi
+  done
+
+  if [[ "${merged_value}" != "${current_value}" ]]; then
+    log "Updating ${key} with required theFOX origins."
+    tmp_env="${REMOTE_ENV_FILE}.tmp"
+    awk -v key="${key}" -v value="${merged_value}" '
+      BEGIN { replaced = 0 }
+      $0 ~ "^" key "=" {
+        print key "=" value
+        replaced = 1
+        next
+      }
+      { print }
+      END {
+        if (!replaced) {
+          print key "=" value
+        }
+      }
+    ' "${REMOTE_ENV_FILE}" >"${tmp_env}"
+    chmod 600 "${tmp_env}"
+    mv "${tmp_env}" "${REMOTE_ENV_FILE}"
+  fi
+}
+
 if command -v openssl >/dev/null 2>&1; then
   generated_auth_secret="$(openssl rand -hex 48 | tr -d '\n')"
 else
@@ -186,6 +231,7 @@ fi
 
 ensure_env_key "THEFOX_SUPERADMIN_EMAIL" "${THEFOX_SUPERADMIN_EMAIL}"
 ensure_env_key "THEFOX_SUPERADMIN_EMAILS" "${THEFOX_SUPERADMIN_EMAILS}"
+ensure_csv_env_values "WEB_ORIGIN" "${WEB_ORIGIN}"
 ensure_env_key "AUTH_SESSION_SECRET" "${generated_auth_secret}"
 ensure_env_key "AUTH_COOKIE_DOMAIN" "${AUTH_COOKIE_DOMAIN}"
 ensure_env_key "LINE_CHANNEL_ID" "${LINE_CHANNEL_ID}"
@@ -263,6 +309,7 @@ curl -fsS "http://127.0.0.1:${THEFOX_API_PORT}/health" >/dev/null
 curl -fsSI "http://127.0.0.1:${THEFOX_WEB_PORT}" >/dev/null
 
 log "Deploy complete."
-log "Remember to route thefox.app/www.thefox.app -> 127.0.0.1:${THEFOX_WEB_PORT}"
+log "Remember to route thefox.app, www.thefox.app, admin.thefox.app, vendor.thefox.app, driver.thefox.app -> 127.0.0.1:${THEFOX_WEB_PORT}"
 log "Remember to route api.thefox.app -> 127.0.0.1:${THEFOX_API_PORT}"
+log "Remember to include admin/vendor/driver in DNS and TLS certificate SANs before public use."
 REMOTE_SCRIPT

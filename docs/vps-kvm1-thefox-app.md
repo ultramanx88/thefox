@@ -14,6 +14,9 @@ internal database/cache, and local web/API ports.
 | --- | --- | --- |
 | Web | `https://thefox.app` | `127.0.0.1:3120` |
 | Web alias | `https://www.thefox.app` | `127.0.0.1:3120` |
+| Admin web | `https://admin.thefox.app` | `127.0.0.1:3120` |
+| Vendor web | `https://vendor.thefox.app` | `127.0.0.1:3120` |
+| Driver web fallback | `https://driver.thefox.app` | `127.0.0.1:3120` |
 | API | `https://api.thefox.app` | `127.0.0.1:4120` |
 | PostgreSQL | none | Docker network only |
 | Redis | none | Docker network only |
@@ -53,6 +56,9 @@ Point these records to `187.77.158.181`:
 
 - `A thefox.app`
 - `A www.thefox.app`
+- `A admin.thefox.app`
+- `A vendor.thefox.app`
+- `A driver.thefox.app`
 - `A api.thefox.app`
 
 If Cloudflare is used, keep proxying consistent with the other projects on the
@@ -84,7 +90,7 @@ THEFOX_WEB_BIND=127.0.0.1
 THEFOX_WEB_PORT=3120
 THEFOX_API_BIND=127.0.0.1
 THEFOX_API_PORT=4120
-WEB_ORIGIN=https://thefox.app,https://www.thefox.app
+WEB_ORIGIN=https://thefox.app,https://www.thefox.app,https://admin.thefox.app,https://vendor.thefox.app,https://driver.thefox.app
 NEXT_PUBLIC_API_URL=https://api.thefox.app
 LOG_LEVEL=info
 ```
@@ -143,7 +149,7 @@ docker compose --env-file /opt/thefox/.env.thefox.app -f docker-compose.kvm-shar
 Use this if KVM already uses Caddy:
 
 ```caddyfile
-thefox.app, www.thefox.app {
+thefox.app, www.thefox.app, admin.thefox.app, vendor.thefox.app, driver.thefox.app {
 	reverse_proxy 127.0.0.1:3120
 }
 
@@ -166,7 +172,7 @@ Use this if KVM already uses Nginx:
 ```nginx
 server {
     listen 80;
-    server_name thefox.app www.thefox.app;
+    server_name thefox.app www.thefox.app admin.thefox.app vendor.thefox.app driver.thefox.app;
 
     location / {
         proxy_pass http://127.0.0.1:3120;
@@ -193,6 +199,26 @@ server {
 
 Then issue TLS certificates with the same Certbot pattern used by the other
 sites on the server.
+
+For the current nginx-based KVM, expand the theFOX certificate after DNS is
+ready:
+
+```bash
+certbot --nginx \
+  -d thefox.app \
+  -d www.thefox.app \
+  -d api.thefox.app \
+  -d admin.thefox.app \
+  -d vendor.thefox.app \
+  -d driver.thefox.app
+```
+
+The web subdomains all reverse proxy to the same Next.js web container on
+`127.0.0.1:3120`. Next proxy routing maps:
+
+- `admin.thefox.app` -> `/admin`
+- `vendor.thefox.app` -> `/vendor`
+- `driver.thefox.app` -> `/driver`
 
 ## Firewall
 
