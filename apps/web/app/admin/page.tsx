@@ -74,7 +74,7 @@ const readinessTasks = [
     icon: Gauge,
     track: 'Performance',
     title: 'Admin API and page budget',
-    status: 'Baseline captured',
+    status: 'Verified',
     body: 'วัด latency ของ auth/me, admin/users, audit logs, cache behavior, bundle size และ cold response หลัง deploy',
     expectedState: 'Admin page 200, static chunk cache HIT, auth/admin APIs อยู่ใน latency budget',
     errorState: 'API 5xx, cold response ช้า, bundle โตผิดปกติ หรือ static cache ไม่ HIT',

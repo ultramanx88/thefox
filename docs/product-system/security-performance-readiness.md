@@ -54,6 +54,21 @@ Every task card must include:
 | Route cold start | Public workspace routes and API health return healthy status after container recreate. | Web/API container starts but first response fails or exceeds cold budget. | No DB audit expected for health/static route checks. | Restart only `thefox-app-web-1`/`thefox-app-api-1`; rollback last deploy if cold failure persists. | `curl -fsS https://api.thefox.app/health && curl -fsSI https://admin.thefox.app` | `ทำ task Route cold start ต่อ: recreate/restart เฉพาะ thefox web/api แล้ววัด first response และ rollback path` |
 | DB connection safety | API startup, migrations, and Prisma client behavior stay stable during deploy. | Migrate fails, connection pool error, or app starts with schema mismatch. | Migration failures appear in deploy logs; runtime audit may be unavailable if DB is down. | Resolve failed migration carefully, or redeploy previous image without touching other VPS services. | `ssh root@187.77.158.181 "cd /opt/thefox/app && docker compose --project-name thefox-app --env-file /opt/thefox/.env.thefox.app -f docker-compose.kvm-shared.yml run --rm api npx prisma migrate status --schema apps/api/prisma/schema.prisma"` | `ทำ task DB connection safety ต่อ: ตรวจ migrate status, Prisma startup, connection pool behavior และ schema mismatch risk` |
 
+## Latest Production Baselines
+
+Recorded on July 14, 2026 after restarting only `thefox-app-web-1` and `thefox-app-api-1`.
+
+| Surface | Result |
+| --- | --- |
+| Public `auth/me` unauthenticated | `401`, TTFB `0.167s`, `27` bytes |
+| Admin page warm | `200`, TTFB `0.174s`, total `0.185s`, HTML `55482` bytes, `x-nextjs-cache: HIT` |
+| Admin page cold after restart | `200`, TTFB `0.357s`, total `0.367s`, HTML `55482` bytes |
+| API health cold after restart | `200`, TTFB `0.655s`, total `0.655s`, `52` bytes |
+| Authenticated `admin/me` after restart | `200`, `98.68ms`, `825` bytes |
+| Authenticated `admin/users` after restart | `200`, `23.69ms`, `578` bytes |
+| Authenticated `admin/audit-logs?page=1&pageSize=25` after restart | `200`, `49.24ms`, `12213` bytes |
+| Admin static assets | 1 CSS `44589` bytes; 8 JS chunks totaling about `655KB` downloaded |
+
 ## System Program Cards
 
 These cards are recurring program tracks. They are not one-off feature tasks; use them to choose the next concrete task and keep security, optimization, business logic, reliability, compliance, reporting, and QA moving together.
