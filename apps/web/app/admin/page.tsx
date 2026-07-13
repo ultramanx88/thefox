@@ -3,6 +3,7 @@ import {
   Building2,
   ChartNoAxesCombined,
   ClipboardCheck,
+  Database,
   Gauge,
   History,
   KeyRound,
@@ -102,6 +103,18 @@ const readinessTasks = [
     auditEvent: 'admin.audit_logs.list พร้อม metadata.page, metadata.pageSize และ metadata.filters',
     rollbackNote: 'revert เฉพาะ audit API/UI แล้ว redeploy; audit rows เดิมไม่ถูกลบ',
     verificationCommand: 'curl -i "https://api.thefox.app/v1/admin/audit-logs?page=1&pageSize=25&actorRole=superadmin"'
+  },
+  {
+    icon: Database,
+    track: 'Performance',
+    title: 'Database performance baseline & index plan',
+    status: 'Shipped',
+    body: 'เพิ่ม index สำหรับ admin/audit/tenant/product/order hot paths และใช้ EXPLAIN ANALYZE เป็น production gate ก่อนขยาย inventory ledger',
+    expectedState: 'Prisma schema มี index ตาม query path จริง, migrate status clean และ audit/admin list ใช้ bounded indexed reads',
+    errorState: 'migration fail, index ไม่ถูกสร้าง, query plan ยัง scan หนักโดยไม่จำเป็น หรือ write path ช้าลงผิดปกติ',
+    auditEvent: 'No DB audit expected for index creation; runtime endpoints ยัง emit admin.users.list, admin.tenants.list, admin.audit_logs.list',
+    rollbackNote: 'drop เฉพาะ indexes ใน migration นี้หรือ revert migration ก่อน deploy ถ้ายังไม่เข้า production; ห้ามลบ business data',
+    verificationCommand: 'ssh root@187.77.158.181 "cd /opt/thefox/app && docker compose --project-name thefox-app --env-file /opt/thefox/.env.thefox.app -f docker-compose.kvm-shared.yml exec -T postgres psql -U thefox -d thefox_app -c \'EXPLAIN ANALYZE SELECT * FROM \"AuditLog\" WHERE \"actorRole\" = \'\'superadmin\'\' ORDER BY \"createdAt\" DESC LIMIT 25;\'"'
   },
   {
     icon: ClipboardCheck,

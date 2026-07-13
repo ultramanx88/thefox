@@ -49,6 +49,7 @@ Every task card must include:
 | Admin API baseline | `auth/me`, `admin/users`, and `admin/audit-logs` stay within the current post-deploy latency budget. | TTFB/regression spike, `5xx`, or payload growth that slows admin console load. | `admin.workspace.access`, `admin.users.list`, `admin.audit_logs.list` | Revert API/query change and redeploy; no schema rollback unless migration caused the regression. | `curl -sS -o /dev/null -w 'ttfb=%{time_starttransfer} total=%{time_total}\n' https://api.thefox.app/v1/auth/me` |
 | Page budget | Admin/vendor pages remain responsive on mobile and avoid unnecessary heavy client bundles. | Static JS grows unexpectedly, page TTFB regresses, or mobile layout overlaps. | No DB audit expected; verification is route/static asset based. | Revert UI bundle-heavy change and redeploy web container. | `curl -sS -o /dev/null -w 'ttfb=%{time_starttransfer} total=%{time_total} bytes=%{size_download}\n' https://admin.thefox.app` |
 | Audit query plan | Audit log list uses bounded `page/pageSize` plus filters for `action`, `actorRole`, `resourceType`, `from`, and `to`. | Invalid `actorRole` returns `400`, page/pageSize are clamped, and empty result uses a clear empty state. | `admin.audit_logs.list` with `metadata.page`, `metadata.pageSize`, and `metadata.filters` | Revert audit API/UI query change and redeploy; keep existing audit rows intact. | `curl -i "https://api.thefox.app/v1/admin/audit-logs?page=1&pageSize=25&actorRole=superadmin"` |
+| Database performance baseline & index plan | Prisma schema has indexes for current admin, audit, tenant, product, and order hot paths, with production query plans checked before larger inventory ledger work. | Migration fails, expected index is missing, query plan still scans more than needed, or write paths regress. | No DB audit expected for index creation; runtime endpoints still emit `admin.users.list`, `admin.tenants.list`, and `admin.audit_logs.list`. | Drop only the indexes introduced by this task or revert the migration before production deploy; never remove business rows. | `ssh root@187.77.158.181 "cd /opt/thefox/app && docker compose --project-name thefox-app --env-file /opt/thefox/.env.thefox.app -f docker-compose.kvm-shared.yml exec -T postgres psql -U thefox -d thefox_app -c 'EXPLAIN ANALYZE SELECT * FROM \"AuditLog\" WHERE \"actorRole\" = ''superadmin'' ORDER BY \"createdAt\" DESC LIMIT 25;'"` |
 | Route cold start | Public workspace routes and API health return healthy status after container recreate. | Web/API container starts but first response fails or exceeds cold budget. | No DB audit expected for health/static route checks. | Restart only `thefox-app-web-1`/`thefox-app-api-1`; rollback last deploy if cold failure persists. | `curl -fsS https://api.thefox.app/health && curl -fsSI https://admin.thefox.app` |
 | DB connection safety | API startup, migrations, and Prisma client behavior stay stable during deploy. | Migrate fails, connection pool error, or app starts with schema mismatch. | Migration failures appear in deploy logs; runtime audit may be unavailable if DB is down. | Resolve failed migration carefully, or redeploy previous image without touching other VPS services. | `ssh root@187.77.158.181 "cd /opt/thefox/app && docker compose --project-name thefox-app --env-file /opt/thefox/.env.thefox.app -f docker-compose.kvm-shared.yml run --rm api npx prisma migrate status --schema apps/api/prisma/schema.prisma"` |
 
@@ -66,8 +67,8 @@ Before implementing tenant/branch mutations, define:
 
 ## Next Tasks
 
-1. Build tenant and branch admin UX with empty/loading/error states.
-2. Add admin tenant and branch APIs after mutation protection is decided.
-3. Add audit filters and pagination.
-4. Run route/auth/CORS pentest checklist against production.
+1. Ship database performance baseline and index plan.
+2. Build tenant and branch admin UX with empty/loading/error states.
+3. Add vendor inventory data model for units, SKU, stock ledger, and branch transfer.
+4. Run route/auth/CORS pentest checklist against production after every deploy milestone.
 5. Record performance baselines in this document after every deploy milestone.
