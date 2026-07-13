@@ -137,6 +137,100 @@ const readinessTasks = [
   }
 ];
 
+const systemPrograms = [
+  {
+    icon: ShieldAlert,
+    track: 'Security',
+    title: 'Security pentest program',
+    status: 'Planned',
+    body: 'รวมงาน route isolation, role bypass, ownership bypass, CSRF, rate limit, cookie/CORS/session และ secrets exposure',
+    expectedState: 'ทุก protected surface มี pentest checklist, production command, audit expectation และผลทดสอบล่าสุด',
+    errorState: 'พบ route bypass, tenant data leak, forged session ผ่าน, origin แปลกผ่าน CORS หรือ mutation สำคัญไม่มี guard',
+    auditEvent: 'admin.workspace.access.*, vendor.workspace.access.*, admin.*.forbidden, admin.*.csrf_rejected, admin.*.rate_limited',
+    rollbackNote: 'หยุด workflow ที่เสี่ยง, revert เฉพาะ guard/CORS/session change แล้ว redeploy เฉพาะ thefox web/api',
+    verificationCommand: "rg -n 'requireRole|requireMutationProtection|cors|cookieOptions|writeAuditLog' apps/api/src/server.ts",
+    prompt: 'ทำ program Security pentest ต่อ: แตก task route isolation, role bypass, tenant ownership bypass, CSRF, rate limit, cookie/CORS/session, secrets exposure พร้อม verify production'
+  },
+  {
+    icon: Gauge,
+    track: 'Performance',
+    title: 'Performance optimization program',
+    status: 'Planned',
+    body: 'คุม API latency, page/bundle budget, DB query plan, connection pool, cache strategy, cold start และ payload size',
+    expectedState: 'มี baseline p50/p95, budget ต่อ endpoint/page, query plan สำคัญ และ regression gate ก่อน/หลัง deploy',
+    errorState: 'TTFB spike, bundle โตผิดปกติ, query scan หนัก, connection pool error, cold start fail หรือ payload โตเกินจำเป็น',
+    auditEvent: 'No DB audit expected for measurement; runtime endpoints ยัง emit admin.users.list, admin.tenants.list, admin.audit_logs.list',
+    rollbackNote: 'revert change ที่ทำให้ latency/bundle/query แย่ แล้ว redeploy; schema rollback เฉพาะ migration ที่เป็นต้นเหตุ',
+    verificationCommand: "curl -sS -o /dev/null -w 'ttfb=%{time_starttransfer} total=%{time_total} bytes=%{size_download}\\n' https://admin.thefox.app",
+    prompt: 'ทำ program Performance optimization ต่อ: วัด API/page/DB/cache/cold start/payload baseline, เพิ่ม budget gate และอัปเดตการ์ดตามผล production'
+  },
+  {
+    icon: Workflow,
+    track: 'Business',
+    title: 'Business logic integrity program',
+    status: 'Planned',
+    body: 'ล็อก tenant/branch lifecycle, vendor permissions, unit conversion, stock ledger, branch transfer, order reservation และ settlement rules',
+    expectedState: 'ทุก business transition มี state machine, permission rule, transaction boundary, audit event และ rollback note',
+    errorState: 'stock หลุด ledger, order ไม่ reserve stock, owner/member scope ผิด, transfer variance หาย หรือ settlement คำนวณย้อนรอยไม่ได้',
+    auditEvent: 'admin.tenant_status.update, admin.branch_status.update, future stock.*, order.*, settlement.*',
+    rollbackNote: 'ปิด mutation path ที่ผิด, เก็บ audit/ledger evidence, ใช้ compensating adjustment แทนการลบประวัติ',
+    verificationCommand: "rg -n 'TenantStatus|BranchStatus|StockLedger|BranchStockBalance|settlement|order' apps/api/prisma/schema.prisma docs/product-system",
+    prompt: 'ทำ program Business logic integrity ต่อ: วาง state/permission/transaction/audit สำหรับ tenant, branch, inventory, transfer, order และ settlement'
+  },
+  {
+    icon: Truck,
+    track: 'Operations',
+    title: 'Operations reliability program',
+    status: 'Planned',
+    body: 'คุม VPS service isolation, deploy checklist, rollback playbook, health checks, log inspection, migration safety และ incident notes',
+    expectedState: 'มี production runbook ที่ระบุ service/port, health command, rollback command, migration safety และห้ามกระทบ stack อื่น',
+    errorState: 'deploy แตะ service ผิดตัว, rollback ไม่ชัด, health check ไม่พอ, migration fail แล้วไม่มี recovery path',
+    auditEvent: 'No app audit expected for deploy operations; production evidence comes from deploy logs, docker ps, health checks, and migration status',
+    rollbackNote: 'rollback เฉพาะ thefox-app web/api image หรือ migration ที่เกี่ยวข้อง; ห้าม restart/drop service อื่นบน VPS',
+    verificationCommand: "ssh root@187.77.158.181 \"docker ps --format 'table {{.Names}}\\t{{.Status}}\\t{{.Ports}}'\"",
+    prompt: 'ทำ program Operations reliability ต่อ: สร้าง/ตรวจ runbook deploy, rollback, health, logs, migration safety และ VPS service isolation'
+  },
+  {
+    icon: History,
+    track: 'Compliance',
+    title: 'Compliance audit program',
+    status: 'Planned',
+    body: 'ทำ audit coverage สำหรับ critical actions, structured metadata, permission history, retention/archive และ export traceability',
+    expectedState: 'critical action ทุกตัวมี audit event ที่ค้นหาได้ พร้อม actor/resource/route/method/metadata และ retention direction',
+    errorState: 'action สำคัญไม่มี audit, metadata ไม่มีโครง, permission change ตามย้อนยาก หรือ audit table โตโดยไม่มี retention plan',
+    auditEvent: 'auth.*, admin.*, vendor.*, driver.*, future stock.*, order.*, settlement.*',
+    rollbackNote: 'ไม่ลบ audit rows; rollback เฉพาะ code ที่ emit ผิดและเพิ่ม compensating audit note ถ้าจำเป็น',
+    verificationCommand: 'curl -i "https://api.thefox.app/v1/admin/audit-logs?page=1&pageSize=25"',
+    prompt: 'ทำ program Compliance audit ต่อ: ตรวจ audit coverage, structured metadata, permission history, retention/archive และ export traceability'
+  },
+  {
+    icon: Database,
+    track: 'Data',
+    title: 'Data reporting accuracy program',
+    status: 'Planned',
+    body: 'คุม stock report, sales report, daily summaries, cost/profit basis, tenant health และ slow report prevention',
+    expectedState: 'report สำคัญมี source of truth, reconciliation rule, indexed query/read model และ production verification command',
+    errorState: 'stock/sales/profit ไม่ตรง ledger, report query หนัก production, summary rebuild ไม่ได้ หรือ tenant health ใช้ข้อมูลไม่ครบ',
+    auditEvent: 'No audit expected for read-only reports; adjustments and rebuild actions must emit future report.* or stock.* audit events',
+    rollbackNote: 'revert report query/read model change; อย่าแก้ตัวเลขจริงโดยตรง ให้ rebuild summary จาก source of truth',
+    verificationCommand: "rg -n 'StockLedger|BranchStockBalance|daily|summary|report|profit|cost' docs/product-system apps/api/prisma/schema.prisma",
+    prompt: 'ทำ program Data reporting accuracy ต่อ: วาง stock/sales/profit reports, daily summaries, read models, reconciliation และ slow report prevention'
+  },
+  {
+    icon: ClipboardCheck,
+    track: 'QA',
+    title: 'QA regression program',
+    status: 'Planned',
+    body: 'รวม auth/role tests, API contracts, mutation guard tests, migration validation, production smoke และ visual responsive checks',
+    expectedState: 'ทุก deploy มี local verification, production smoke, task card status update และ regression checklist ที่รันซ้ำได้',
+    errorState: 'ไม่มี test สำหรับ guard สำคัญ, deploy ผ่านแต่ smoke fail, card status ไม่อัปเดต หรือ production behavior ไม่ตรง docs',
+    auditEvent: 'No DB audit expected for test runs; failed protected requests should still emit their route-specific audit events',
+    rollbackNote: 'ถ้า regression production ให้ rollback last deploy เฉพาะ thefox-app แล้วเปิด task card พร้อมหลักฐาน command/output',
+    verificationCommand: 'npm run typecheck',
+    prompt: 'ทำ program QA regression ต่อ: วาง auth/role/API/mutation/migration/production smoke/visual responsive checklist และ update card status ทุก task'
+  }
+];
+
 export default function AdminPage() {
   return (
     <RoleGuard allowedRoles={['admin', 'superadmin']} workspaceName="Admin">
@@ -197,6 +291,64 @@ export default function AdminPage() {
           </div>
           <div className="fox-task-grid">
             {readinessTasks.map(({ icon: Icon, track, title, status, body, expectedState, errorState, auditEvent, rollbackNote, verificationCommand, prompt }) => (
+              <article key={title} className="fox-task-card">
+                <div>
+                  <span>
+                    <Icon size={18} />
+                  </span>
+                  <small>{track}</small>
+                </div>
+                <h3>{title}</h3>
+                <p>{body}</p>
+                <dl>
+                  <div>
+                    <dt>Expected</dt>
+                    <dd>{expectedState}</dd>
+                  </div>
+                  <div>
+                    <dt>Error</dt>
+                    <dd>{errorState}</dd>
+                  </div>
+                  <div>
+                    <dt>Audit</dt>
+                    <dd>{auditEvent}</dd>
+                  </div>
+                  <div>
+                    <dt>Rollback</dt>
+                    <dd>{rollbackNote}</dd>
+                  </div>
+                  <div>
+                    <dt>Verify</dt>
+                    <dd>
+                      <code>{verificationCommand}</code>
+                    </dd>
+                  </div>
+                  <div className="fox-task-card__prompt">
+                    <dt>Prompt</dt>
+                    <dd>
+                      <code>{prompt}</code>
+                    </dd>
+                  </div>
+                </dl>
+                <strong>{status}</strong>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="fox-roadmap-panel fox-task-board" aria-label="System track program board">
+          <div className="fox-roadmap-panel__head">
+            <div>
+              <h2>System Track Board: Optimize, Pentest, Business</h2>
+              <p>ชุดนี้เป็น program board สำหรับวนงานระบบซ้ำๆ ให้ The Fox โตแบบแข็งแรง: security, performance, business integrity, operations, compliance, data และ QA</p>
+            </div>
+            <span>
+              <ClipboardCheck size={16} />
+              Program loop
+            </span>
+          </div>
+          <div className="fox-task-grid">
+            {systemPrograms.map(({ icon: Icon, track, title, status, body, expectedState, errorState, auditEvent, rollbackNote, verificationCommand, prompt }) => (
               <article key={title} className="fox-task-card">
                 <div>
                   <span>
