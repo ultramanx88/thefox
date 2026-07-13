@@ -48,7 +48,7 @@ const readinessTasks = [
     icon: Workflow,
     track: 'UX + Business',
     title: 'Tenant & Branch approval flow',
-    status: 'Shipped',
+    status: 'Verified',
     body: 'สร้าง tenant, ผูก owner/member, อนุมัติ branch, ระบุ operating status และบันทึก audit ทุก transition',
     expectedState: 'Admin สร้าง tenant/branch เป็น pending แล้วเปลี่ยนสถานะได้ตาม role',
     errorState: 'ข้อมูลไม่ครบตอบ 400, target ไม่พบตอบ 404, lower role ถูก 403',
