@@ -1,5 +1,6 @@
 import {
   Boxes,
+  BrainCircuit,
   Building2,
   ChartNoAxesCombined,
   ClipboardCheck,
@@ -176,6 +177,19 @@ const systemPrograms = [
     rollbackNote: 'ปิด mutation path ที่ผิด, เก็บ audit/ledger evidence, ใช้ compensating adjustment แทนการลบประวัติ',
     verificationCommand: "rg -n 'TenantStatus|BranchStatus|StockLedger|BranchStockBalance|settlement|order' apps/api/prisma/schema.prisma docs/product-system",
     prompt: 'ทำ program Business logic integrity ต่อ: วาง state/permission/transaction/audit สำหรับ tenant, branch, inventory, transfer, order และ settlement'
+  },
+  {
+    icon: BrainCircuit,
+    track: 'Algorithm',
+    title: 'Algorithm engine program',
+    status: 'After business',
+    body: 'วางสมองระบบสำหรับ inventory truth, delivery assignment, tenant health score, ranking, risk scoring, margin guard และ recommendation rules',
+    expectedState: 'algorithm ทุกตัวมี input/source of truth, deterministic rule, explainable score, audit evidence, priority และ fallback path',
+    errorState: 'ranking/assignment ทำให้ stock ผิด, delivery cost เพี้ยน, margin หลุด guard, tenant score อธิบายไม่ได้ หรือ recommendation ข้าม permission',
+    auditEvent: 'future algorithm.inventory_truth.*, algorithm.delivery_assignment.*, algorithm.tenant_health.*, algorithm.ranking.*, algorithm.risk.*',
+    rollbackNote: 'ปิด algorithm flag หรือ revert rule version; ใช้ deterministic fallback และเก็บ score/audit evidence เดิมไว้ตรวจย้อนหลัง',
+    verificationCommand: "rg -n 'algorithm|ranking|score|assignment|reserved|margin|recommendation' docs/product-system apps/api/prisma/schema.prisma apps/api/src",
+    prompt: 'ทำ program Algorithm engine ต่อ: วาง inventory truth, delivery assignment, tenant health score, ranking, risk scoring, margin guard และ recommendation rules พร้อม audit/rollback/verification'
   },
   {
     icon: Truck,
