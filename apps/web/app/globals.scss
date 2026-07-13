@@ -2161,6 +2161,45 @@ img {
   line-height: 1.5;
 }
 
+.fox-task-card dl {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.fox-task-card dl > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.fox-task-card dt {
+  color: var(--fox-text);
+  font-size: 0.7rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.fox-task-card dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--fox-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.fox-task-card code {
+  display: block;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--fox-line);
+  border-radius: var(--fox-radius-sm);
+  padding: 7px;
+  background: var(--fox-surface);
+  color: var(--fox-text);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
 .fox-task-card strong {
   display: inline-flex;
   width: max-content;

@@ -46,36 +46,61 @@ const readinessTasks = [
     icon: Workflow,
     track: 'UX + Business',
     title: 'Tenant & Branch approval flow',
-    status: 'Build next',
-    body: 'สร้าง tenant, ผูก owner/member, อนุมัติ branch, ระบุ operating status และบันทึก audit ทุก transition'
+    status: 'Shipped',
+    body: 'สร้าง tenant, ผูก owner/member, อนุมัติ branch, ระบุ operating status และบันทึก audit ทุก transition',
+    expectedState: 'Admin สร้าง tenant/branch เป็น pending แล้วเปลี่ยนสถานะได้ตาม role',
+    errorState: 'ข้อมูลไม่ครบตอบ 400, target ไม่พบตอบ 404, lower role ถูก 403',
+    auditEvent: 'admin.tenant.create, admin.tenant_status.update, admin.branch.create, admin.branch_status.update',
+    rollbackNote: 'เปลี่ยน status กลับ pending/paused หรือปิด workflow จาก admin console; DB migration ไม่ต้อง rollback',
+    verificationCommand: 'curl -i https://api.thefox.app/v1/admin/tenants'
   },
   {
     icon: ShieldAlert,
     track: 'Pentest',
     title: 'Workspace route and auth test',
-    status: 'Gate before mutations',
-    body: 'ทดสอบ admin/vendor/driver subdomain, cookie domain, CORS, role bypass, unauthenticated access และ audit trail'
+    status: 'Verified',
+    body: 'ทดสอบ admin/vendor/driver subdomain, cookie domain, CORS, role bypass, unauthenticated access และ audit trail',
+    expectedState: 'Subdomain rewrite ถูกต้อง, unauth ได้ 401, lower role ได้ 403',
+    errorState: 'Origin แปลกไม่มี CORS allow-origin, forged cookie ไม่ผ่าน session verify',
+    auditEvent: 'admin.workspace.access.unauthenticated, vendor.workspace.access.forbidden, driver.workspace.access.forbidden',
+    rollbackNote: 'ย้อน proxy/CORS config แล้ว redeploy เฉพาะ thefox-app web/api',
+    verificationCommand: 'curl -i https://api.thefox.app/v1/admin/me'
   },
   {
     icon: Gauge,
     track: 'Performance',
     title: 'Admin API and page budget',
-    status: 'Baseline now',
-    body: 'วัด latency ของ auth/me, admin/users, audit logs, cache behavior, bundle size และ cold response หลัง deploy'
+    status: 'Baseline captured',
+    body: 'วัด latency ของ auth/me, admin/users, audit logs, cache behavior, bundle size และ cold response หลัง deploy',
+    expectedState: 'Admin page 200, static chunk cache HIT, auth/admin APIs อยู่ใน latency budget',
+    errorState: 'API 5xx, cold response ช้า, bundle โตผิดปกติ หรือ static cache ไม่ HIT',
+    auditEvent: 'admin.audit_logs.list, admin.users.list, admin.workspace.access',
+    rollbackNote: 'ย้อน commit UI/API ล่าสุดแล้ว deploy; ไม่แตะ database ถ้าไม่มี migration',
+    verificationCommand: "curl -sS -o /dev/null -w 'ttfb=%{time_starttransfer} total=%{time_total}\\n' https://admin.thefox.app"
   },
   {
     icon: KeyRound,
     track: 'Hardening',
     title: 'Mutation protection',
-    status: 'Before create/edit',
-    body: 'เพิ่ม CSRF/signed mutation token, rate limit, superadmin-only destructive action และ structured audit metadata'
+    status: 'Shipped',
+    body: 'เพิ่ม CSRF/signed mutation token, rate limit, superadmin-only destructive action และ structured audit metadata',
+    expectedState: 'POST/PATCH ต้องมี signed mutation token และ destructive action ต้อง superadmin',
+    errorState: 'Missing/expired token ได้ 403, rate limit ได้ 429, destructive lower role ได้ 403',
+    auditEvent: 'admin.user_role.update.csrf_rejected, admin.user_role.update.rate_limited, admin.tenant_status.update.destructive_forbidden',
+    rollbackNote: 'ปิด enforcement โดย revert mutation guard commit แล้ว redeploy; audit rows เก็บไว้เป็นหลักฐาน',
+    verificationCommand: "curl -i -X OPTIONS https://api.thefox.app/v1/admin/users/example/role -H 'Origin: https://admin.thefox.app' -H 'Access-Control-Request-Method: PATCH' -H 'Access-Control-Request-Headers: content-type,x-thefox-mutation-token'"
   },
   {
     icon: ClipboardCheck,
     track: 'QA',
     title: 'Operational acceptance checklist',
-    status: 'Pair with UX',
-    body: 'ทุก task card ต้องมี expected state, error state, audit event, rollback note และ production verification command'
+    status: 'Active standard',
+    body: 'ทุก task card ต้องมี expected state, error state, audit event, rollback note และ production verification command',
+    expectedState: 'ทุก task card มี acceptance fields ครบและสอดคล้องกับ production behavior',
+    errorState: 'card ที่ขาด field ใด field หนึ่งห้ามถือว่า ready for production',
+    auditEvent: 'Documentation change maps to the implementation audit events named in each card',
+    rollbackNote: 'ย้อนเฉพาะ doc/UI card changes ได้โดยไม่กระทบ runtime',
+    verificationCommand: "rg -n 'expectedState|errorState|auditEvent|rollbackNote|verificationCommand' apps/web/app/admin/page.tsx"
   }
 ];
 
@@ -138,7 +163,7 @@ export default function AdminPage() {
             </span>
           </div>
           <div className="fox-task-grid">
-            {readinessTasks.map(({ icon: Icon, track, title, status, body }) => (
+            {readinessTasks.map(({ icon: Icon, track, title, status, body, expectedState, errorState, auditEvent, rollbackNote, verificationCommand }) => (
               <article key={title} className="fox-task-card">
                 <div>
                   <span>
@@ -148,6 +173,30 @@ export default function AdminPage() {
                 </div>
                 <h3>{title}</h3>
                 <p>{body}</p>
+                <dl>
+                  <div>
+                    <dt>Expected</dt>
+                    <dd>{expectedState}</dd>
+                  </div>
+                  <div>
+                    <dt>Error</dt>
+                    <dd>{errorState}</dd>
+                  </div>
+                  <div>
+                    <dt>Audit</dt>
+                    <dd>{auditEvent}</dd>
+                  </div>
+                  <div>
+                    <dt>Rollback</dt>
+                    <dd>{rollbackNote}</dd>
+                  </div>
+                  <div>
+                    <dt>Verify</dt>
+                    <dd>
+                      <code>{verificationCommand}</code>
+                    </dd>
+                  </div>
+                </dl>
                 <strong>{status}</strong>
               </article>
             ))}
