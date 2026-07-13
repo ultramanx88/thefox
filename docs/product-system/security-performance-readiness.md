@@ -88,6 +88,18 @@ Recorded on July 14, 2026 after restarting only `thefox-app-web-1` and `thefox-a
 | Authenticated `admin/audit-logs?page=1&pageSize=25` after restart | `200`, `49.24ms`, `12213` bytes |
 | Admin static assets | 1 CSS `44589` bytes; 8 JS chunks totaling about `655KB` downloaded |
 
+## Latest Audit Filter Verification
+
+Recorded on July 14, 2026. Audit log filters and pagination are now verified as a bounded admin-only workflow.
+
+| Control | Expected production result |
+| --- | --- |
+| Admin-only guard | `/v1/admin/audit-logs` requires `admin` or `superadmin`; unauthenticated requests return `401`. |
+| Filter metadata | Successful reads write `admin.audit_logs.list` with `metadata.page`, `metadata.pageSize`, and `metadata.filters`. |
+| Invalid role filter | Bad `actorRole` returns `400 INVALID_ACTOR_ROLE` and writes `admin.audit_logs.list.invalid_filter`. |
+| Pagination bounds | `pageSize` is clamped to `5..100`; over-large requested pages clamp to the last available page and write `admin.audit_logs.list.page_clamped`. |
+| Admin UX | Filters support action, actor role, resource, date range, page size, empty state, previous/next, first/last, and visible result range. |
+
 ## System Program Cards
 
 These cards are recurring program tracks. They are not one-off feature tasks; use them to choose the next concrete task and keep security, optimization, business logic, reliability, compliance, reporting, and QA moving together.

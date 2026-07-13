@@ -100,7 +100,7 @@ const readinessTasks = [
     icon: History,
     track: 'Compliance',
     title: 'Audit logs filters & pagination',
-    status: 'Shipped',
+    status: 'Verified',
     body: 'เพิ่ม page/pageSize/filter สำหรับ action, actorRole, resourceType และช่วงวันที่ เพื่อไม่ให้ audit query โตแบบ unbounded',
     expectedState: 'Admin filter audit logs ได้และเปลี่ยนหน้าได้โดยไม่ reload ทั้ง console',
     errorState: 'actorRole invalid ได้ 400, page/pageSize ถูก clamp, empty result แสดง empty state',

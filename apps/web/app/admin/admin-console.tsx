@@ -7,7 +7,9 @@ import {
   AlertTriangle,
   Building2,
   ChevronLeft,
+  ChevronsLeft,
   ChevronRight,
+  ChevronsRight,
   CheckCircle2,
   DatabaseZap,
   History,
@@ -321,6 +323,15 @@ export function AdminConsole() {
   }, [tenants, users]);
 
   const selectedTenant = useMemo(() => tenants.find((tenant) => tenant.id === selectedTenantId) ?? tenants[0], [selectedTenantId, tenants]);
+  const auditRange = useMemo(() => {
+    if (!auditPagination.total) {
+      return '0 events';
+    }
+
+    const start = (auditPagination.page - 1) * auditPagination.pageSize + 1;
+    const end = Math.min(auditPagination.page * auditPagination.pageSize, auditPagination.total);
+    return `${start}-${end} of ${auditPagination.total}`;
+  }, [auditPagination]);
 
   const memberCandidates = useMemo(
     () => users.filter((user) => !selectedTenant?.memberships.some((membership) => membership.user.id === user.id)),
@@ -736,6 +747,14 @@ export function AdminConsole() {
           <div className="fox-audit-pagination" aria-label="Audit log pagination">
             <button
               type="button"
+              onClick={() => void loadAuditLogs(1)}
+              disabled={auditState === 'loading' || auditPagination.page <= 1}
+            >
+              <ChevronsLeft size={16} />
+              First
+            </button>
+            <button
+              type="button"
               onClick={() => void loadAuditLogs(Math.max(auditPagination.page - 1, 1))}
               disabled={auditState === 'loading' || auditPagination.page <= 1}
             >
@@ -743,7 +762,7 @@ export function AdminConsole() {
               Previous
             </button>
             <span>
-              Page {auditPagination.page} / {auditPagination.totalPages}
+              Page {auditPagination.page} / {auditPagination.totalPages} · {auditRange}
             </span>
             <button
               type="button"
@@ -752,6 +771,14 @@ export function AdminConsole() {
             >
               Next
               <ChevronRight size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={() => void loadAuditLogs(auditPagination.totalPages)}
+              disabled={auditState === 'loading' || auditPagination.page >= auditPagination.totalPages}
+            >
+              Last
+              <ChevronsRight size={16} />
             </button>
           </div>
         </aside>

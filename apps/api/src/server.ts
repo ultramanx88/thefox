@@ -1062,7 +1062,7 @@ app.get('/v1/admin/me', async (request, reply) => {
 
 app.get('/v1/admin/audit-logs', async (request, reply) => {
   const query = request.query as AdminAuditLogsQuery;
-  const page = parseBoundedInt(query.page, 1, 1, 10_000);
+  const requestedPage = parseBoundedInt(query.page, 1, 1, 10_000);
   const pageSize = parseBoundedInt(query.pageSize, 25, 5, 100);
   const action = normalizeOptionalQuery(query.action);
   const resourceType = normalizeOptionalQuery(query.resourceType);
@@ -1070,20 +1070,21 @@ app.get('/v1/admin/audit-logs', async (request, reply) => {
   const actorRole = actorRoleText ? RoleSchema.safeParse(actorRoleText) : null;
   const from = parseOptionalDate(query.from);
   const to = parseOptionalDate(query.to, 'end');
+  const filters = {
+    action: action || '',
+    actorRole: actorRole?.success ? actorRole.data : '',
+    resourceType: resourceType || '',
+    from: from?.toISOString() ?? '',
+    to: to?.toISOString() ?? ''
+  };
 
   const user = await requireRole(request, reply, ['admin', 'superadmin'], {
     action: 'admin.audit_logs.list',
     resourceType: 'audit_log',
     metadata: {
-      page,
+      page: requestedPage,
       pageSize,
-      filters: {
-        action: action || '',
-        actorRole: actorRole?.success ? actorRole.data : '',
-        resourceType: resourceType || '',
-        from: from?.toISOString() ?? '',
-        to: to?.toISOString() ?? ''
-      }
+      filters
     }
   });
 
@@ -1092,6 +1093,24 @@ app.get('/v1/admin/audit-logs', async (request, reply) => {
   }
 
   if (actorRoleText && !actorRole?.success) {
+    await writeAuditLog(request, {
+      actor: user,
+      action: 'admin.audit_logs.list.invalid_filter',
+      resourceType: 'audit_log',
+      metadata: {
+        page: requestedPage,
+        pageSize,
+        filters: {
+          ...filters,
+          actorRole: actorRoleText
+        },
+        validation: {
+          field: 'actorRole',
+          allowedValues: ['customer', 'vendor', 'driver', 'admin', 'superadmin']
+        }
+      }
+    });
+
     return reply.code(400).send({
       error: 'INVALID_ACTOR_ROLE',
       message: 'actorRole must be customer, vendor, driver, admin, or superadmin'
@@ -1125,39 +1144,56 @@ app.get('/v1/admin/audit-logs', async (request, reply) => {
     };
   }
 
-  const [logs, total] = await Promise.all([
-    prisma.auditLog.findMany({
-      where,
-      orderBy: {
-        createdAt: 'desc'
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      select: {
-        id: true,
-        actorUserId: true,
-        actorRole: true,
-        action: true,
-        resourceType: true,
-        resourceId: true,
-        route: true,
-        method: true,
-        ipAddress: true,
-        userAgent: true,
-        metadata: true,
-        createdAt: true,
-        actorUser: {
-          select: {
-            email: true,
-            displayName: true
-          }
+  const total = await prisma.auditLog.count({
+    where
+  });
+  const totalPages = Math.max(Math.ceil(total / pageSize), 1);
+  const page = Math.min(requestedPage, totalPages);
+
+  const logs = await prisma.auditLog.findMany({
+    where,
+    orderBy: {
+      createdAt: 'desc'
+    },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+    select: {
+      id: true,
+      actorUserId: true,
+      actorRole: true,
+      action: true,
+      resourceType: true,
+      resourceId: true,
+      route: true,
+      method: true,
+      ipAddress: true,
+      userAgent: true,
+      metadata: true,
+      createdAt: true,
+      actorUser: {
+        select: {
+          email: true,
+          displayName: true
         }
       }
-    }),
-    prisma.auditLog.count({
-      where
-    })
-  ]);
+    }
+  });
+
+  if (page !== requestedPage) {
+    await writeAuditLog(request, {
+      actor: user,
+      action: 'admin.audit_logs.list.page_clamped',
+      resourceType: 'audit_log',
+      metadata: {
+        requestedPage,
+        page,
+        pageSize,
+        total,
+        totalPages,
+        filters
+      }
+    });
+  }
 
   return {
     data: logs,
@@ -1165,7 +1201,7 @@ app.get('/v1/admin/audit-logs', async (request, reply) => {
       page,
       pageSize,
       total,
-      totalPages: Math.max(Math.ceil(total / pageSize), 1)
+      totalPages
     }
   };
 });
