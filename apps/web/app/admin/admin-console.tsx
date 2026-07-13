@@ -6,6 +6,8 @@ import {
   Activity,
   AlertTriangle,
   Building2,
+  ChevronLeft,
+  ChevronRight,
   CheckCircle2,
   DatabaseZap,
   History,
@@ -68,6 +70,18 @@ type AuditLog = {
   } | null;
 };
 
+type AuditPagination = {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+};
+
+type AuditLogsPayload = {
+  data: AuditLog[];
+  pagination: AuditPagination;
+};
+
 type AdminMe = {
   user: {
     id: string;
@@ -125,6 +139,8 @@ const roles: Role[] = ['customer', 'vendor', 'driver', 'admin', 'superadmin'];
 const tenantStatuses: TenantStatus[] = ['pending', 'active', 'suspended'];
 const branchStatuses: BranchStatus[] = ['pending', 'active', 'paused', 'closed'];
 const membershipRoles = ['owner', 'admin', 'member'];
+const auditPageSizeOptions = [10, 25, 50, 100];
+const auditResourceTypes = ['user', 'tenant', 'branch', 'audit_log', 'auth_session', 'admin_workspace', 'vendor_workspace', 'driver_workspace'];
 
 const roleLabels: Record<Role, string> = {
   customer: 'Customer',
@@ -182,12 +198,51 @@ async function fetchJson<T>(path: string, init?: RequestInit, mutationToken?: st
   return response.json() as Promise<T>;
 }
 
+function auditLogsPath(filters: { action: string; actorRole: Role | 'all'; resourceType: string; from: string; to: string; pageSize: number }, page: number) {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    pageSize: filters.pageSize.toString()
+  });
+
+  if (filters.action.trim()) {
+    params.set('action', filters.action.trim());
+  }
+
+  if (filters.actorRole !== 'all') {
+    params.set('actorRole', filters.actorRole);
+  }
+
+  if (filters.resourceType.trim()) {
+    params.set('resourceType', filters.resourceType.trim());
+  }
+
+  if (filters.from) {
+    params.set('from', filters.from);
+  }
+
+  if (filters.to) {
+    params.set('to', filters.to);
+  }
+
+  return `/v1/admin/audit-logs?${params.toString()}`;
+}
+
 export function AdminConsole() {
   const [admin, setAdmin] = useState<AdminMe | null>(null);
   const [mutationToken, setMutationToken] = useState('');
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [tenants, setTenants] = useState<AdminTenant[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [auditPagination, setAuditPagination] = useState<AuditPagination>({ page: 1, pageSize: 25, total: 0, totalPages: 1 });
+  const [auditFilters, setAuditFilters] = useState<{ action: string; actorRole: Role | 'all'; resourceType: string; from: string; to: string; pageSize: number }>({
+    action: '',
+    actorRole: 'all',
+    resourceType: '',
+    from: '',
+    to: '',
+    pageSize: 25
+  });
+  const [auditState, setAuditState] = useState<LoadState>('loading');
   const [state, setState] = useState<LoadState>('loading');
   const [query, setQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<Role | 'all'>('all');
@@ -209,7 +264,7 @@ export function AdminConsole() {
         fetchJson<AdminMe>('/v1/admin/me'),
         fetchJson<{ data: AdminUser[] }>('/v1/admin/users'),
         fetchJson<{ data: AdminTenant[] }>('/v1/admin/tenants'),
-        fetchJson<{ data: AuditLog[] }>('/v1/admin/audit-logs')
+        fetchJson<AuditLogsPayload>(auditLogsPath(auditFilters, 1))
       ]);
 
       setAdmin(adminPayload);
@@ -220,9 +275,12 @@ export function AdminConsole() {
       setBranchForm((current) => ({ ...current, tenantId: current.tenantId || tenantsPayload.data[0]?.id || '' }));
       setMembershipForm((current) => ({ ...current, tenantId: current.tenantId || tenantsPayload.data[0]?.id || '' }));
       setAuditLogs(auditPayload.data);
+      setAuditPagination(auditPayload.pagination);
+      setAuditState('ready');
       setState('ready');
     } catch (error) {
       setState('error');
+      setAuditState('error');
       setNotice({
         tone: 'error',
         message: error instanceof Error ? error.message : 'ไม่สามารถโหลดข้อมูล admin ได้'
@@ -272,11 +330,48 @@ export function AdminConsole() {
   const refreshTenantsAndAudit = async () => {
     const [tenantsPayload, auditPayload] = await Promise.all([
       fetchJson<{ data: AdminTenant[] }>('/v1/admin/tenants'),
-      fetchJson<{ data: AuditLog[] }>('/v1/admin/audit-logs')
+      fetchJson<AuditLogsPayload>(auditLogsPath(auditFilters, 1))
     ]);
 
     setTenants(tenantsPayload.data);
     setAuditLogs(auditPayload.data);
+    setAuditPagination(auditPayload.pagination);
+  };
+
+  const loadAuditLogs = async (page = auditPagination.page, filters = auditFilters) => {
+    setAuditState('loading');
+    setNotice(null);
+
+    try {
+      const auditPayload = await fetchJson<AuditLogsPayload>(auditLogsPath(filters, page));
+      setAuditLogs(auditPayload.data);
+      setAuditPagination(auditPayload.pagination);
+      setAuditState('ready');
+    } catch (error) {
+      setAuditState('error');
+      setNotice({
+        tone: 'error',
+        message: error instanceof Error ? error.message : 'โหลด audit logs ไม่สำเร็จ'
+      });
+    }
+  };
+
+  const applyAuditFilters = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await loadAuditLogs(1, auditFilters);
+  };
+
+  const resetAuditFilters = async () => {
+    const nextFilters = {
+      action: '',
+      actorRole: 'all' as const,
+      resourceType: '',
+      from: '',
+      to: '',
+      pageSize: 25
+    };
+    setAuditFilters(nextFilters);
+    await loadAuditLogs(1, nextFilters);
   };
 
   const updateRole = async (user: AdminUser, nextRole: Role) => {
@@ -302,8 +397,9 @@ export function AdminConsole() {
         tone: 'success',
         message: `อัปเดต ${user.displayName ?? user.email ?? user.id} เป็น ${roleLabels[nextRole]} แล้ว`
       });
-      const auditPayload = await fetchJson<{ data: AuditLog[] }>('/v1/admin/audit-logs');
+      const auditPayload = await fetchJson<AuditLogsPayload>(auditLogsPath(auditFilters, 1));
       setAuditLogs(auditPayload.data);
+      setAuditPagination(auditPayload.pagination);
     } catch (error) {
       setNotice({
         tone: 'error',
@@ -541,15 +637,82 @@ export function AdminConsole() {
           <div className="fox-admin-panel__head">
             <div>
               <h2>Audit Logs</h2>
-              <p>เหตุการณ์ล่าสุดจาก auth และ admin API</p>
+              <p>ค้นหาเหตุการณ์จาก auth, role guard, mutation protection และ tenant/branch transitions</p>
             </div>
-            <History size={19} />
+            <span>
+              {auditPagination.total} events
+            </span>
           </div>
 
+          <form className="fox-audit-filters" onSubmit={(event) => void applyAuditFilters(event)}>
+            <label>
+              Action
+              <input
+                value={auditFilters.action}
+                onChange={(event) => setAuditFilters((current) => ({ ...current, action: event.target.value }))}
+                placeholder="admin.user_role"
+              />
+            </label>
+            <label>
+              Actor role
+              <select value={auditFilters.actorRole} onChange={(event) => setAuditFilters((current) => ({ ...current, actorRole: event.target.value as Role | 'all' }))}>
+                <option value="all">All roles</option>
+                {roles.map((role) => (
+                  <option key={role} value={role}>
+                    {roleLabels[role]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Resource
+              <select value={auditFilters.resourceType} onChange={(event) => setAuditFilters((current) => ({ ...current, resourceType: event.target.value }))}>
+                <option value="">All resources</option>
+                {auditResourceTypes.map((resourceType) => (
+                  <option key={resourceType} value={resourceType}>
+                    {resourceType}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              From
+              <input type="date" value={auditFilters.from} onChange={(event) => setAuditFilters((current) => ({ ...current, from: event.target.value }))} />
+            </label>
+            <label>
+              To
+              <input type="date" value={auditFilters.to} onChange={(event) => setAuditFilters((current) => ({ ...current, to: event.target.value }))} />
+            </label>
+            <label>
+              Page size
+              <select
+                value={auditFilters.pageSize}
+                onChange={(event) => setAuditFilters((current) => ({ ...current, pageSize: Number(event.target.value) }))}
+              >
+                {auditPageSizeOptions.map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    {pageSize}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div>
+              <button type="submit" disabled={auditState === 'loading'}>
+                <Search size={15} />
+                Apply
+              </button>
+              <button type="button" onClick={() => void resetAuditFilters()} disabled={auditState === 'loading'}>
+                <RefreshCcw size={15} />
+                Reset
+              </button>
+            </div>
+          </form>
+
           <div className="fox-audit-list">
-            {state === 'loading'
+            {auditState === 'loading'
               ? Array.from({ length: 6 }, (_, index) => <div key={index} className="fox-admin-skeleton fox-admin-skeleton--compact" />)
-              : auditLogs.map((log) => (
+              : auditLogs.length
+                ? auditLogs.map((log) => (
                   <article key={log.id} className="fox-audit-item">
                     <div>
                       <strong>{log.action}</strong>
@@ -560,7 +723,36 @@ export function AdminConsole() {
                     </p>
                     <time dateTime={log.createdAt}>{formatDateTime(log.createdAt)}</time>
                   </article>
-                ))}
+                ))
+                : (
+                  <div className="fox-empty-state fox-empty-state--compact">
+                    <History size={20} />
+                    <strong>No audit events found</strong>
+                    <p>ปรับ filter หรือ reset เพื่อกลับไปดูเหตุการณ์ล่าสุด</p>
+                  </div>
+                )}
+          </div>
+
+          <div className="fox-audit-pagination" aria-label="Audit log pagination">
+            <button
+              type="button"
+              onClick={() => void loadAuditLogs(Math.max(auditPagination.page - 1, 1))}
+              disabled={auditState === 'loading' || auditPagination.page <= 1}
+            >
+              <ChevronLeft size={16} />
+              Previous
+            </button>
+            <span>
+              Page {auditPagination.page} / {auditPagination.totalPages}
+            </span>
+            <button
+              type="button"
+              onClick={() => void loadAuditLogs(Math.min(auditPagination.page + 1, auditPagination.totalPages))}
+              disabled={auditState === 'loading' || auditPagination.page >= auditPagination.totalPages}
+            >
+              Next
+              <ChevronRight size={16} />
+            </button>
           </div>
         </aside>
       </section>

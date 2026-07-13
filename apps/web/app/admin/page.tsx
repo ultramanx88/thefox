@@ -4,6 +4,7 @@ import {
   ChartNoAxesCombined,
   ClipboardCheck,
   Gauge,
+  History,
   KeyRound,
   Route,
   ShieldAlert,
@@ -89,6 +90,18 @@ const readinessTasks = [
     auditEvent: 'admin.user_role.update.csrf_rejected, admin.user_role.update.rate_limited, admin.tenant_status.update.destructive_forbidden',
     rollbackNote: 'ปิด enforcement โดย revert mutation guard commit แล้ว redeploy; audit rows เก็บไว้เป็นหลักฐาน',
     verificationCommand: "curl -i -X OPTIONS https://api.thefox.app/v1/admin/users/example/role -H 'Origin: https://admin.thefox.app' -H 'Access-Control-Request-Method: PATCH' -H 'Access-Control-Request-Headers: content-type,x-thefox-mutation-token'"
+  },
+  {
+    icon: History,
+    track: 'Compliance',
+    title: 'Audit logs filters & pagination',
+    status: 'Shipped',
+    body: 'เพิ่ม page/pageSize/filter สำหรับ action, actorRole, resourceType และช่วงวันที่ เพื่อไม่ให้ audit query โตแบบ unbounded',
+    expectedState: 'Admin filter audit logs ได้และเปลี่ยนหน้าได้โดยไม่ reload ทั้ง console',
+    errorState: 'actorRole invalid ได้ 400, page/pageSize ถูก clamp, empty result แสดง empty state',
+    auditEvent: 'admin.audit_logs.list พร้อม metadata.page, metadata.pageSize และ metadata.filters',
+    rollbackNote: 'revert เฉพาะ audit API/UI แล้ว redeploy; audit rows เดิมไม่ถูกลบ',
+    verificationCommand: 'curl -i "https://api.thefox.app/v1/admin/audit-logs?page=1&pageSize=25&actorRole=superadmin"'
   },
   {
     icon: ClipboardCheck,

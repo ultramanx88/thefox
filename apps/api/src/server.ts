@@ -80,6 +80,16 @@ type AdminCreateMembershipBody = {
   role?: unknown;
 };
 
+type AdminAuditLogsQuery = {
+  page?: unknown;
+  pageSize?: unknown;
+  action?: unknown;
+  actorRole?: unknown;
+  resourceType?: unknown;
+  from?: unknown;
+  to?: unknown;
+};
+
 type AuthSessionPayload = {
   provider: 'line' | 'google';
   providerUserId: string;
@@ -188,6 +198,36 @@ function normalizeSlug(value: unknown) {
     .replace(/[^a-z0-9-]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .replace(/-{2,}/g, '-');
+}
+
+function normalizeOptionalQuery(value: unknown) {
+  const text = normalizeText(value);
+  return text ? text.slice(0, 120) : '';
+}
+
+function parseBoundedInt(value: unknown, fallback: number, min: number, max: number) {
+  const parsed = Number.parseInt(normalizeText(value), 10);
+
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+
+  return Math.min(Math.max(parsed, min), max);
+}
+
+function parseOptionalDate(value: unknown, boundary: 'start' | 'end' = 'start') {
+  const text = normalizeText(value);
+
+  if (!text) {
+    return null;
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+    return new Date(boundary === 'end' ? `${text}T23:59:59.999Z` : `${text}T00:00:00.000Z`);
+  }
+
+  const date = new Date(text);
+  return Number.isNaN(date.getTime()) ? null : date;
 }
 
 function parseCookies(cookieHeader: string | undefined) {
@@ -1008,44 +1048,112 @@ app.get('/v1/admin/me', async (request, reply) => {
 });
 
 app.get('/v1/admin/audit-logs', async (request, reply) => {
+  const query = request.query as AdminAuditLogsQuery;
+  const page = parseBoundedInt(query.page, 1, 1, 10_000);
+  const pageSize = parseBoundedInt(query.pageSize, 25, 5, 100);
+  const action = normalizeOptionalQuery(query.action);
+  const resourceType = normalizeOptionalQuery(query.resourceType);
+  const actorRoleText = normalizeOptionalQuery(query.actorRole);
+  const actorRole = actorRoleText ? RoleSchema.safeParse(actorRoleText) : null;
+  const from = parseOptionalDate(query.from);
+  const to = parseOptionalDate(query.to, 'end');
+
   const user = await requireRole(request, reply, ['admin', 'superadmin'], {
     action: 'admin.audit_logs.list',
-    resourceType: 'audit_log'
+    resourceType: 'audit_log',
+    metadata: {
+      page,
+      pageSize,
+      filters: {
+        action: action || '',
+        actorRole: actorRole?.success ? actorRole.data : '',
+        resourceType: resourceType || '',
+        from: from?.toISOString() ?? '',
+        to: to?.toISOString() ?? ''
+      }
+    }
   });
 
   if (!user) {
     return;
   }
 
-  const logs = await prisma.auditLog.findMany({
-    orderBy: {
-      createdAt: 'desc'
-    },
-    take: 50,
-    select: {
-      id: true,
-      actorUserId: true,
-      actorRole: true,
-      action: true,
-      resourceType: true,
-      resourceId: true,
-      route: true,
-      method: true,
-      ipAddress: true,
-      userAgent: true,
-      metadata: true,
-      createdAt: true,
-      actorUser: {
-        select: {
-          email: true,
-          displayName: true
+  if (actorRoleText && !actorRole?.success) {
+    return reply.code(400).send({
+      error: 'INVALID_ACTOR_ROLE',
+      message: 'actorRole must be customer, vendor, driver, admin, or superadmin'
+    });
+  }
+
+  const where: Prisma.AuditLogWhereInput = {};
+
+  if (action) {
+    where.action = {
+      contains: action,
+      mode: 'insensitive'
+    };
+  }
+
+  if (resourceType) {
+    where.resourceType = {
+      contains: resourceType,
+      mode: 'insensitive'
+    };
+  }
+
+  if (actorRole?.success) {
+    where.actorRole = actorRole.data;
+  }
+
+  if (from || to) {
+    where.createdAt = {
+      ...(from ? { gte: from } : {}),
+      ...(to ? { lte: to } : {})
+    };
+  }
+
+  const [logs, total] = await Promise.all([
+    prisma.auditLog.findMany({
+      where,
+      orderBy: {
+        createdAt: 'desc'
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      select: {
+        id: true,
+        actorUserId: true,
+        actorRole: true,
+        action: true,
+        resourceType: true,
+        resourceId: true,
+        route: true,
+        method: true,
+        ipAddress: true,
+        userAgent: true,
+        metadata: true,
+        createdAt: true,
+        actorUser: {
+          select: {
+            email: true,
+            displayName: true
+          }
         }
       }
-    }
-  });
+    }),
+    prisma.auditLog.count({
+      where
+    })
+  ]);
 
   return {
-    data: logs
+    data: logs,
+    pagination: {
+      page,
+      pageSize,
+      total,
+      totalPages: Math.max(Math.ceil(total / pageSize), 1)
+    }
   };
 });
 

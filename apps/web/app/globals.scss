@@ -1766,6 +1766,88 @@ img {
   gap: 8px;
 }
 
+.fox-audit-filters {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+  border: 1px solid var(--fox-line);
+  border-radius: var(--fox-radius-md);
+  padding: 10px;
+  background: var(--fox-bg-soft);
+}
+
+.fox-audit-filters label {
+  display: grid;
+  gap: 5px;
+  color: var(--fox-text-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.fox-audit-filters input,
+.fox-audit-filters select {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid var(--fox-line-strong);
+  border-radius: var(--fox-radius-sm);
+  padding: 0 9px;
+  background: var(--fox-surface);
+  color: var(--fox-text);
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+.fox-audit-filters input::placeholder {
+  color: var(--fox-text-muted);
+}
+
+.fox-audit-filters > div,
+.fox-audit-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fox-audit-filters button,
+.fox-audit-pagination button {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--fox-line-strong);
+  border-radius: var(--fox-radius-sm);
+  padding: 0 10px;
+  background: var(--fox-surface-inverse);
+  color: var(--fox-accent-contrast);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.fox-audit-filters button[type='button'],
+.fox-audit-pagination button {
+  background: var(--fox-surface);
+  color: var(--fox-text);
+}
+
+.fox-audit-filters button:disabled,
+.fox-audit-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.fox-audit-pagination {
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.fox-audit-pagination span {
+  color: var(--fox-text-muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
 .fox-audit-item {
   display: grid;
   gap: 6px;
@@ -1994,6 +2076,10 @@ img {
   padding: 18px;
   color: var(--fox-text);
   text-align: center;
+}
+
+.fox-empty-state--compact {
+  min-height: 150px;
 }
 
 .fox-empty-state svg {
@@ -2636,6 +2722,14 @@ img {
 
   .fox-admin-form {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fox-audit-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fox-audit-filters > div {
+    grid-column: 1 / -1;
   }
 
   .fox-admin-form__wide,
