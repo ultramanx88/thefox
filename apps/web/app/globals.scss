@@ -2286,6 +2286,12 @@ img {
   line-height: 1.45;
 }
 
+.fox-task-card__prompt code {
+  user-select: all;
+  border-color: var(--fox-line-strong);
+  background: color-mix(in srgb, var(--fox-surface) 82%, var(--fox-bg-soft));
+}
+
 .fox-task-card strong {
   display: inline-flex;
   width: max-content;

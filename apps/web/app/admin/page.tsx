@@ -54,7 +54,8 @@ const readinessTasks = [
     errorState: 'ข้อมูลไม่ครบตอบ 400, target ไม่พบตอบ 404, lower role ถูก 403',
     auditEvent: 'admin.tenant.create, admin.tenant_status.update, admin.branch.create, admin.branch_status.update',
     rollbackNote: 'เปลี่ยน status กลับ pending/paused หรือปิด workflow จาก admin console; DB migration ไม่ต้อง rollback',
-    verificationCommand: 'curl -i https://api.thefox.app/v1/admin/tenants'
+    verificationCommand: 'curl -i https://api.thefox.app/v1/admin/tenants',
+    prompt: 'ทำ task Tenant & Branch approval flow ต่อ: ตรวจ UX/API/admin audit, อัปเดต status การ์ด, verify production และ commit/deploy ให้ครบ'
   },
   {
     icon: ShieldAlert,
@@ -66,7 +67,8 @@ const readinessTasks = [
     errorState: 'Origin แปลกไม่มี CORS allow-origin, forged cookie ไม่ผ่าน session verify',
     auditEvent: 'admin.workspace.access.unauthenticated, vendor.workspace.access.forbidden, driver.workspace.access.forbidden',
     rollbackNote: 'ย้อน proxy/CORS config แล้ว redeploy เฉพาะ thefox-app web/api',
-    verificationCommand: 'curl -i https://api.thefox.app/v1/admin/me'
+    verificationCommand: 'curl -i https://api.thefox.app/v1/admin/me',
+    prompt: 'ทำ task Workspace route and auth test ต่อ: ทดสอบ admin/vendor/driver subdomain, cookie domain, CORS, role bypass, unauth access และ audit trail'
   },
   {
     icon: Gauge,
@@ -78,7 +80,8 @@ const readinessTasks = [
     errorState: 'API 5xx, cold response ช้า, bundle โตผิดปกติ หรือ static cache ไม่ HIT',
     auditEvent: 'admin.audit_logs.list, admin.users.list, admin.workspace.access',
     rollbackNote: 'ย้อน commit UI/API ล่าสุดแล้ว deploy; ไม่แตะ database ถ้าไม่มี migration',
-    verificationCommand: "curl -sS -o /dev/null -w 'ttfb=%{time_starttransfer} total=%{time_total}\\n' https://admin.thefox.app"
+    verificationCommand: "curl -sS -o /dev/null -w 'ttfb=%{time_starttransfer} total=%{time_total}\\n' https://admin.thefox.app",
+    prompt: 'ทำ task Admin API and page budget ต่อ: วัด auth/me, admin/users, audit logs, cache behavior, bundle size และ cold response หลัง deploy'
   },
   {
     icon: KeyRound,
@@ -90,7 +93,8 @@ const readinessTasks = [
     errorState: 'Missing/expired token ได้ 403, rate limit ได้ 429, destructive lower role ได้ 403',
     auditEvent: 'admin.user_role.update.csrf_rejected, admin.user_role.update.rate_limited, admin.tenant_status.update.destructive_forbidden',
     rollbackNote: 'ปิด enforcement โดย revert mutation guard commit แล้ว redeploy; audit rows เก็บไว้เป็นหลักฐาน',
-    verificationCommand: "curl -i -X OPTIONS https://api.thefox.app/v1/admin/users/example/role -H 'Origin: https://admin.thefox.app' -H 'Access-Control-Request-Method: PATCH' -H 'Access-Control-Request-Headers: content-type,x-thefox-mutation-token'"
+    verificationCommand: "curl -i -X OPTIONS https://api.thefox.app/v1/admin/users/example/role -H 'Origin: https://admin.thefox.app' -H 'Access-Control-Request-Method: PATCH' -H 'Access-Control-Request-Headers: content-type,x-thefox-mutation-token'",
+    prompt: 'ทำ task Mutation protection ต่อ: ตรวจ CSRF/signed mutation token, rate limit, superadmin-only destructive action และ structured audit metadata'
   },
   {
     icon: History,
@@ -102,7 +106,8 @@ const readinessTasks = [
     errorState: 'actorRole invalid ได้ 400, page/pageSize ถูก clamp, empty result แสดง empty state',
     auditEvent: 'admin.audit_logs.list พร้อม metadata.page, metadata.pageSize และ metadata.filters',
     rollbackNote: 'revert เฉพาะ audit API/UI แล้ว redeploy; audit rows เดิมไม่ถูกลบ',
-    verificationCommand: 'curl -i "https://api.thefox.app/v1/admin/audit-logs?page=1&pageSize=25&actorRole=superadmin"'
+    verificationCommand: 'curl -i "https://api.thefox.app/v1/admin/audit-logs?page=1&pageSize=25&actorRole=superadmin"',
+    prompt: 'ทำ task Audit logs filters & pagination ต่อ: ทบทวน filter/page UX, admin-only guard, audit metadata, production query และอัปเดตการ์ด'
   },
   {
     icon: Database,
@@ -114,7 +119,8 @@ const readinessTasks = [
     errorState: 'migration fail, index ไม่ถูกสร้าง, query plan ยัง scan หนักโดยไม่จำเป็น หรือ write path ช้าลงผิดปกติ',
     auditEvent: 'No DB audit expected for index creation; runtime endpoints ยัง emit admin.users.list, admin.tenants.list, admin.audit_logs.list',
     rollbackNote: 'drop เฉพาะ indexes ใน migration นี้หรือ revert migration ก่อน deploy ถ้ายังไม่เข้า production; ห้ามลบ business data',
-    verificationCommand: 'ssh root@187.77.158.181 "cd /opt/thefox/app && docker compose --project-name thefox-app --env-file /opt/thefox/.env.thefox.app -f docker-compose.kvm-shared.yml exec -T postgres psql -U thefox -d thefox_app -c \'EXPLAIN ANALYZE SELECT * FROM \"AuditLog\" WHERE \"actorRole\" = \'\'superadmin\'\' ORDER BY \"createdAt\" DESC LIMIT 25;\'"'
+    verificationCommand: 'ssh root@187.77.158.181 "cd /opt/thefox/app && docker compose --project-name thefox-app --env-file /opt/thefox/.env.thefox.app -f docker-compose.kvm-shared.yml exec -T postgres psql -U thefox -d thefox_app -c \'EXPLAIN ANALYZE SELECT * FROM \"AuditLog\" WHERE \"actorRole\" = \'\'superadmin\'\' ORDER BY \"createdAt\" DESC LIMIT 25;\'"',
+    prompt: 'ทำ task Database performance baseline & index plan ต่อ: วัด EXPLAIN ANALYZE, migrate status, index presence, latency baseline และ update status การ์ด'
   },
   {
     icon: ClipboardCheck,
@@ -126,7 +132,8 @@ const readinessTasks = [
     errorState: 'card ที่ขาด field ใด field หนึ่งห้ามถือว่า ready for production',
     auditEvent: 'Documentation change maps to the implementation audit events named in each card',
     rollbackNote: 'ย้อนเฉพาะ doc/UI card changes ได้โดยไม่กระทบ runtime',
-    verificationCommand: "rg -n 'expectedState|errorState|auditEvent|rollbackNote|verificationCommand' apps/web/app/admin/page.tsx"
+    verificationCommand: "rg -n 'expectedState|errorState|auditEvent|rollbackNote|verificationCommand|prompt' apps/web/app/admin/page.tsx",
+    prompt: 'ทำ task Operational acceptance checklist ต่อ: ตรวจว่าทุกการ์ดมี expected/error/audit/rollback/verify/prompt และ status ล่าสุด'
   }
 ];
 
@@ -189,7 +196,7 @@ export default function AdminPage() {
             </span>
           </div>
           <div className="fox-task-grid">
-            {readinessTasks.map(({ icon: Icon, track, title, status, body, expectedState, errorState, auditEvent, rollbackNote, verificationCommand }) => (
+            {readinessTasks.map(({ icon: Icon, track, title, status, body, expectedState, errorState, auditEvent, rollbackNote, verificationCommand, prompt }) => (
               <article key={title} className="fox-task-card">
                 <div>
                   <span>
@@ -220,6 +227,12 @@ export default function AdminPage() {
                     <dt>Verify</dt>
                     <dd>
                       <code>{verificationCommand}</code>
+                    </dd>
+                  </div>
+                  <div className="fox-task-card__prompt">
+                    <dt>Prompt</dt>
+                    <dd>
+                      <code>{prompt}</code>
                     </dd>
                   </div>
                 </dl>
