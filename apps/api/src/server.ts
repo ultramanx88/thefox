@@ -90,13 +90,22 @@ type AuthSessionPayload = {
   issuedAt: string;
 };
 
+type MutationTokenPayload = {
+  purpose: 'mutation';
+  userId: string;
+  role: UserRole;
+  issuedAt: string;
+  expiresAt: string;
+  nonce: string;
+};
+
 type AuthProvider = AuthSessionPayload['provider'];
 type AuthenticatedUser = NonNullable<Awaited<ReturnType<typeof getAuthenticatedUser>>>;
 type AuditContext = {
   action: string;
-  resourceType?: string;
+  resourceType?: string | undefined;
   resourceId?: string | undefined;
-  metadata?: Prisma.InputJsonValue;
+  metadata?: Prisma.InputJsonValue | undefined;
 };
 
 const app = Fastify({
@@ -109,7 +118,9 @@ const prisma = new PrismaClient();
 await app.register(helmet);
 await app.register(cors, {
   origin: process.env.WEB_ORIGIN?.split(',') ?? ['http://localhost:3000'],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'X-TheFox-Mutation-Token']
 });
 
 app.addHook('onClose', async () => {
@@ -158,6 +169,9 @@ const superadminEmails = [
 const tenantStatuses = new Set<TenantStatus>(['pending', 'active', 'suspended']);
 const branchStatuses = new Set<BranchStatus>(['pending', 'active', 'paused', 'closed']);
 const vendorMembershipRoles = new Set(['owner', 'admin', 'member']);
+const mutationTokenHeader = 'x-thefox-mutation-token';
+const mutationTokenTtlMs = 15 * 60 * 1000;
+const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
 
 function normalizeText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -251,6 +265,54 @@ function verifyPayload(token: string): AuthSessionPayload | null {
   return JSON.parse(base64UrlDecode(body)) as AuthSessionPayload;
 }
 
+function signMutationToken(user: Pick<AuthenticatedUser, 'id' | 'role'>) {
+  if (!sessionSecret) {
+    throw new Error('AUTH_SESSION_SECRET is required');
+  }
+
+  const now = Date.now();
+  const payload: MutationTokenPayload = {
+    purpose: 'mutation',
+    userId: user.id,
+    role: user.role,
+    issuedAt: new Date(now).toISOString(),
+    expiresAt: new Date(now + mutationTokenTtlMs).toISOString(),
+    nonce: randomBytes(18).toString('base64url')
+  };
+  const body = base64UrlEncode(JSON.stringify(payload));
+  const signature = createHmac('sha256', sessionSecret).update(body).digest('base64url');
+  return `${body}.${signature}`;
+}
+
+function verifyMutationToken(token: string | undefined, user: Pick<AuthenticatedUser, 'id' | 'role'>) {
+  if (!sessionSecret || !token) {
+    return null;
+  }
+
+  const [body, signature] = token.split('.');
+
+  if (!body || !signature) {
+    return null;
+  }
+
+  const expected = createHmac('sha256', sessionSecret).update(body).digest('base64url');
+  const signatureBuffer = Buffer.from(signature);
+  const expectedBuffer = Buffer.from(expected);
+
+  if (signatureBuffer.length !== expectedBuffer.length || !timingSafeEqual(signatureBuffer, expectedBuffer)) {
+    return null;
+  }
+
+  const payload = JSON.parse(base64UrlDecode(body)) as MutationTokenPayload;
+  const expiresAt = Date.parse(payload.expiresAt);
+
+  if (payload.purpose !== 'mutation' || payload.userId !== user.id || payload.role !== user.role || Number.isNaN(expiresAt) || expiresAt <= Date.now()) {
+    return null;
+  }
+
+  return payload;
+}
+
 function decodeJwtPayload(token: string | undefined) {
   if (!token) {
     return {};
@@ -291,7 +353,74 @@ function mergeAuditMetadata(metadata: Prisma.InputJsonValue | undefined, extra: 
   };
 }
 
-async function writeAuditLog(request: FastifyRequest, context: AuditContext & { actor?: Pick<AuthenticatedUser, 'id' | 'role'> | null }) {
+function mutationAuditMetadata(input: {
+  operation: string;
+  target?: Record<string, Prisma.InputJsonValue>;
+  before?: Record<string, Prisma.InputJsonValue>;
+  after?: Record<string, Prisma.InputJsonValue>;
+  security?: Record<string, Prisma.InputJsonValue>;
+  input?: Record<string, Prisma.InputJsonValue>;
+}) {
+  return {
+    operation: input.operation,
+    target: input.target ?? {},
+    before: input.before ?? {},
+    after: input.after ?? {},
+    security: input.security ?? {},
+    input: input.input ?? {}
+  } satisfies Prisma.InputJsonObject;
+}
+
+function rateLimitKey(request: FastifyRequest, scope: string, user?: Pick<AuthenticatedUser, 'id'> | null) {
+  return [scope, user?.id ?? 'anonymous', requestIpAddress(request)].join(':');
+}
+
+async function enforceRateLimit(
+  request: FastifyRequest,
+  reply: FastifyReply,
+  context: AuditContext & { actor?: Pick<AuthenticatedUser, 'id' | 'role'> | null; scope: string; limit: number; windowMs: number }
+) {
+  const now = Date.now();
+  const key = rateLimitKey(request, context.scope, context.actor);
+  const bucket = rateLimitBuckets.get(key);
+  const nextBucket = !bucket || bucket.resetAt <= now ? { count: 1, resetAt: now + context.windowMs } : { count: bucket.count + 1, resetAt: bucket.resetAt };
+
+  rateLimitBuckets.set(key, nextBucket);
+
+  if (nextBucket.count <= context.limit) {
+    reply.header('X-RateLimit-Limit', context.limit.toString());
+    reply.header('X-RateLimit-Remaining', Math.max(context.limit - nextBucket.count, 0).toString());
+    reply.header('X-RateLimit-Reset', Math.ceil(nextBucket.resetAt / 1000).toString());
+    return true;
+  }
+
+  const retryAfter = Math.ceil((nextBucket.resetAt - now) / 1000);
+  reply.header('Retry-After', retryAfter.toString());
+  reply.header('X-RateLimit-Limit', context.limit.toString());
+  reply.header('X-RateLimit-Remaining', '0');
+  reply.header('X-RateLimit-Reset', Math.ceil(nextBucket.resetAt / 1000).toString());
+
+  await writeAuditLog(request, {
+    actor: context.actor,
+    action: `${context.action}.rate_limited`,
+    resourceType: context.resourceType,
+    resourceId: context.resourceId,
+    metadata: mergeAuditMetadata(context.metadata, {
+      security: {
+        control: 'rate_limit',
+        scope: context.scope,
+        limit: context.limit,
+        windowMs: context.windowMs,
+        retryAfter
+      }
+    })
+  });
+
+  reply.code(429).send({ error: 'RATE_LIMITED', retryAfter });
+  return false;
+}
+
+async function writeAuditLog(request: FastifyRequest, context: AuditContext & { actor?: Pick<AuthenticatedUser, 'id' | 'role'> | null | undefined }) {
   try {
     const data: Prisma.AuditLogUncheckedCreateInput = {
       action: context.action,
@@ -486,6 +615,66 @@ async function requireRole(request: FastifyRequest, reply: FastifyReply, allowed
   }
 
   return user;
+}
+
+async function requireMutationProtection(
+  request: FastifyRequest,
+  reply: FastifyReply,
+  user: Pick<AuthenticatedUser, 'id' | 'role'>,
+  context: AuditContext & {
+    scope: string;
+    rateLimit?: {
+      limit: number;
+      windowMs: number;
+    };
+  }
+) {
+  const rateLimit = context.rateLimit ?? {
+    limit: 30,
+    windowMs: 60_000
+  };
+  const underLimit = await enforceRateLimit(request, reply, {
+    actor: user,
+    action: context.action,
+    resourceType: context.resourceType,
+    resourceId: context.resourceId,
+    metadata: context.metadata,
+    scope: context.scope,
+    limit: rateLimit.limit,
+    windowMs: rateLimit.windowMs
+  });
+
+  if (!underLimit) {
+    return null;
+  }
+
+  const tokenHeader = request.headers[mutationTokenHeader];
+  const token = Array.isArray(tokenHeader) ? tokenHeader[0] : tokenHeader;
+  const payload = verifyMutationToken(token, user);
+
+  if (!payload) {
+    await writeAuditLog(request, {
+      actor: user,
+      action: `${context.action}.csrf_rejected`,
+      resourceType: context.resourceType,
+      resourceId: context.resourceId,
+      metadata: mergeAuditMetadata(context.metadata, {
+        security: {
+          control: 'signed_mutation_token',
+          outcome: 'rejected',
+          hasToken: Boolean(token)
+        }
+      })
+    });
+
+    reply.code(403).send({
+      error: 'MUTATION_TOKEN_REQUIRED',
+      message: `Mutation requests require a valid ${mutationTokenHeader} header`
+    });
+    return null;
+  }
+
+  return payload;
 }
 
 function serializeApiUser(user: AuthenticatedUser) {
@@ -752,18 +941,45 @@ app.get('/v1/auth/me', async (request, reply) => {
   }
 
   return {
-    user: serializeApiUser(user)
+    user: serializeApiUser(user),
+    mutationToken: signMutationToken(user)
   };
 });
 
 app.post('/v1/auth/logout', async (request, reply) => {
   const user = await getAuthenticatedUser(request);
 
+  if (user) {
+    const mutation = await requireMutationProtection(request, reply, user, {
+      action: 'auth.logout',
+      resourceType: 'auth_session',
+      resourceId: user.id,
+      scope: 'auth.logout',
+      rateLimit: {
+        limit: 10,
+        windowMs: 60_000
+      }
+    });
+
+    if (!mutation) {
+      return;
+    }
+  }
+
   await writeAuditLog(request, {
     actor: user,
     action: 'auth.logout',
     resourceType: 'auth_session',
-    resourceId: user?.id
+    resourceId: user?.id,
+    metadata: mutationAuditMetadata({
+      operation: 'auth.logout',
+      target: {
+        userId: user?.id ?? 'anonymous'
+      },
+      security: {
+        signedMutationToken: Boolean(user)
+      }
+    })
   });
 
   reply.header('Set-Cookie', serializeCookie('thefox_auth_session', '', { ...cookieOptions, maxAge: 1 }));
@@ -782,6 +998,7 @@ app.get('/v1/admin/me', async (request, reply) => {
 
   return {
     user: serializeApiUser(user),
+    mutationToken: signMutationToken(user),
     permissions: {
       canReviewTenants: true,
       canInspectOrders: true,
@@ -969,6 +1186,20 @@ app.post('/v1/admin/tenants', async (request, reply) => {
     return;
   }
 
+  const mutation = await requireMutationProtection(request, reply, user, {
+    action: 'admin.tenant.create',
+    resourceType: 'tenant',
+    scope: 'admin.tenant.create',
+    rateLimit: {
+      limit: 12,
+      windowMs: 60_000
+    }
+  });
+
+  if (!mutation) {
+    return;
+  }
+
   const body = request.body as AdminCreateTenantBody;
   const name = normalizeText(body.name);
   const slug = normalizeSlug(body.slug || body.name);
@@ -1091,13 +1322,25 @@ app.post('/v1/admin/tenants', async (request, reply) => {
     action: 'admin.tenant.create',
     resourceType: 'tenant',
     resourceId: tenant.id,
-    metadata: {
-      name: tenant.name,
-      slug: tenant.slug,
-      status: tenant.status,
-      ownerUserId: ownerUserId || null,
-      ownerRole: ownerUserId ? ownerRole : null
-    }
+    metadata: mutationAuditMetadata({
+      operation: 'admin.tenant.create',
+      target: {
+        tenantId: tenant.id,
+        tenantSlug: tenant.slug
+      },
+      after: {
+        name: tenant.name,
+        slug: tenant.slug,
+        status: tenant.status,
+        ownerUserId: ownerUserId || '',
+        ownerRole: ownerUserId ? ownerRole : ''
+      },
+      security: {
+        signedMutationToken: true,
+        tokenIssuedAt: mutation.issuedAt,
+        tokenExpiresAt: mutation.expiresAt
+      }
+    })
   });
 
   return reply.code(201).send({
@@ -1124,6 +1367,50 @@ app.patch('/v1/admin/tenants/:tenantId/status', async (request, reply) => {
     return reply.code(400).send({
       error: 'INVALID_TENANT_STATUS',
       message: 'Tenant status must be pending, active, or suspended'
+    });
+  }
+
+  const mutation = await requireMutationProtection(request, reply, user, {
+    action: 'admin.tenant_status.update',
+    resourceType: 'tenant',
+    resourceId: params.tenantId,
+    scope: 'admin.tenant_status.update',
+    rateLimit: {
+      limit: 30,
+      windowMs: 60_000
+    }
+  });
+
+  if (!mutation) {
+    return;
+  }
+
+  if (nextStatus === 'suspended' && user.role !== 'superadmin') {
+    await writeAuditLog(request, {
+      actor: user,
+      action: 'admin.tenant_status.update.destructive_forbidden',
+      resourceType: 'tenant',
+      resourceId: params.tenantId,
+      metadata: mutationAuditMetadata({
+        operation: 'admin.tenant_status.update',
+        target: {
+          tenantId: params.tenantId
+        },
+        after: {
+          nextStatus
+        },
+        security: {
+          destructiveAction: true,
+          requiredRole: 'superadmin',
+          actualRole: user.role,
+          signedMutationToken: true
+        }
+      })
+    });
+
+    return reply.code(403).send({
+      error: 'SUPERADMIN_REQUIRED',
+      message: 'Suspending a tenant requires superadmin'
     });
   }
 
@@ -1164,12 +1451,27 @@ app.patch('/v1/admin/tenants/:tenantId/status', async (request, reply) => {
     action: 'admin.tenant_status.update',
     resourceType: 'tenant',
     resourceId: tenant.id,
-    metadata: {
-      name: tenant.name,
-      slug: tenant.slug,
-      previousStatus: existingTenant.status,
-      nextStatus: tenant.status
-    }
+    metadata: mutationAuditMetadata({
+      operation: 'admin.tenant_status.update',
+      target: {
+        tenantId: tenant.id,
+        tenantSlug: tenant.slug
+      },
+      before: {
+        status: existingTenant.status
+      },
+      after: {
+        name: tenant.name,
+        slug: tenant.slug,
+        status: tenant.status
+      },
+      security: {
+        destructiveAction: tenant.status === 'suspended',
+        signedMutationToken: true,
+        tokenIssuedAt: mutation.issuedAt,
+        tokenExpiresAt: mutation.expiresAt
+      }
+    })
   });
 
   return {
@@ -1186,6 +1488,21 @@ app.post('/v1/admin/tenants/:tenantId/memberships', async (request, reply) => {
   });
 
   if (!user) {
+    return;
+  }
+
+  const mutation = await requireMutationProtection(request, reply, user, {
+    action: 'admin.tenant_membership.upsert',
+    resourceType: 'tenant',
+    resourceId: params.tenantId,
+    scope: 'admin.tenant_membership.upsert',
+    rateLimit: {
+      limit: 24,
+      windowMs: 60_000
+    }
+  });
+
+  if (!mutation) {
     return;
   }
 
@@ -1302,14 +1619,29 @@ app.post('/v1/admin/tenants/:tenantId/memberships', async (request, reply) => {
     action: 'admin.tenant_membership.upsert',
     resourceType: 'tenant',
     resourceId: tenant.id,
-    metadata: {
-      tenantName: tenant.name,
-      tenantSlug: tenant.slug,
-      memberUserId: targetUser.id,
-      memberEmail: targetUser.email,
-      previousUserRole: targetUser.role,
-      membershipRole: role
-    }
+    metadata: mutationAuditMetadata({
+      operation: 'admin.tenant_membership.upsert',
+      target: {
+        tenantId: tenant.id,
+        tenantSlug: tenant.slug,
+        memberUserId: targetUser.id
+      },
+      before: {
+        userRole: targetUser.role
+      },
+      after: {
+        tenantName: tenant.name,
+        tenantSlug: tenant.slug,
+        memberEmail: targetUser.email ?? '',
+        membershipRole: role,
+        userRole: membership.user.role
+      },
+      security: {
+        signedMutationToken: true,
+        tokenIssuedAt: mutation.issuedAt,
+        tokenExpiresAt: mutation.expiresAt
+      }
+    })
   });
 
   return reply.code(201).send({
@@ -1326,6 +1658,21 @@ app.post('/v1/admin/tenants/:tenantId/branches', async (request, reply) => {
   });
 
   if (!user) {
+    return;
+  }
+
+  const mutation = await requireMutationProtection(request, reply, user, {
+    action: 'admin.branch.create',
+    resourceType: 'tenant',
+    resourceId: params.tenantId,
+    scope: 'admin.branch.create',
+    rateLimit: {
+      limit: 24,
+      windowMs: 60_000
+    }
+  });
+
+  if (!mutation) {
     return;
   }
 
@@ -1381,14 +1728,26 @@ app.post('/v1/admin/tenants/:tenantId/branches', async (request, reply) => {
     action: 'admin.branch.create',
     resourceType: 'branch',
     resourceId: branch.id,
-    metadata: {
-      tenantId: tenant.id,
-      tenantName: tenant.name,
-      tenantSlug: tenant.slug,
-      name: branch.name,
-      slug: branch.slug,
-      status: branch.status
-    }
+    metadata: mutationAuditMetadata({
+      operation: 'admin.branch.create',
+      target: {
+        tenantId: tenant.id,
+        tenantSlug: tenant.slug,
+        branchId: branch.id,
+        branchSlug: branch.slug
+      },
+      after: {
+        tenantName: tenant.name,
+        name: branch.name,
+        slug: branch.slug,
+        status: branch.status
+      },
+      security: {
+        signedMutationToken: true,
+        tokenIssuedAt: mutation.issuedAt,
+        tokenExpiresAt: mutation.expiresAt
+      }
+    })
   });
 
   return reply.code(201).send({
@@ -1415,6 +1774,50 @@ app.patch('/v1/admin/branches/:branchId/status', async (request, reply) => {
     return reply.code(400).send({
       error: 'INVALID_BRANCH_STATUS',
       message: 'Branch status must be pending, active, paused, or closed'
+    });
+  }
+
+  const mutation = await requireMutationProtection(request, reply, user, {
+    action: 'admin.branch_status.update',
+    resourceType: 'branch',
+    resourceId: params.branchId,
+    scope: 'admin.branch_status.update',
+    rateLimit: {
+      limit: 45,
+      windowMs: 60_000
+    }
+  });
+
+  if (!mutation) {
+    return;
+  }
+
+  if (nextStatus === 'closed' && user.role !== 'superadmin') {
+    await writeAuditLog(request, {
+      actor: user,
+      action: 'admin.branch_status.update.destructive_forbidden',
+      resourceType: 'branch',
+      resourceId: params.branchId,
+      metadata: mutationAuditMetadata({
+        operation: 'admin.branch_status.update',
+        target: {
+          branchId: params.branchId
+        },
+        after: {
+          nextStatus
+        },
+        security: {
+          destructiveAction: true,
+          requiredRole: 'superadmin',
+          actualRole: user.role,
+          signedMutationToken: true
+        }
+      })
+    });
+
+    return reply.code(403).send({
+      error: 'SUPERADMIN_REQUIRED',
+      message: 'Closing a branch requires superadmin'
     });
   }
 
@@ -1464,15 +1867,30 @@ app.patch('/v1/admin/branches/:branchId/status', async (request, reply) => {
     action: 'admin.branch_status.update',
     resourceType: 'branch',
     resourceId: branch.id,
-    metadata: {
-      tenantId: existingBranch.tenantId,
-      tenantName: existingBranch.tenant.name,
-      tenantSlug: existingBranch.tenant.slug,
-      name: branch.name,
-      slug: branch.slug,
-      previousStatus: existingBranch.status,
-      nextStatus: branch.status
-    }
+    metadata: mutationAuditMetadata({
+      operation: 'admin.branch_status.update',
+      target: {
+        tenantId: existingBranch.tenantId,
+        tenantSlug: existingBranch.tenant.slug,
+        branchId: branch.id,
+        branchSlug: branch.slug
+      },
+      before: {
+        status: existingBranch.status
+      },
+      after: {
+        tenantName: existingBranch.tenant.name,
+        name: branch.name,
+        slug: branch.slug,
+        status: branch.status
+      },
+      security: {
+        destructiveAction: branch.status === 'closed',
+        signedMutationToken: true,
+        tokenIssuedAt: mutation.issuedAt,
+        tokenExpiresAt: mutation.expiresAt
+      }
+    })
   });
 
   return {
@@ -1492,6 +1910,21 @@ app.patch('/v1/admin/users/:userId/role', async (request, reply) => {
   }
 
   const params = request.params as AdminUpdateUserRoleParams;
+  const mutation = await requireMutationProtection(request, reply, user, {
+    action: 'admin.user_role.update',
+    resourceType: 'user',
+    resourceId: params.userId,
+    scope: 'admin.user_role.update',
+    rateLimit: {
+      limit: 18,
+      windowMs: 60_000
+    }
+  });
+
+  if (!mutation) {
+    return;
+  }
+
   const body = request.body as AdminUpdateUserRoleBody;
   const parsedRole = RoleSchema.safeParse(body.role);
 
@@ -1501,9 +1934,18 @@ app.patch('/v1/admin/users/:userId/role', async (request, reply) => {
       action: 'admin.user_role.update.invalid',
       resourceType: 'user',
       resourceId: params.userId,
-      metadata: {
-        receivedRole: typeof body.role === 'string' ? body.role : null
-      }
+      metadata: mutationAuditMetadata({
+        operation: 'admin.user_role.update',
+        target: {
+          userId: params.userId
+        },
+        input: {
+          receivedRole: typeof body.role === 'string' ? body.role : ''
+        },
+        security: {
+          signedMutationToken: true
+        }
+      })
     });
 
     return reply.code(400).send({
@@ -1530,9 +1972,18 @@ app.patch('/v1/admin/users/:userId/role', async (request, reply) => {
       action: 'admin.user_role.update.missing_target',
       resourceType: 'user',
       resourceId: params.userId,
-      metadata: {
-        nextRole: parsedRole.data
-      }
+      metadata: mutationAuditMetadata({
+        operation: 'admin.user_role.update',
+        target: {
+          userId: params.userId
+        },
+        after: {
+          nextRole: parsedRole.data
+        },
+        security: {
+          signedMutationToken: true
+        }
+      })
     });
 
     return reply.code(404).send({ error: 'USER_NOT_FOUND' });
@@ -1544,10 +1995,23 @@ app.patch('/v1/admin/users/:userId/role', async (request, reply) => {
       action: 'admin.user_role.update.self_demote_blocked',
       resourceType: 'user',
       resourceId: target.id,
-      metadata: {
-        previousRole: target.role,
-        nextRole: parsedRole.data
-      }
+      metadata: mutationAuditMetadata({
+        operation: 'admin.user_role.update',
+        target: {
+          userId: target.id
+        },
+        before: {
+          role: target.role
+        },
+        after: {
+          role: parsedRole.data
+        },
+        security: {
+          destructiveAction: true,
+          signedMutationToken: true,
+          reason: 'self_demote_blocked'
+        }
+      })
     });
 
     return reply.code(409).send({
@@ -1577,12 +2041,26 @@ app.patch('/v1/admin/users/:userId/role', async (request, reply) => {
     action: 'admin.user_role.update',
     resourceType: 'user',
     resourceId: updatedUser.id,
-    metadata: {
-      previousRole: target.role,
-      nextRole: updatedUser.role,
-      targetEmail: updatedUser.email,
-      targetDisplayName: updatedUser.displayName
-    }
+    metadata: mutationAuditMetadata({
+      operation: 'admin.user_role.update',
+      target: {
+        userId: updatedUser.id,
+        targetEmail: updatedUser.email ?? '',
+        targetDisplayName: updatedUser.displayName ?? ''
+      },
+      before: {
+        role: target.role
+      },
+      after: {
+        role: updatedUser.role
+      },
+      security: {
+        destructiveAction: target.role === 'superadmin' || updatedUser.role === 'superadmin',
+        signedMutationToken: true,
+        tokenIssuedAt: mutation.issuedAt,
+        tokenExpiresAt: mutation.expiresAt
+      }
+    })
   });
 
   return {

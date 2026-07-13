@@ -75,6 +75,7 @@ type AdminMe = {
     email: string | null;
     role: Role;
   };
+  mutationToken: string;
   permissions: {
     canReviewTenants: boolean;
     canInspectOrders: boolean;
@@ -158,12 +159,18 @@ function slugify(value: string) {
     .replace(/-{2,}/g, '-');
 }
 
-async function fetchJson<T>(path: string, init?: RequestInit) {
+function isMutationRequest(init?: RequestInit) {
+  const method = init?.method?.toUpperCase() ?? 'GET';
+  return method !== 'GET' && method !== 'HEAD';
+}
+
+async function fetchJson<T>(path: string, init?: RequestInit, mutationToken?: string) {
   const response = await fetch(`${apiBaseUrl}${path}`, {
     ...init,
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
+      ...(isMutationRequest(init) && mutationToken ? { 'X-TheFox-Mutation-Token': mutationToken } : {}),
       ...init?.headers
     }
   });
@@ -177,6 +184,7 @@ async function fetchJson<T>(path: string, init?: RequestInit) {
 
 export function AdminConsole() {
   const [admin, setAdmin] = useState<AdminMe | null>(null);
+  const [mutationToken, setMutationToken] = useState('');
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [tenants, setTenants] = useState<AdminTenant[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
@@ -205,6 +213,7 @@ export function AdminConsole() {
       ]);
 
       setAdmin(adminPayload);
+      setMutationToken(adminPayload.mutationToken);
       setUsers(usersPayload.data);
       setTenants(tenantsPayload.data);
       setSelectedTenantId((current) => current || tenantsPayload.data[0]?.id || '');
@@ -282,7 +291,7 @@ export function AdminConsole() {
       await fetchJson<{ user: Pick<AdminUser, 'id' | 'email' | 'displayName' | 'role' | 'updatedAt'> }>(`/v1/admin/users/${user.id}/role`, {
         method: 'PATCH',
         body: JSON.stringify({ role: nextRole })
-      });
+      }, mutationToken);
 
       setUsers((currentUsers) =>
         currentUsers.map((currentUser) =>
@@ -319,7 +328,7 @@ export function AdminConsole() {
       const result = await fetchJson<{ tenant: AdminTenant }>('/v1/admin/tenants', {
         method: 'POST',
         body: JSON.stringify(payload)
-      });
+      }, mutationToken);
 
       setTenantForm({ name: '', slug: '', description: '', ownerUserId: '', ownerRole: 'owner' });
       setSelectedTenantId(result.tenant.id);
@@ -344,7 +353,7 @@ export function AdminConsole() {
       await fetchJson<{ tenant: Pick<AdminTenant, 'id' | 'name' | 'slug' | 'status' | 'updatedAt'> }>(`/v1/admin/tenants/${tenant.id}/status`, {
         method: 'PATCH',
         body: JSON.stringify({ status })
-      });
+      }, mutationToken);
       setNotice({ tone: 'success', message: `อัปเดต ${tenant.name} เป็น ${status} แล้ว` });
       await refreshTenantsAndAudit();
     } catch (error) {
@@ -365,7 +374,7 @@ export function AdminConsole() {
           userId: membershipForm.userId,
           role: membershipForm.role
         })
-      });
+      }, mutationToken);
       setMembershipForm((current) => ({ ...current, userId: '', role: 'member' }));
       setNotice({ tone: 'success', message: 'ผูก member เข้า tenant แล้ว' });
       await loadAdminData();
@@ -386,7 +395,7 @@ export function AdminConsole() {
           slug: branchForm.slug || slugify(branchForm.name),
           address: branchForm.address || undefined
         })
-      });
+      }, mutationToken);
       setBranchForm((current) => ({ ...current, name: '', slug: '', address: '' }));
       setNotice({ tone: 'success', message: 'สร้าง branch แล้ว และรอ approval' });
       await refreshTenantsAndAudit();
@@ -407,7 +416,7 @@ export function AdminConsole() {
       await fetchJson<{ branch: AdminTenant['branches'][number] }>(`/v1/admin/branches/${branch.id}/status`, {
         method: 'PATCH',
         body: JSON.stringify({ status })
-      });
+      }, mutationToken);
       setNotice({ tone: 'success', message: `อัปเดต branch ${branch.name} เป็น ${status} แล้ว` });
       await refreshTenantsAndAudit();
     } catch (error) {
