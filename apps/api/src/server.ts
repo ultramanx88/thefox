@@ -273,6 +273,14 @@ function base64UrlDecode(value: string) {
   return Buffer.from(value, 'base64url').toString('utf8');
 }
 
+function parseSignedJson<T>(body: string) {
+  try {
+    return JSON.parse(base64UrlDecode(body)) as T;
+  } catch {
+    return null;
+  }
+}
+
 function signPayload(payload: AuthSessionPayload) {
   if (!sessionSecret) {
     throw new Error('AUTH_SESSION_SECRET is required');
@@ -302,7 +310,7 @@ function verifyPayload(token: string): AuthSessionPayload | null {
     return null;
   }
 
-  return JSON.parse(base64UrlDecode(body)) as AuthSessionPayload;
+  return parseSignedJson<AuthSessionPayload>(body);
 }
 
 function signMutationToken(user: Pick<AuthenticatedUser, 'id' | 'role'>) {
@@ -343,7 +351,12 @@ function verifyMutationToken(token: string | undefined, user: Pick<Authenticated
     return null;
   }
 
-  const payload = JSON.parse(base64UrlDecode(body)) as MutationTokenPayload;
+  const payload = parseSignedJson<MutationTokenPayload>(body);
+
+  if (!payload) {
+    return null;
+  }
+
   const expiresAt = Date.parse(payload.expiresAt);
 
   if (payload.purpose !== 'mutation' || payload.userId !== user.id || payload.role !== user.role || Number.isNaN(expiresAt) || expiresAt <= Date.now()) {

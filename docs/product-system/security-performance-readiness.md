@@ -43,6 +43,25 @@ Every task card must include:
 | Mutation protection | Every state-changing admin request requires a valid signed mutation token bound to current user and role. | Missing/expired/wrong-role token returns `403 MUTATION_TOKEN_REQUIRED`. | `admin.*.csrf_rejected` | Revert mutation guard commit and redeploy API/web together; do not remove audit evidence. | `curl -i https://api.thefox.app/v1/admin/tenants -X POST -H 'Content-Type: application/json' --data '{"name":"csrf-test","slug":"csrf-test"}'` | `ทำ task Mutation protection ต่อ: ตรวจ signed mutation token, rate limit, destructive superadmin guard และ structured audit` |
 | Rate limit | Sensitive mutation routes enforce per-scope/user/IP windows and return rate-limit headers. | Burst requests return `429 RATE_LIMITED` with `Retry-After`. | `admin.user_role.update.rate_limited`, future `admin.*.rate_limited` | Restart API to clear in-memory buckets if misconfigured; then tune limits in code and redeploy. | `curl -i https://api.thefox.app/v1/admin/me` | `ทำ task Rate limit ต่อ: ทดสอบ sensitive mutation burst, Retry-After, audit row และ rollback note` |
 
+## Latest Mutation Protection Verification
+
+Recorded on July 14, 2026. Mutation token parsing now fails closed: malformed signed-token payloads return the normal mutation rejection path instead of throwing during JSON decode.
+
+| Control | Expected production result |
+| --- | --- |
+| Signed mutation token | Admin `POST`/`PATCH` routes require `X-TheFox-Mutation-Token` bound to the authenticated user id and role. |
+| Malformed token hardening | Bad token bodies resolve to `403 MUTATION_TOKEN_REQUIRED` and write `admin.*.csrf_rejected`. |
+| Rate limit | Sensitive mutation scopes emit `429 RATE_LIMITED`, `Retry-After`, and `*.rate_limited` audit metadata when burst limits are exceeded. |
+| Destructive guard | Tenant `suspended`, branch `closed`, and superadmin role changes require superadmin and emit structured denial events when blocked. |
+| Structured metadata | Mutation audit rows include `operation`, `target`, `before`, `after`, `security`, and `input` objects where applicable. |
+
+Production smoke results:
+- CORS preflight for `PATCH` with `content-type,x-thefox-mutation-token` returned `204` with `Access-Control-Allow-Origin: https://admin.thefox.app`.
+- Missing mutation token returned `403`; malformed but correctly signed non-JSON token returned `403`.
+- Burst test against `admin.user_role.update` returned `429` after the mutation scope limit and wrote `admin.user_role.update.rate_limited`.
+- Audit evidence included `admin.user_role.update.csrf_rejected` with `security.hasToken` false and true cases.
+- Destructive lower-admin runtime denial is code-covered, but production currently has only one `superadmin` and no separate `admin` account for a no-data-change live denial test.
+
 ## Performance Task Cards
 
 | Task | Expected state | Error state | Audit event | Rollback note | Production verification command | Prompt |

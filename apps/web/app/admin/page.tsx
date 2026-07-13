@@ -87,7 +87,7 @@ const readinessTasks = [
     icon: KeyRound,
     track: 'Hardening',
     title: 'Mutation protection',
-    status: 'Shipped',
+    status: 'Verified',
     body: 'เพิ่ม CSRF/signed mutation token, rate limit, superadmin-only destructive action และ structured audit metadata',
     expectedState: 'POST/PATCH ต้องมี signed mutation token และ destructive action ต้อง superadmin',
     errorState: 'Missing/expired token ได้ 403, rate limit ได้ 429, destructive lower role ได้ 403',
