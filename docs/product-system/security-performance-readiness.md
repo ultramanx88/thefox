@@ -88,6 +88,22 @@ Recorded on July 14, 2026 after restarting only `thefox-app-web-1` and `thefox-a
 | Authenticated `admin/audit-logs?page=1&pageSize=25` after restart | `200`, `49.24ms`, `12213` bytes |
 | Admin static assets | 1 CSS `44589` bytes; 8 JS chunks totaling about `655KB` downloaded |
 
+## Latest Database Performance Verification
+
+Recorded on July 14, 2026. Production migrations are current, all expected hot-path indexes are present, and the current sparse production dataset has sub-millisecond DB execution for the checked admin/audit/tenant/product/order paths.
+
+| Check | Production result |
+| --- | --- |
+| Prisma migrate status | `Database schema is up to date!`; 5 migrations found. |
+| Index presence | 17 expected indexes present across `User`, `Tenant`, `Branch`, `VendorMembership`, `AuditLog`, `Product`, `Order`, and `OrderItem`. |
+| `AuditLog` actor-role feed | `Index Scan Backward using "AuditLog_createdAt_idx"`; execution `0.106ms` for latest 25 superadmin rows. |
+| Admin user list | Planner used sequential scan on the current 1-row table; execution `0.069ms`; `User_createdAt_idx` and `User_role_createdAt_idx` are present for scale. |
+| Tenant status list | `Bitmap Index Scan on "Tenant_status_createdAt_idx"`; execution `0.052ms`. |
+| Product tenant active list | Used `Product_tenantId_idx`; execution `0.045ms`; composite tenant/category/active indexes are present for populated tenants. |
+| Order status list | `Bitmap Index Scan on "Order_status_createdAt_idx"`; execution `0.052ms`. |
+| Production row counts | `User:1`, `Tenant:0`, `Branch:0`, `Product:0`, `Order:0`, `AuditLog:246`. |
+| Local VPS API baseline | `admin/me` `200` total `0.007079s`; `admin/users` `200` total `0.005474s`; `admin/tenants` `200` total `0.006153s`; filtered `admin/audit-logs` `200` total `0.007478s`. |
+
 ## Latest Audit Filter Verification
 
 Recorded on July 14, 2026. Audit log filters and pagination are now verified as a bounded admin-only workflow.

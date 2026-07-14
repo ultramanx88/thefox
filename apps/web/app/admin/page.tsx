@@ -114,7 +114,7 @@ const readinessTasks = [
     icon: Database,
     track: 'Performance',
     title: 'Database performance baseline & index plan',
-    status: 'Shipped',
+    status: 'Verified',
     body: 'เพิ่ม index สำหรับ admin/audit/tenant/product/order hot paths และใช้ EXPLAIN ANALYZE เป็น production gate ก่อนขยาย inventory ledger',
     expectedState: 'Prisma schema มี index ตาม query path จริง, migrate status clean และ audit/admin list ใช้ bounded indexed reads',
     errorState: 'migration fail, index ไม่ถูกสร้าง, query plan ยัง scan หนักโดยไม่จำเป็น หรือ write path ช้าลงผิดปกติ',
