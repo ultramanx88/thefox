@@ -23,6 +23,7 @@
     "build": "npm run build --workspace @thefox/shared && npm run build --workspace @thefox/api && npm run build --workspace @thefox/web",
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
+    "performance:budget": "node scripts/check-performance-budget.mjs",
     "db:generate": "npm run db:generate --workspace @thefox/api",
     "db:migrate": "npm run db:migrate --workspace @thefox/api",
     "deploy:thefox-app": "bash scripts/deploy-thefox-app.sh"

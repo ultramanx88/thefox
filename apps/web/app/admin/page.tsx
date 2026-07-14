@@ -169,13 +169,13 @@ const systemPrograms = [
     icon: Gauge,
     track: 'Performance',
     title: 'Performance optimization program',
-    status: 'Planned',
+    status: 'Verified',
     body: 'คุม API latency, page/bundle budget, DB query plan, connection pool, cache strategy, cold start และ payload size',
     expectedState: 'มี baseline p50/p95, budget ต่อ endpoint/page, query plan สำคัญ และ regression gate ก่อน/หลัง deploy',
     errorState: 'TTFB spike, bundle โตผิดปกติ, query scan หนัก, connection pool error, cold start fail หรือ payload โตเกินจำเป็น',
     auditEvent: 'No DB audit expected for measurement; runtime endpoints ยัง emit admin.users.list, admin.tenants.list, admin.audit_logs.list',
     rollbackNote: 'revert change ที่ทำให้ latency/bundle/query แย่ แล้ว redeploy; schema rollback เฉพาะ migration ที่เป็นต้นเหตุ',
-    verificationCommand: "curl -sS -o /dev/null -w 'ttfb=%{time_starttransfer} total=%{time_total} bytes=%{size_download}\\n' https://admin.thefox.app",
+    verificationCommand: 'npm run performance:budget',
     prompt: 'ทำ program Performance optimization ต่อ: วัด API/page/DB/cache/cold start/payload baseline, เพิ่ม budget gate และอัปเดตการ์ดตามผล production'
   },
   {
