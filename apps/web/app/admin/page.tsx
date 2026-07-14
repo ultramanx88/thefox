@@ -127,7 +127,7 @@ const readinessTasks = [
     icon: ClipboardCheck,
     track: 'QA',
     title: 'Operational acceptance checklist',
-    status: 'Active standard',
+    status: 'Verified',
     body: 'ทุก task card ต้องมี expected state, error state, audit event, rollback note และ production verification command',
     expectedState: 'ทุก task card มี acceptance fields ครบและสอดคล้องกับ production behavior',
     errorState: 'card ที่ขาด field ใด field หนึ่งห้ามถือว่า ready for production',

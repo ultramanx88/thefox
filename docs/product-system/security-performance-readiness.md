@@ -30,6 +30,17 @@ Every task card must include:
 - Production verification command.
 - Copy/paste prompt for starting or resuming the task in Codex.
 
+## Latest Operational Acceptance Verification
+
+Recorded on July 14, 2026. The admin task board was checked for acceptance completeness before continuing UX/business-flow work.
+
+| Check | Result |
+| --- | --- |
+| Readiness task cards | 7 cards checked; every card has `status`, `expectedState`, `errorState`, `auditEvent`, `rollbackNote`, `verificationCommand`, and `prompt`. |
+| System program cards | 20 cards checked; every program card has `status`, `expectedState`, `errorState`, `auditEvent`, `rollbackNote`, `verificationCommand`, and `prompt`. |
+| Latest readiness status | Tenant/branch approval, workspace route/auth, admin API/page budget, mutation protection, audit filters, database performance, and operational acceptance are `Verified`. |
+| Production safety rule | Verification/deploy commands remain scoped to `thefox-app` web/API/database paths and keep unrelated VPS services isolated. |
+
 ## Pentest Task Cards
 
 | Task | Expected state | Error state | Audit event | Rollback note | Production verification command | Prompt |
