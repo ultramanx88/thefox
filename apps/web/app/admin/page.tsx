@@ -143,7 +143,7 @@ const systemPrograms = [
     icon: ShieldAlert,
     track: 'Security',
     title: 'Security pentest program',
-    status: 'Planned',
+    status: 'Verified',
     body: 'รวมงาน route isolation, role bypass, ownership bypass, CSRF, rate limit, cookie/CORS/session และ secrets exposure',
     expectedState: 'ทุก protected surface มี pentest checklist, production command, audit expectation และผลทดสอบล่าสุด',
     errorState: 'พบ route bypass, tenant data leak, forged session ผ่าน, origin แปลกผ่าน CORS หรือ mutation สำคัญไม่มี guard',
