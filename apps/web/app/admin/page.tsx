@@ -179,6 +179,19 @@ const systemPrograms = [
     prompt: 'ทำ program Performance optimization ต่อ: วัด API/page/DB/cache/cold start/payload baseline, เพิ่ม budget gate และอัปเดตการ์ดตามผล production'
   },
   {
+    icon: Database,
+    track: 'Architecture',
+    title: 'Data access strategy program',
+    status: 'Core foundation 0',
+    body: 'กำหนดกติกา Prisma + Postgres: CRUD/state ใช้ Prisma, ledger/report/heavy query ใช้ Postgres-native แบบมี migration และ EXPLAIN',
+    expectedState: 'ทุก data path รู้ชัดว่าใช้ Prisma, raw SQL, view, materialized view หรือ read model พร้อม query budget และ migration owner',
+    errorState: 'logic กระจัดกระจาย, raw SQL ไม่มี migration, report ยิง transactional table หนัก, หรือ ledger/order transaction ไม่มี locking rule',
+    auditEvent: 'No audit expected for read-only architecture docs; future heavy read model rebuild emits report.* and stock.* audit events',
+    rollbackNote: 'ย้อนเฉพาะ docs/card ได้; ห้ามเปลี่ยน data access ของ runtime โดยไม่มี migration, test, EXPLAIN และ rollback note',
+    verificationCommand: "rg -n 'Prisma|Postgres-native|materialized view|EXPLAIN|read model|transaction|locking' docs/product-system apps/api/prisma/schema.prisma",
+    prompt: 'ทำ program Data access strategy ต่อ: วางกติกา Prisma + Postgres สำหรับ CRUD, transaction, ledger, report, materialized view, raw SQL, index และ EXPLAIN'
+  },
+  {
     icon: Workflow,
     track: 'Business',
     title: 'Business logic integrity program',
